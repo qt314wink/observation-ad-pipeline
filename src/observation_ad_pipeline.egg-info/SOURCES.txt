@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/obsad/__init__.py
+src/obsad/cli.py
+src/observation_ad_pipeline.egg-info/PKG-INFO
+src/observation_ad_pipeline.egg-info/SOURCES.txt
+src/observation_ad_pipeline.egg-info/dependency_links.txt
+src/observation_ad_pipeline.egg-info/entry_points.txt
+src/observation_ad_pipeline.egg-info/requires.txt
+src/observation_ad_pipeline.egg-info/top_level.txt

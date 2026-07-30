@@ -1,0 +1,20 @@
+id: gilded-ad-v1
+operation: generate
+reference: null
+contract: examples/specs/gilded.contract.yaml
+workflow: templates/workflows/PLACE_API_WORKFLOW_HERE.json
+workflow_patches:
+  - {node: "6", input: text, value_from: compiled.positive}
+  - {node: "7", input: text, value_from: compiled.negative}
+  - {node: "3", input: seed, value_from: parameters.seed}
+prompt:
+  task: "Create a 10-second premium vertical advertising plate."
+  locks: []
+  motion: ["begin almost still", "light travels from screen right", "shallow layered parallax"]
+  camera: ["slow stable push-in"]
+  event: "one restrained emphasis event at 55 percent"
+  final_state: "poised CTA-safe composition"
+  style: ["tactile analog collage", "premium editorial", "controlled spectral light"]
+  avoid: ["generated text", "random particles", "camera shake", "multiple climaxes"]
+parameters: {seed: 314159}
+output: {directory: output/gilded-ad-v1, prefix: gilded}

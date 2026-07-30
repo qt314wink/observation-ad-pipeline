@@ -1,0 +1,20 @@
+id: gilded-edit-v1
+operation: edit
+reference: {type: image, path: input/images/source.png, role: start_frame}
+contract: examples/specs/gilded.contract.yaml
+workflow: templates/workflows/PLACE_API_WORKFLOW_HERE.json
+workflow_patches:
+  - {node: "6", input: text, value_from: compiled.positive}
+  - {node: "7", input: text, value_from: compiled.negative}
+  - {node: "10", input: image, value_from: reference.upload_name}
+prompt:
+  task: "Animate the supplied image as a restrained 10-second luxury editorial film."
+  locks: ["exact face", "anatomy", "pose", "supporting foot", "architecture", "collage boundaries"]
+  motion: ["subtle breath", "continuous leftward hair drag", "blue light moves inward", "10 pixel restrained rise", "shallow paper parallax"]
+  camera: ["5 percent push", "slight crane", "slow left orbit"]
+  event: "at 55 percent, brief blue intensification and fixed-geometry gold glints"
+  final_state: "luminous suspension without reset"
+  style: ["tactile analog collage", "embossed botanical gold", "ruined blue-lit palace", "premium fashion advertising"]
+  avoid: ["face drift", "blinking", "lip motion", "finger movement", "pose collapse", "moving gold geometry", "hue cycling", "generated text"]
+parameters: {seed: 314159}
+output: {directory: output/gilded-edit-v1, prefix: gilded_edit}

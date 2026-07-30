@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: observation-ad-pipeline
+Version: 0.2.1
+Requires-Python: >=3.10
+Requires-Dist: click<9,>=8.1
+Requires-Dist: fastjsonschema<3,>=2.20
+Requires-Dist: PyYAML<7,>=6
+Requires-Dist: requests<3,>=2.32
+Requires-Dist: python-dotenv<2,>=1

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+VERSION_ID="${1:?model version id}"; DEST="${2:?destination path}"; : "${CIVITAI_TOKEN:?set CIVITAI_TOKEN}"
+mkdir -p "$(dirname "$DEST")"
+curl -fL --retry 3 -H "Authorization: Bearer $CIVITAI_TOKEN" "https://civitai.com/api/download/models/$VERSION_ID" -o "$DEST.part"
+mv "$DEST.part" "$DEST"
+sha256sum "$DEST" | tee "$DEST.sha256"

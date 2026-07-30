@@ -1,0 +1,6 @@
+meta: {ratios: ["9:16","4:5","1:1"], edits_s: [6,10,15], notes: "safe zones; immediate product/outcome; concept diversity"}
+tiktok: {ratios: ["9:16"], edits_s: [10,15,20], notes: "native vertical; captions in post; process, proof, comments/search"}
+youtube: {ratios: ["9:16","1:1","16:9"], edits_s: [6,10,15], notes: "attention, branding, connection, direction"}
+pinterest: {ratios: ["9:16","4:5"], edits_s: [6,10,15], notes: "outcome and product early; useful/saveable"}
+reddit: {ratios: ["4:5","1:1"], edits_s: [5,6,10], notes: "community-specific headline; natural context"}
+linkedin: {ratios: ["4:5","1:1","16:9"], edits_s: [10,15,30], notes: "business problem, proof, muted autoplay captions"}

@@ -1,0 +1,18 @@
+id: gilded-chromatic-levitation
+observations:
+  - {fact: "hair streams toward screen left", region: subject.hair}
+  - {fact: "blue illumination enters from screen right", region: environment.light}
+  - {fact: "torn seams imply shallow separable planes", region: collage.edges}
+inferences:
+  - {claim: "restrained ceremonial levitation", confidence: 0.94, evidence: ["arched pose", "upward head angle"]}
+preservation:
+  locks: [face, expression, anatomy, hands, pose, supporting_foot, architecture, composition]
+  allowed_change: [hair_drag, breath, shallow_rise, light_travel, shallow_parallax, fixed_geometry_glints]
+  prohibited_change: [face_replacement, anatomy_change, pose_collapse, architecture_replacement, gold_morphing]
+generation:
+  motion_thesis: "Observed forces progressively synchronize around one controlled emphasis event."
+  actions: ["subtle breath", "leftward hair drag", "blue light travel", "shallow parallax", "restrained rise"]
+  camera: ["stable push-in", "slight crane", "slow left orbit"]
+  event: "brief blue intensification, narrow spectral ring, fixed-geometry gold glints"
+  final_state: "poised luminous suspension"
+  style: ["tactile analog collage", "gilded surreal editorial", "premium fashion advertising"]

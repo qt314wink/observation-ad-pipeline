@@ -1,0 +1,21 @@
+id: TASK_ID
+operation: extend
+provider: comfyui
+reference: null
+contract: examples/specs/gilded.contract.yaml
+workflow: templates/workflows/PLACE_API_WORKFLOW_HERE.json
+prompt_budget: {positive_chars: 1800, negative_chars: 900}
+workflow_patches:
+  - {node: "6", input: text, value_from: compiled.positive}
+  - {node: "7", input: text, value_from: compiled.negative}
+prompt:
+  task: "Create the requested output."
+  locks: []
+  motion: ["one primary visible action"]
+  camera: ["one stable camera move"]
+  event: "one restrained emphasis event"
+  final_state: "clear, stable, CTA-safe ending"
+  style: ["specific visual language"]
+  avoid: ["generated text", "identity drift", "random particles", "camera shake"]
+parameters: {seed: 314159}
+output: {directory: output/TASK_ID, prefix: TASK_ID}

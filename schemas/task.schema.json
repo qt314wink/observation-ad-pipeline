@@ -1,0 +1,16 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object","additionalProperties":true,
+  "required":["id","operation","prompt","output"],
+  "properties":{
+    "id":{"type":"string","pattern":"^[a-z0-9][a-z0-9._-]+$"},
+    "operation":{"enum":["generate","prompt","motion_spec","edit","transform","variation","extend"]},
+    "provider":{"enum":["comfyui","manifest_only"]},
+    "reference":{"type":["object","null"],"properties":{"type":{"enum":["image","video","folder"]},"path":{"type":"string"},"glob":{"type":"string"},"role":{"enum":["start_frame","end_frame","identity","style","content","source_video","mask"]}},"required":["type","path","role"]},
+    "contract":{"type":["string","null"]},"workflow":{"type":["string","null"]},
+    "workflow_patches":{"type":"array","items":{"type":"object","required":["node","input","value_from"],"properties":{"node":{"type":"string"},"input":{"type":"string"},"value_from":{"type":"string"}}}},
+    "prompt_budget":{"type":"object","properties":{"positive_chars":{"type":"integer","minimum":300,"maximum":5000},"negative_chars":{"type":"integer","minimum":100,"maximum":3000}}},
+    "prompt":{"type":"object","required":["task","motion","style","avoid"],"properties":{"task":{"type":"string"},"locks":{"type":"array","items":{"type":"string"}},"motion":{"type":"array","items":{"type":"string"},"maxItems":5},"camera":{"type":"array","items":{"type":"string"},"maxItems":3},"event":{"type":"string"},"final_state":{"type":"string"},"style":{"type":"array","items":{"type":"string"},"maxItems":6},"avoid":{"type":"array","items":{"type":"string"},"maxItems":18}}},
+    "parameters":{"type":"object"},"output":{"type":"object","required":["directory"],"properties":{"directory":{"type":"string"},"prefix":{"type":"string"}}}
+  }
+}

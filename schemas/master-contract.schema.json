@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "observations",
+    "inferences",
+    "preservation",
+    "generation"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "fact",
+          "region"
+        ],
+        "properties": {
+          "fact": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "inferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim",
+          "confidence",
+          "evidence"
+        ],
+        "properties": {
+          "claim": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "preservation": {
+      "type": "object",
+      "required": [
+        "locks",
+        "allowed_change",
+        "prohibited_change"
+      ],
+      "properties": {
+        "locks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowed_change": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prohibited_change": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "required": [
+        "motion_thesis",
+        "actions",
+        "camera",
+        "event",
+        "final_state",
+        "style"
+      ],
+      "properties": {
+        "motion_thesis": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5
+        },
+        "camera": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3
+        },
+        "event": {
+          "type": "string"
+        },
+        "final_state": {
+          "type": "string"
+        },
+        "style": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6
+        }
+      }
+    }
+  }
+}

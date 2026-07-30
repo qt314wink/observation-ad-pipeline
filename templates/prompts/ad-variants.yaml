@@ -1,0 +1,11 @@
+variants:
+  - id: contrarian
+    required: [false_belief, corrected_belief, visible_proof, click_reason]
+  - id: proof_first
+    required: [outcome_first_frame, mechanism, evidence, click_reason]
+  - id: process
+    required: [hidden_decision, process_artifact, result, click_reason]
+  - id: identity
+    required: [desired_identity, rejected_compromise, product_truth, click_reason]
+  - id: community_question
+    required: [defensible_choice_a, defensible_choice_b, discussion_payoff, next_step]
