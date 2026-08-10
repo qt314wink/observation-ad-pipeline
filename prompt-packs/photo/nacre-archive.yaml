@@ -1,0 +1,30 @@
+id: photo.nacre-archive.v1
+name: NACRE Archive
+intent:
+  - archival luxury
+  - living material intelligence
+materials:
+  - nacre
+  - pearl lacquer
+  - shell
+  - lace
+  - antique gold
+  - pressed flowers
+palette:
+  - midnight indigo
+  - warm ivory
+  - pearl white
+  - abalone cyan
+  - orchid mauve
+camera:
+  lens_mm: 85
+  aperture: f/2.8
+composition:
+  - one dominant subject
+  - one gold vein
+  - layered translucency
+  - intentional negative space
+negative:
+  - plastic chrome
+  - generic fantasy
+  - excessive rainbow saturation
