@@ -1,0 +1,23 @@
+id: photo.colored-glass.v1
+name: Colored Glass Sections
+intent:
+  - layered clarity
+  - calm dimensionality
+materials:
+  - cast glass
+  - translucent resin
+  - frosted acrylic
+palette:
+  - smoky cobalt
+  - pale apricot
+  - muted orchid
+  - sea-glass green
+composition:
+  - each plane represents one content section
+  - maximum four dominant layers
+  - distinct opacity per layer
+  - strong negative space
+negative:
+  - cloudy glass soup
+  - excessive blur
+  - neon cyberpunk
