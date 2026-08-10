@@ -1,0 +1,22 @@
+id: photo.boro-sashiko.v1
+name: Boro Sashiko Interface
+intent:
+  - repair as intelligence
+  - care made visible
+materials:
+  - indigo boro cloth
+  - hand-dyed linen
+  - cotton patches
+  - sashiko thread
+patterns:
+  - asanoha
+  - seigaiha
+  - irregular running stitch
+composition:
+  - patches behave like interface regions
+  - seams form pathways
+  - one repair remains unfinished
+negative:
+  - factory-perfect stitching
+  - synthetic shine
+  - uniform repetition
