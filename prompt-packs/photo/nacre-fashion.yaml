@@ -1,0 +1,21 @@
+id: photo.nacre-fashion.v1
+name: Nacre Ceremonial Fashion
+intent:
+  - ceremonial intelligence
+  - softness with structural authority
+garment:
+  - pearl organza
+  - shell pleating
+  - metallic embroidery
+  - asymmetrical lace
+camera:
+  lens_mm: 85
+  aperture: f/4
+composition:
+  - elongated silhouette
+  - readable textile detail
+  - editorial negative space
+negative:
+  - bridal cliché
+  - mermaid costume
+  - excessive pearls
