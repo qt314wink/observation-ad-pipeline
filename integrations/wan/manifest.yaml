@@ -1,0 +1,20 @@
+id: obsad.wan.integration
+engine: wan
+transport: comfyui
+capabilities:
+  - image-to-video
+  - text-to-video
+  - prompt-conditioned-motion
+include:
+  - workflow-json
+  - adapter-code
+  - notebooks
+  - setup-scripts
+  - patches
+  - documentation
+exclude:
+  - model-weights
+  - private-inputs
+  - generated-media
+  - credentials
+  - tunnel-urls
