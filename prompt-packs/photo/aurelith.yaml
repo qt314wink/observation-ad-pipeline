@@ -1,0 +1,23 @@
+id: photo.aurelith.v1
+name: Aurelith Signal Organism
+intent:
+  - intelligence becoming matter
+  - controlled emergence
+materials:
+  - nacre membrane
+  - indigo lattice
+  - conductive gold filament
+  - mineral gel
+  - crystalline inclusions
+optics:
+  film_thickness: 0.42
+  ior_base: 1.52
+  fresnel_power: 3.8
+composition:
+  - one central organism
+  - one gold filament
+  - dark negative field
+negative:
+  - horror imagery
+  - random glitch
+  - molten chrome
