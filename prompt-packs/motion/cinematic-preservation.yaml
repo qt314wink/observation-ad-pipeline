@@ -1,0 +1,27 @@
+id: motion.cinematic-preservation.v1
+duration_seconds: 10
+resolution: 720p
+frame_rate: 24
+preserve:
+  - identity
+  - anatomy
+  - pose
+  - architecture
+  - composition
+  - framing
+motion:
+  camera:
+    movement: restrained parallax push
+    distance_percent: 2.5
+    easing: ease-in-out
+  subject:
+    - breath-scale motion
+    - subtle fabric response
+  environment:
+    - atmospheric drift
+    - controlled light migration
+negative:
+  - facial morphing
+  - body warping
+  - boiling textures
+  - composition drift
