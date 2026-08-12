@@ -9,7 +9,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 PROVENANCE_SCHEMA = ROOT / "schemas" / "prompt-family-provenance.schema.json"
+CHANGE_SCHEMA = ROOT / "schemas" / "semantic-change-proposal.schema.json"
 PROVENANCE_DIR = ROOT / "config" / "prompt-family-provenance"
+CHANGE_DIR = ROOT / "config" / "semantic-change-proposals"
 WAN_MANIFEST = ROOT / "integrations" / "wan" / "manifest.yaml"
 
 REQUIRED_WAN_EXCLUSIONS = {
@@ -70,7 +72,50 @@ def _protected_digest(family: dict, protected_fields: list[str]) -> str:
     return "sha256:" + hashlib.sha256(canonical).hexdigest()
 
 
-def _validate_family_binding(path: Path, data: dict) -> list[str]:
+def _load_change_proposals() -> tuple[list[dict], list[str]]:
+    if not CHANGE_DIR.exists():
+        return [], []
+
+    schema = json.loads(CHANGE_SCHEMA.read_text(encoding="utf-8"))
+    validate = fastjsonschema.compile(schema)
+    proposals: list[dict] = []
+    errors: list[str] = []
+    for path in sorted(CHANGE_DIR.glob("*.yaml")):
+        try:
+            proposal = _load_yaml(path)
+            validate(proposal)
+            proposals.append(proposal)
+        except Exception as exc:
+            errors.append(f"{path.relative_to(ROOT)}: {exc}")
+    return proposals, errors
+
+
+def _find_approved_change(
+    family_id: str,
+    previous_digest: str,
+    proposed_digest: str,
+    protected_fields: list[str],
+    proposals: list[dict],
+) -> dict | None:
+    for proposal in proposals:
+        if proposal.get("status") != "approved":
+            continue
+        if proposal.get("familyId") != family_id:
+            continue
+        if proposal.get("previousProtectedDigest") != previous_digest:
+            continue
+        if proposal.get("proposedProtectedDigest") != proposed_digest:
+            continue
+        changed = set(proposal.get("changedProtectedFields") or [])
+        if not changed or not changed.issubset(set(protected_fields)):
+            continue
+        if proposal.get("previousVersion") == proposal.get("proposedVersion"):
+            continue
+        return proposal
+    return None
+
+
+def _validate_family_binding(path: Path, data: dict, proposals: list[dict]) -> list[str]:
     binding = data.get("familyBinding")
     if not binding:
         return []
@@ -96,12 +141,27 @@ def _validate_family_binding(path: Path, data: dict) -> list[str]:
 
     actual = _protected_digest(family, binding["protectedFields"])
     expected = binding["protectedDigest"]
-    if actual != expected:
+    if actual == expected:
+        return []
+
+    approved = _find_approved_change(
+        binding["id"],
+        expected,
+        actual,
+        binding["protectedFields"],
+        proposals,
+    )
+    if approved:
         return [
-            f"{prefix}: protected semantic drift detected for {binding['id']}; "
-            f"expected {expected}, got {actual}. Update provenance/version deliberately before accepting drift."
+            f"{prefix}: approved semantic change {approved['proposalId']} exists for {binding['id']} "
+            "but provenance protectedDigest has not been advanced to the approved digest"
         ]
-    return []
+
+    return [
+        f"{prefix}: protected semantic drift detected for {binding['id']}; "
+        f"expected {expected}, got {actual}. Create and approve a semantic-change proposal with "
+        "reason, evidence, compatibility, version transition, changed fields, and downstream impacts before advancing provenance."
+    ]
 
 
 def validate_prompt_family_provenance() -> list[str]:
@@ -112,6 +172,9 @@ def validate_prompt_family_provenance() -> list[str]:
     if not PROVENANCE_DIR.exists():
         return [f"missing provenance directory: {PROVENANCE_DIR}"]
 
+    proposals, proposal_errors = _load_change_proposals()
+    errors.extend(proposal_errors)
+
     fixtures = sorted(PROVENANCE_DIR.glob("*.yaml"))
     if not fixtures:
         return [f"no provenance fixtures found in {PROVENANCE_DIR}"]
@@ -121,7 +184,7 @@ def validate_prompt_family_provenance() -> list[str]:
             data = _load_yaml(path)
             validate(data)
             errors.extend(_validate_authority_semantics(path, data))
-            errors.extend(_validate_family_binding(path, data))
+            errors.extend(_validate_family_binding(path, data, proposals))
         except Exception as exc:  # validation boundary intentionally reports all failures
             errors.append(f"{path.relative_to(ROOT)}: {exc}")
     return errors
