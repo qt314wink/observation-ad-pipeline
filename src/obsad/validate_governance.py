@@ -10,8 +10,10 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 PROVENANCE_SCHEMA = ROOT / "schemas" / "prompt-family-provenance.schema.json"
 CHANGE_SCHEMA = ROOT / "schemas" / "semantic-change-proposal.schema.json"
+IMPACT_SCHEMA = ROOT / "schemas" / "downstream-impact.schema.json"
 PROVENANCE_DIR = ROOT / "config" / "prompt-family-provenance"
 CHANGE_DIR = ROOT / "config" / "semantic-change-proposals"
+IMPACT_DIR = ROOT / "config" / "downstream-impacts"
 WAN_MANIFEST = ROOT / "integrations" / "wan" / "manifest.yaml"
 
 REQUIRED_WAN_EXCLUSIONS = {
@@ -90,6 +92,24 @@ def _load_change_proposals() -> tuple[list[dict], list[str]]:
     return proposals, errors
 
 
+def _load_downstream_impacts() -> tuple[list[dict], list[str]]:
+    if not IMPACT_DIR.exists():
+        return [], []
+
+    schema = json.loads(IMPACT_SCHEMA.read_text(encoding="utf-8"))
+    validate = fastjsonschema.compile(schema)
+    declarations: list[dict] = []
+    errors: list[str] = []
+    for path in sorted(IMPACT_DIR.glob("*.yaml")):
+        try:
+            declaration = _load_yaml(path)
+            validate(declaration)
+            declarations.append(declaration)
+        except Exception as exc:
+            errors.append(f"{path.relative_to(ROOT)}: {exc}")
+    return declarations, errors
+
+
 def _find_approved_change(
     family_id: str,
     previous_digest: str,
@@ -115,7 +135,50 @@ def _find_approved_change(
     return None
 
 
-def _validate_family_binding(path: Path, data: dict, proposals: list[dict]) -> list[str]:
+def _impact_declaration_for_family(family_id: str, declarations: list[dict]) -> dict | None:
+    matches = [declaration for declaration in declarations if declaration.get("familyId") == family_id]
+    return matches[0] if len(matches) == 1 else None
+
+
+def _validate_downstream_impact(
+    family_id: str,
+    current_digest: str,
+    declarations: list[dict],
+) -> list[str]:
+    declaration = _impact_declaration_for_family(family_id, declarations)
+    if declaration is None:
+        return [f"downstream impact declaration missing or duplicated for {family_id}"]
+
+    errors: list[str] = []
+    if declaration.get("sourceProtectedDigest") != current_digest:
+        errors.append(
+            f"downstream impact declaration for {family_id} is stale; "
+            f"expected sourceProtectedDigest {current_digest}, got {declaration.get('sourceProtectedDigest')}"
+        )
+
+    for consumer in declaration.get("consumers") or []:
+        if consumer.get("classification") != "must-revalidate":
+            continue
+        receipt = consumer.get("receipt")
+        if not receipt:
+            errors.append(
+                f"downstream consumer {consumer.get('id')} for {family_id} requires revalidation but has no receipt"
+            )
+            continue
+        if receipt.get("validatedProtectedDigest") != current_digest:
+            errors.append(
+                f"downstream consumer {consumer.get('id')} for {family_id} has stale revalidation receipt; "
+                f"expected {current_digest}, got {receipt.get('validatedProtectedDigest')}"
+            )
+    return errors
+
+
+def _validate_family_binding(
+    path: Path,
+    data: dict,
+    proposals: list[dict],
+    impacts: list[dict],
+) -> list[str]:
     binding = data.get("familyBinding")
     if not binding:
         return []
@@ -141,8 +204,9 @@ def _validate_family_binding(path: Path, data: dict, proposals: list[dict]) -> l
 
     actual = _protected_digest(family, binding["protectedFields"])
     expected = binding["protectedDigest"]
+    errors = _validate_downstream_impact(binding["id"], actual, impacts)
     if actual == expected:
-        return []
+        return errors
 
     approved = _find_approved_change(
         binding["id"],
@@ -152,12 +216,12 @@ def _validate_family_binding(path: Path, data: dict, proposals: list[dict]) -> l
         proposals,
     )
     if approved:
-        return [
+        return errors + [
             f"{prefix}: approved semantic change {approved['proposalId']} exists for {binding['id']} "
             "but provenance protectedDigest has not been advanced to the approved digest"
         ]
 
-    return [
+    return errors + [
         f"{prefix}: protected semantic drift detected for {binding['id']}; "
         f"expected {expected}, got {actual}. Create and approve a semantic-change proposal with "
         "reason, evidence, compatibility, version transition, changed fields, and downstream impacts before advancing provenance."
@@ -173,7 +237,9 @@ def validate_prompt_family_provenance() -> list[str]:
         return [f"missing provenance directory: {PROVENANCE_DIR}"]
 
     proposals, proposal_errors = _load_change_proposals()
+    impacts, impact_errors = _load_downstream_impacts()
     errors.extend(proposal_errors)
+    errors.extend(impact_errors)
 
     fixtures = sorted(PROVENANCE_DIR.glob("*.yaml"))
     if not fixtures:
@@ -184,7 +250,7 @@ def validate_prompt_family_provenance() -> list[str]:
             data = _load_yaml(path)
             validate(data)
             errors.extend(_validate_authority_semantics(path, data))
-            errors.extend(_validate_family_binding(path, data, proposals))
+            errors.extend(_validate_family_binding(path, data, proposals, impacts))
         except Exception as exc:  # validation boundary intentionally reports all failures
             errors.append(f"{path.relative_to(ROOT)}: {exc}")
     return errors
