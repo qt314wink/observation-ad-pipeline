@@ -1,9 +1,9 @@
 canonicalSource:
   project: LithoMemphis
-  locator: unresolved-canonical-repository
-  authorityStatus: unresolved
+  locator: github:qt314wink/nextjs-boilerplate@b1bcbcc3199b41b37616bd377a0461e4a6f489bf/docs/lithomemphis-v2-plan.md
+  authorityStatus: provisional
 derivationType: bounded-adaptation
-sourceVersion: unresolved
+sourceVersion: git:b1bcbcc3199b41b37616bd377a0461e4a6f489bf
 sourceHash: unresolved
 allowedLocalOverrides:
   - ad-specific intent phrasing
