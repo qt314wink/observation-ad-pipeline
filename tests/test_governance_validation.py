@@ -4,7 +4,12 @@ import copy
 
 import fastjsonschema
 
-from obsad.validate_governance import REQUIRED_WAN_EXCLUSIONS, ROOT, _validate_authority_semantics
+from obsad.validate_governance import (
+    REQUIRED_WAN_EXCLUSIONS,
+    ROOT,
+    _protected_digest,
+    _validate_authority_semantics,
+)
 
 
 def test_prompt_provenance_schema_rejects_missing_forbidden_mutations():
@@ -86,6 +91,52 @@ def test_canonical_authority_requires_resolved_hash():
     }
     errors = _validate_authority_semantics(_fixture_path(), data)
     assert any("requires a resolved sourceHash" in error for error in errors)
+
+
+def test_protected_digest_is_deterministic_and_field_scoped():
+    family = {
+        "id": "photo.lithomemphis.v1",
+        "name": "Lithomemphis",
+        "materials": ["lithograph paper", "marble"],
+        "palette": ["black", "warm ivory"],
+        "intent": ["local campaign wording"],
+    }
+    fields = ["name", "materials", "palette"]
+    baseline = _protected_digest(family, fields)
+    reordered = {
+        "intent": ["different local wording"],
+        "palette": ["black", "warm ivory"],
+        "materials": ["lithograph paper", "marble"],
+        "name": "Lithomemphis",
+        "id": "photo.lithomemphis.v1",
+    }
+    assert _protected_digest(reordered, fields) == baseline
+
+
+def test_protected_digest_changes_when_upstream_semantic_changes():
+    family = {
+        "name": "Lithomemphis",
+        "materials": ["lithograph paper", "marble"],
+        "palette": ["black", "warm ivory"],
+    }
+    fields = ["name", "materials", "palette"]
+    baseline = _protected_digest(family, fields)
+    drifted = copy.deepcopy(family)
+    drifted["palette"].append("electric cyan")
+    assert _protected_digest(drifted, fields) != baseline
+
+
+def test_unprotected_local_override_does_not_change_protected_digest():
+    family = {
+        "name": "Lithomemphis",
+        "materials": ["lithograph paper", "marble"],
+        "palette": ["black", "warm ivory"],
+        "intent": ["tactile editorial authority"],
+    }
+    fields = ["name", "materials", "palette"]
+    baseline = _protected_digest(family, fields)
+    family["intent"] = ["campaign-local conversion framing"]
+    assert _protected_digest(family, fields) == baseline
 
 
 def test_wan_required_exclusions_are_security_and_privacy_boundaries():
