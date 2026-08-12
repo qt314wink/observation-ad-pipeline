@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'config/prompt-family-provenance/**'
+      - 'prompt-packs/**'
       - 'integrations/wan/**'
       - 'schemas/prompt-family-provenance.schema.json'
       - 'src/obsad/validate_governance.py'
@@ -13,6 +14,7 @@ on:
     branches: [main]
     paths:
       - 'config/prompt-family-provenance/**'
+      - 'prompt-packs/**'
       - 'integrations/wan/**'
       - 'schemas/prompt-family-provenance.schema.json'
       - 'src/obsad/validate_governance.py'
@@ -36,7 +38,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e . pytest
-      - name: Validate prompt provenance and Wan boundary
+      - name: Validate provenance, semantic drift, and Wan boundary
         run: python -m obsad.validate_governance
       - name: Run governance tests
         run: pytest -q tests/test_governance_validation.py
