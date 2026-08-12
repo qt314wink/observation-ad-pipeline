@@ -1,0 +1,44 @@
+id: observations.mandala-videos.v1
+records:
+  - source_id: "10006"
+    mechanism_label: recursive_macro_zoom_semantic_reconstruction
+    confidence: high
+    observations:
+      - {fact: centered metallic floral geometry increases continuously in apparent scale, region: full_field}
+      - {fact: inner structures replace the departing center while center registration persists, region: center}
+      - {fact: later structures resolve into layered nacre and heart-like motifs, region: center}
+    inferences:
+      - {claim: scale increase and semantic substitution are coordinated, confidence: 0.92, evidence: [successive center replacement, persistent registration]}
+    derived_capabilities: [recursive_zoom, aperture_revelation, scale_threshold_substitution]
+    splice_affordances: [scale_equivalent, center_shape_match, exact_loop_return]
+  - source_id: "8586"
+    mechanism_label: chromatic_species_morph
+    confidence: high
+    observations:
+      - {fact: radial center remains stable while sector contents change motif identity, region: sectors}
+      - {fact: cyan and yellow dominance migrates toward magenta violet and gold, region: full_field}
+    inferences:
+      - {claim: sector registration is preserved during motif substitution, confidence: 0.89, evidence: [stable center, persistent radial alignment]}
+    derived_capabilities: [sector_substitution, topology_preserving_morph, chromatic_migration]
+    splice_affordances: [palette_bridge, symmetry_phase_match]
+  - source_id: "8594"
+    mechanism_label: concentric_ring_replacement
+    confidence: high
+    observations:
+      - {fact: concentric petal rings change hue width material and apparent relief, region: rings}
+      - {fact: later states resolve into sharper purple-blue lattice petals, region: full_field}
+    inferences:
+      - {claim: successive states behave as ring-addressable geometric solutions, confidence: 0.86, evidence: [stable center, discrete ring changes]}
+    derived_capabilities: [ring_replacement, radial_wave, symmetry_order_transition]
+    splice_affordances: [material_anchor_match, symmetry_phase_match]
+  - source_id: "9040"
+    mechanism_label: axial_botanical_expansion_anchor_orbs
+    confidence: high
+    observations:
+      - {fact: vertically mirrored botanical structure expands toward the viewer, region: full_field}
+      - {fact: blue glass spheres persist while leaves droplets and feather-like forms reorganize, region: anchors}
+      - {fact: rainbow center remains a visual attractor, region: center}
+    inferences:
+      - {claim: blue spheres function as continuity anchors, confidence: 0.9, evidence: [persistent color, persistent circular forms]}
+    derived_capabilities: [anchor_orbit, aperture_revelation, topology_preserving_morph]
+    splice_affordances: [material_anchor_match, center_shape_match, motion_vector_match]
