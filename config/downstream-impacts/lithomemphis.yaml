@@ -1,0 +1,18 @@
+familyId: photo.lithomemphis.v1
+sourceProtectedDigest: sha256:799cda490631b46b2a4815afa281040aafa7cc3ee28ecee8c566b91d0cb3558e
+consumers:
+  - id: obsad.photo-renderer.lithomemphis
+    kind: renderer
+    classification: must-revalidate
+    target: src/obsad
+    receipt:
+      validatedProtectedDigest: sha256:799cda490631b46b2a4815afa281040aafa7cc3ee28ecee8c566b91d0cb3558e
+      evidenceRef: tests/test_governance_validation.py::test_current_lithomemphis_impact_receipts_are_current
+  - id: obsad.prompt-pack.lithomemphis
+    kind: prompt-pack
+    classification: compatible
+    target: prompt-packs/photo/lithomemphis.yaml
+  - id: obsad.docs.prompt-families
+    kind: documentation
+    classification: unaffected
+    target: docs/project-context/PROMPT_FAMILIES.md
