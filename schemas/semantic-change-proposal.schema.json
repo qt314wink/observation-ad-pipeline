@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/qt314wink/observation-ad-pipeline/schemas/semantic-change-proposal.schema.json",
+  "title": "Observation Semantic Change Proposal",
+  "type": "object",
+  "required": [
+    "proposalId",
+    "familyId",
+    "status",
+    "reason",
+    "evidenceRefs",
+    "compatibility",
+    "previousVersion",
+    "proposedVersion",
+    "previousProtectedDigest",
+    "proposedProtectedDigest",
+    "changedProtectedFields",
+    "downstreamImpacts",
+    "approvalRequired"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "proposalId": {"type": "string", "pattern": "^chg:[a-z0-9._-]+$"},
+    "familyId": {"type": "string", "minLength": 1},
+    "status": {"enum": ["proposed", "approved", "rejected", "superseded"]},
+    "reason": {"type": "string", "minLength": 10},
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "compatibility": {"enum": ["patch-compatible", "minor-compatible", "breaking"]},
+    "previousVersion": {"type": "string", "minLength": 1},
+    "proposedVersion": {"type": "string", "minLength": 1},
+    "previousProtectedDigest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "proposedProtectedDigest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "changedProtectedFields": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "downstreamImpacts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "approvalRequired": {"const": true},
+    "approvedBy": {"type": "string", "minLength": 1},
+    "approvedAt": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "approved"}}},
+      "then": {"required": ["approvedBy", "approvedAt"]}
+    }
+  ]
+}
