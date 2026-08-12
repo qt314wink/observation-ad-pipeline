@@ -1,16 +1,128 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "type":"object","additionalProperties":true,
-  "required":["id","operation","prompt","output"],
-  "properties":{
-    "id":{"type":"string","pattern":"^[a-z0-9][a-z0-9._-]+$"},
-    "operation":{"enum":["generate","prompt","motion_spec","edit","transform","variation","extend"]},
-    "provider":{"enum":["comfyui","manifest_only"]},
-    "reference":{"type":["object","null"],"properties":{"type":{"enum":["image","video","folder"]},"path":{"type":"string"},"glob":{"type":"string"},"role":{"enum":["start_frame","end_frame","identity","style","content","source_video","mask"]}},"required":["type","path","role"]},
-    "contract":{"type":["string","null"]},"workflow":{"type":["string","null"]},
-    "workflow_patches":{"type":"array","items":{"type":"object","required":["node","input","value_from"],"properties":{"node":{"type":"string"},"input":{"type":"string"},"value_from":{"type":"string"}}}},
-    "prompt_budget":{"type":"object","properties":{"positive_chars":{"type":"integer","minimum":300,"maximum":5000},"negative_chars":{"type":"integer","minimum":100,"maximum":3000}}},
-    "prompt":{"type":"object","required":["task","motion","style","avoid"],"properties":{"task":{"type":"string"},"locks":{"type":"array","items":{"type":"string"}},"motion":{"type":"array","items":{"type":"string"},"maxItems":5},"camera":{"type":"array","items":{"type":"string"},"maxItems":3},"event":{"type":"string"},"final_state":{"type":"string"},"style":{"type":"array","items":{"type":"string"},"maxItems":6},"avoid":{"type":"array","items":{"type":"string"},"maxItems":18}}},
-    "parameters":{"type":"object"},"output":{"type":"object","required":["directory"],"properties":{"directory":{"type":"string"},"prefix":{"type":"string"}}}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id", "operation", "prompt", "output"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$"},
+    "operation": {"enum": ["generate", "prompt", "motion_spec", "edit", "transform", "variation", "extend"]},
+    "provider": {"enum": ["comfyui", "manifest_only"]},
+    "reference": {"type": ["object", "null"]},
+    "contract": {"type": ["string", "null"]},
+    "workflow": {"type": ["string", "null"]},
+    "workflow_patches": {"type": "array"},
+    "prompt_budget": {"type": "object"},
+    "prompt": {
+      "type": "object",
+      "required": ["task", "motion", "style", "avoid"],
+      "properties": {
+        "task": {"type": "string"},
+        "locks": {"type": "array", "items": {"type": "string"}},
+        "motion": {"type": "array", "items": {"type": "string"}, "maxItems": 5},
+        "camera": {"type": "array", "items": {"type": "string"}, "maxItems": 3},
+        "event": {"type": "string"},
+        "final_state": {"type": "string"},
+        "style": {"type": "array", "items": {"type": "string"}, "maxItems": 6},
+        "avoid": {"type": "array", "items": {"type": "string"}, "maxItems": 18}
+      }
+    },
+    "parameters": {"type": "object"},
+    "output": {"type": "object", "required": ["directory"], "properties": {"directory": {"type": "string"}, "prefix": {"type": "string"}}},
+    "motion_system": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "topology": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["family", "center_lock"],
+          "properties": {
+            "family": {"enum": ["radial", "concentric", "axial_mirror", "radial_axial_hybrid", "recursive_nested"]},
+            "center_lock": {"type": "boolean"},
+            "symmetry_order": {"type": "integer", "minimum": 2, "maximum": 64},
+            "radial_registration": {"enum": ["strict", "guided", "free"]},
+            "persistent_anchors": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          }
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "region", "operator"],
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "region": {"enum": ["center", "ring", "sector", "axis", "full_field"]},
+              "index": {"type": "integer", "minimum": 0},
+              "operator": {"$ref": "#/$defs/operator"},
+              "phase_offset_beats": {"type": "number", "minimum": 0, "maximum": 16},
+              "intensity": {"$ref": "#/$defs/normalized"}
+            }
+          }
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["primary"],
+          "properties": {
+            "primary": {"$ref": "#/$defs/operator"},
+            "direction": {"enum": ["inward", "outward", "clockwise", "counter_clockwise", "alternating", "stationary"]},
+            "temporal_mode": {"enum": ["continuous", "beat_gated", "bar_gated", "phase_delayed", "alternating", "accumulative_then_resolve", "breath_cycle"]},
+            "scale_start": {"type": "number", "exclusiveMinimum": 0},
+            "scale_end": {"type": "number", "exclusiveMinimum": 0},
+            "morph_depth": {"$ref": "#/$defs/normalized"},
+            "topology_preservation": {"$ref": "#/$defs/normalized"}
+          }
+        },
+        "color": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": {"enum": ["fixed", "chromatic_migration", "complementary_exchange", "spectral_cycle"]},
+            "palette_states": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+            "interpolation": {"enum": ["perceptual", "linear", "stepped"]}
+          }
+        },
+        "audio_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["timing_source"],
+          "properties": {
+            "timing_source": {"enum": ["declared_editorial", "external_markers", "measured_analysis"]},
+            "analysis_artifact": {"type": "string", "minLength": 1},
+            "downbeat_action": {"type": "string"},
+            "transient_action": {"type": "string"},
+            "low_band_action": {"type": "string"},
+            "high_band_action": {"type": "string"}
+          }
+        },
+        "splice": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["strategy"],
+          "properties": {
+            "strategy": {"enum": ["scale_equivalent", "center_shape_match", "palette_bridge", "symmetry_phase_match", "motion_vector_match", "material_anchor_match", "exact_loop_return"]},
+            "outgoing_phase_degrees": {"type": "number", "minimum": -360, "maximum": 360},
+            "preserve_velocity": {"type": "boolean"},
+            "handle_frames": {"type": "integer", "minimum": 0, "maximum": 120},
+            "entry_state": {"type": "object"},
+            "exit_state": {"type": "object"}
+          }
+        },
+        "qa": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_center_drift_percent": {"type": "number", "minimum": 0, "maximum": 100},
+            "symmetry_tolerance_degrees": {"type": "number", "minimum": 0, "maximum": 180},
+            "require_first_last_comparison": {"type": "boolean"}
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "normalized": {"type": "number", "minimum": 0, "maximum": 1},
+    "operator": {"enum": ["recursive_zoom", "ring_replacement", "sector_substitution", "topology_preserving_morph", "material_transmutation", "chromatic_migration", "counter_rotation_alignment", "radial_wave", "symmetry_order_transition", "anchor_orbit", "aperture_revelation"]}
   }
 }
