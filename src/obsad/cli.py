@@ -6,6 +6,8 @@ import click, requests, yaml
 from dotenv import load_dotenv
 import fastjsonschema
 
+from .motion import compare_splice, compile_motion_system, validate_motion_system
+
 load_dotenv()
 ROOT = Path(os.getenv("OBSAD_ROOT", ".")).expanduser().resolve()
 SCHEMAS = ROOT / "schemas"
@@ -54,14 +56,15 @@ def compile_prompt(task: dict[str, Any]) -> dict[str, Any]:
     contract = load_contract(task)
     preservation = contract.get("preservation", {})
     generation = contract.get("generation", {})
+    structured = compile_motion_system(task["motion_system"]) if task.get("motion_system") else {}
 
-    locks = _dedupe(list(preservation.get("locks", [])) + list(p.get("locks", [])))
-    motion = _dedupe(list(generation.get("actions", [])) + list(p.get("motion", [])))[:5]
+    locks = _dedupe(list(structured.get("locks", [])) + list(preservation.get("locks", [])) + list(p.get("locks", [])))
+    motion = _dedupe(list(structured.get("actions", [])) + list(generation.get("actions", [])) + list(p.get("motion", [])))[:5]
     camera = _dedupe(list(generation.get("camera", [])) + list(p.get("camera", [])))[:3]
     style = _dedupe(list(generation.get("style", [])) + list(p.get("style", [])))[:6]
-    avoid = _dedupe(list(preservation.get("prohibited_change", [])) + list(p.get("avoid", [])))[:18]
-    event = p.get("event") or generation.get("event", "")
-    final_state = p.get("final_state") or generation.get("final_state", "")
+    avoid = _dedupe(list(structured.get("negative", [])) + list(preservation.get("prohibited_change", [])) + list(p.get("avoid", [])))[:18]
+    event = p.get("event") or structured.get("event") or generation.get("event", "")
+    final_state = p.get("final_state") or structured.get("final_state") or generation.get("final_state", "")
 
     sections = [p.get("task", "Create the requested visual output.")]
     if locks: sections.append("LOCK: preserve " + ", ".join(locks) + ".")
@@ -79,7 +82,10 @@ def compile_prompt(task: dict[str, Any]) -> dict[str, Any]:
         raise ValueError(f"Compiled positive prompt is {len(positive)} chars; budget is {budget}.")
     if len(negative) > neg_budget:
         raise ValueError(f"Compiled negative prompt is {len(negative)} chars; budget is {neg_budget}.")
-    return {"positive": positive, "negative": negative, "stats": {"positive_chars": len(positive), "negative_chars": len(negative), "locks": len(locks), "actions": len(motion), "styles": len(style)}}
+    compiled = {"positive": positive, "negative": negative, "stats": {"positive_chars": len(positive), "negative_chars": len(negative), "locks": len(locks), "actions": len(motion), "styles": len(style)}}
+    if structured:
+        compiled["motion_manifest"] = structured["manifest"]
+    return compiled
 
 
 def resolve(obj: dict[str, Any], dotted: str) -> Any:
@@ -139,7 +145,7 @@ def healthcheck(url: str) -> tuple[bool, str]:
     except Exception as exc: return False, repr(exc)
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
-@click.version_option("0.2.1")
+@click.version_option("0.3.0")
 def main() -> None:
     """Observation-led image/video ad pipeline."""
 
@@ -161,6 +167,8 @@ def doctor(url: str) -> None:
 def validate_task(taskfile: str) -> None:
     task = read_data(taskfile)
     errors = validate_with("task.schema.json", task)
+    if task.get("motion_system"):
+        errors += validate_motion_system(task["motion_system"])
     if task.get("contract"):
         errors += ["contract " + e for e in validate_with("master-contract.schema.json", load_contract(task))]
     if task.get("operation") in {"edit","transform","variation","extend"} and not task.get("reference"):
@@ -189,6 +197,8 @@ def run_task(taskfile: str, url: str, dry_run: bool) -> None:
     provider = task.get("provider", "comfyui")
     try:
         validation = validate_with("task.schema.json", task)
+        if task.get("motion_system"):
+            validation += validate_motion_system(task["motion_system"])
         if validation: raise ValueError("; ".join(validation))
         refs = reference_files(task)
         if task["operation"] in {"prompt", "motion_spec"} or dry_run:
@@ -226,6 +236,17 @@ def run_task(taskfile: str, url: str, dry_run: bool) -> None:
         status = "error"; error = repr(exc); raise
     finally:
         append_ledger({"run_id": run_id, "timestamp": stamp, "task_id": task.get("id", ""), "operation": task.get("operation", ""), "provider": provider, "workflow_sha256": wfhash, "references": "|".join(map(str, refs)), "positive": compiled["positive"], "negative": compiled["negative"], "outputs": "|".join(outputs), "status": status, "error": error})
+
+@main.command("splice-check")
+@click.argument("exit_state")
+@click.argument("entry_state")
+def splice_check(exit_state: str, entry_state: str) -> None:
+    """Compare declared segment boundary states and emit field-level evidence."""
+    result = compare_splice(read_data(exit_state), read_data(entry_state))
+    click.echo(json.dumps(result, indent=2, ensure_ascii=False))
+    if not result["valid"]:
+        raise click.ClickException("splice states do not match within tolerance")
+
 
 @main.command("new-task")
 @click.argument("operation", type=click.Choice(sorted(VALID_OPERATIONS)))
