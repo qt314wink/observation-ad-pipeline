@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -58,6 +59,51 @@ def _validate_authority_semantics(path: Path, data: dict) -> list[str]:
     return errors
 
 
+def _protected_digest(family: dict, protected_fields: list[str]) -> str:
+    projection = {field: family.get(field) for field in protected_fields}
+    canonical = json.dumps(
+        projection,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(canonical).hexdigest()
+
+
+def _validate_family_binding(path: Path, data: dict) -> list[str]:
+    binding = data.get("familyBinding")
+    if not binding:
+        return []
+
+    prefix = str(path.relative_to(ROOT))
+    family_path = ROOT / binding["path"]
+    if not family_path.is_file():
+        return [f"{prefix}: bound prompt family does not exist: {binding['path']}"]
+
+    family = _load_yaml(family_path)
+    if family.get("id") != binding["id"]:
+        return [
+            f"{prefix}: family id mismatch; provenance binds {binding['id']} "
+            f"but {binding['path']} declares {family.get('id')!r}"
+        ]
+
+    missing = [field for field in binding["protectedFields"] if field not in family]
+    if missing:
+        return [
+            f"{prefix}: protected fields missing from {binding['path']}: "
+            + ", ".join(sorted(missing))
+        ]
+
+    actual = _protected_digest(family, binding["protectedFields"])
+    expected = binding["protectedDigest"]
+    if actual != expected:
+        return [
+            f"{prefix}: protected semantic drift detected for {binding['id']}; "
+            f"expected {expected}, got {actual}. Update provenance/version deliberately before accepting drift."
+        ]
+    return []
+
+
 def validate_prompt_family_provenance() -> list[str]:
     schema = json.loads(PROVENANCE_SCHEMA.read_text(encoding="utf-8"))
     validate = fastjsonschema.compile(schema)
@@ -75,6 +121,7 @@ def validate_prompt_family_provenance() -> list[str]:
             data = _load_yaml(path)
             validate(data)
             errors.extend(_validate_authority_semantics(path, data))
+            errors.extend(_validate_family_binding(path, data))
         except Exception as exc:  # validation boundary intentionally reports all failures
             errors.append(f"{path.relative_to(ROOT)}: {exc}")
     return errors
