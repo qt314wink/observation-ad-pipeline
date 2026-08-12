@@ -10,6 +10,7 @@ from obsad.validate_governance import (
     _find_approved_change,
     _protected_digest,
     _validate_authority_semantics,
+    _validate_downstream_impact,
 )
 
 
@@ -201,6 +202,60 @@ def test_changed_fields_must_be_within_protected_contract():
     assert _find_approved_change(
         "photo.lithomemphis.v1", previous, proposed, ["name", "materials", "palette"], [proposal]
     ) is None
+
+
+def _impact_declaration(digest: str, classification: str = "must-revalidate", receipt_digest: str | None = None):
+    consumer = {
+        "id": "obsad.photo-renderer.lithomemphis",
+        "kind": "renderer",
+        "classification": classification,
+        "target": "src/obsad",
+    }
+    if receipt_digest is not None:
+        consumer["receipt"] = {
+            "validatedProtectedDigest": receipt_digest,
+            "evidenceRef": "tests/test_governance_validation.py",
+        }
+    return {
+        "familyId": "photo.lithomemphis.v1",
+        "sourceProtectedDigest": digest,
+        "consumers": [consumer],
+    }
+
+
+def test_current_lithomemphis_impact_receipts_are_current():
+    digest = "sha256:" + "1" * 64
+    declaration = _impact_declaration(digest, receipt_digest=digest)
+    assert _validate_downstream_impact("photo.lithomemphis.v1", digest, [declaration]) == []
+
+
+def test_missing_must_revalidate_receipt_fails():
+    digest = "sha256:" + "1" * 64
+    declaration = _impact_declaration(digest)
+    errors = _validate_downstream_impact("photo.lithomemphis.v1", digest, [declaration])
+    assert any("requires revalidation but has no receipt" in error for error in errors)
+
+
+def test_stale_revalidation_receipt_fails():
+    digest = "sha256:" + "1" * 64
+    stale = "sha256:" + "2" * 64
+    declaration = _impact_declaration(digest, receipt_digest=stale)
+    errors = _validate_downstream_impact("photo.lithomemphis.v1", digest, [declaration])
+    assert any("stale revalidation receipt" in error for error in errors)
+
+
+def test_compatible_consumer_does_not_require_receipt():
+    digest = "sha256:" + "1" * 64
+    declaration = _impact_declaration(digest, classification="compatible")
+    assert _validate_downstream_impact("photo.lithomemphis.v1", digest, [declaration]) == []
+
+
+def test_unrelated_family_does_not_satisfy_impact_declaration():
+    digest = "sha256:" + "1" * 64
+    declaration = _impact_declaration(digest, receipt_digest=digest)
+    declaration["familyId"] = "photo.other.v1"
+    errors = _validate_downstream_impact("photo.lithomemphis.v1", digest, [declaration])
+    assert any("missing or duplicated" in error for error in errors)
 
 
 def test_wan_required_exclusions_are_security_and_privacy_boundaries():
