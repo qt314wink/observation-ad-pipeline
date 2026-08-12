@@ -7,6 +7,7 @@ import fastjsonschema
 from obsad.validate_governance import (
     REQUIRED_WAN_EXCLUSIONS,
     ROOT,
+    _find_approved_change,
     _protected_digest,
     _validate_authority_semantics,
 )
@@ -137,6 +138,69 @@ def test_unprotected_local_override_does_not_change_protected_digest():
     baseline = _protected_digest(family, fields)
     family["intent"] = ["campaign-local conversion framing"]
     assert _protected_digest(family, fields) == baseline
+
+
+def _approved_change(previous: str, proposed: str, previous_version: str = "v1", proposed_version: str = "v2"):
+    return {
+        "proposalId": "chg:lithomemphis.palette-v2",
+        "familyId": "photo.lithomemphis.v1",
+        "status": "approved",
+        "reason": "Upstream source explicitly changes the protected palette contract.",
+        "evidenceRefs": ["github:example/evidence"],
+        "compatibility": "minor-compatible",
+        "previousVersion": previous_version,
+        "proposedVersion": proposed_version,
+        "previousProtectedDigest": previous,
+        "proposedProtectedDigest": proposed,
+        "changedProtectedFields": ["palette"],
+        "downstreamImpacts": ["Observation photo prompt renderer"],
+        "approvalRequired": True,
+        "approvedBy": "Jennipher",
+        "approvedAt": "2026-08-11T22:50:00-04:00",
+    }
+
+
+def test_only_approved_exact_digest_transition_authorizes_change():
+    previous = "sha256:" + "1" * 64
+    proposed = "sha256:" + "2" * 64
+    proposal = _approved_change(previous, proposed)
+    match = _find_approved_change(
+        "photo.lithomemphis.v1",
+        previous,
+        proposed,
+        ["name", "materials", "palette"],
+        [proposal],
+    )
+    assert match is proposal
+
+
+def test_proposed_change_does_not_authorize_drift():
+    previous = "sha256:" + "1" * 64
+    proposed = "sha256:" + "2" * 64
+    proposal = _approved_change(previous, proposed)
+    proposal["status"] = "proposed"
+    assert _find_approved_change(
+        "photo.lithomemphis.v1", previous, proposed, ["name", "materials", "palette"], [proposal]
+    ) is None
+
+
+def test_change_requires_version_transition():
+    previous = "sha256:" + "1" * 64
+    proposed = "sha256:" + "2" * 64
+    proposal = _approved_change(previous, proposed, previous_version="v1", proposed_version="v1")
+    assert _find_approved_change(
+        "photo.lithomemphis.v1", previous, proposed, ["name", "materials", "palette"], [proposal]
+    ) is None
+
+
+def test_changed_fields_must_be_within_protected_contract():
+    previous = "sha256:" + "1" * 64
+    proposed = "sha256:" + "2" * 64
+    proposal = _approved_change(previous, proposed)
+    proposal["changedProtectedFields"] = ["intent"]
+    assert _find_approved_change(
+        "photo.lithomemphis.v1", previous, proposed, ["name", "materials", "palette"], [proposal]
+    ) is None
 
 
 def test_wan_required_exclusions_are_security_and_privacy_boundaries():
