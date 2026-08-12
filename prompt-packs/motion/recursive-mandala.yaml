@@ -1,0 +1,36 @@
+id: motion.recursive-mandala.v1
+purpose: topology-preserving recursive radial metamorphosis
+defaults:
+  locks: [visual center, declared symmetry order, radial registration, crisp motif boundaries]
+  negative: &critical [center drift, accidental asymmetry, boiling textures, uncontrolled petal multiplication, lateral camera drift, random rotation, boundary tearing, anchor disappearance, terminal freeze, black tail]
+recipes:
+  - id: recursive_portal_descent
+    locks: [visual center, radial topology, material lighting]
+    motion: [continuous recursive zoom, scale-threshold motif revelation]
+    final_state: luminous registered center motif with matched scale velocity
+    negative: *critical
+  - id: delayed_radial_wave
+    locks: [visual center, independently addressable rings]
+    motion: [one displacement wave from center to perimeter, one-eighth-beat ring delay]
+    final_state: all rings settled at original registration
+    negative: *critical
+  - id: alternating_harmonic_alignment
+    locks: [sector contents, symmetry-compatible phase]
+    motion: [odd sectors clockwise, even sectors counter-clockwise, exact downbeat alignment]
+    final_state: one higher-order aligned geometry
+    negative: *critical
+  - id: controlled_symmetry_fracture
+    locks: [center, all unselected sector pairs]
+    motion: [accumulate three mirrored phase offsets, resolve all offsets on bass return]
+    final_state: exact original radial alignment
+    negative: *critical
+  - id: botanical_crystalline_transmutation
+    locks: [petal silhouettes, radial registration]
+    motion: [leaf veins become glass channels then nacre then crystalline lattice]
+    final_state: fully crystalline registered mandala
+    negative: *critical
+  - id: scale_equivalent_infinite_loop
+    locks: [opening topology, symmetry, orientation, palette distribution, center position]
+    motion: [recursive zoom to a geometrically equivalent inner generation]
+    final_state: opening-equivalent frame with matched velocity
+    negative: *critical
