@@ -1,0 +1,12 @@
+{
+  "fixtureId": "motion:mandala-reel-set-2026-08-12",
+  "authority": {"project": "LithoMemphis", "status": "canonical", "commit": "b1bcbcc3199b41b37616bd377a0461e4a6f489bf", "gitBlobSha1": "cb0504a0172fea90985d1ba1aa9476b70e1101ff"},
+  "taxonomy": ["symmetry", "radial-topology", "phase-change", "morphing", "alignment", "frequency-behavior", "splice-points", "musical-synchronization"],
+  "sources": [
+    {"id":"video:mandala:10006","file":"10006.mp4","evidenceStatus":"pending-source-verification"},
+    {"id":"video:mandala:9040","file":"9040.mp4","evidenceStatus":"pending-source-verification"},
+    {"id":"video:mandala:8594","file":"8594.mp4","evidenceStatus":"pending-source-verification"},
+    {"id":"video:mandala:8586","file":"8586.mp4","evidenceStatus":"pending-source-verification"}
+  ]
+}
+

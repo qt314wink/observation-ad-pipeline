@@ -13,6 +13,14 @@ on:
       - 'schemas/downstream-impact.schema.json'
       - 'src/obsad/validate_governance.py'
       - 'tests/test_governance_validation.py'
+      - 'fixtures/motion/**'
+      - 'schemas/motion-analysis.schema.json'
+      - 'src/obsad/validate_motion.py'
+      - 'tests/test_motion_analysis.py'
+      - 'tests/test_review_ui.py'
+      - 'review/**'
+      - '.gitattributes'
+      - 'vercel.json'
       - '.github/workflows/governance-validation.yml'
   push:
     branches: [main]
@@ -49,4 +57,4 @@ jobs:
       - name: Validate provenance, governed evolution, downstream impacts, semantic drift, and Wan boundary
         run: python -m obsad.validate_governance
       - name: Run governance tests
-        run: pytest -q tests/test_governance_validation.py
+        run: pytest -q tests/test_governance_validation.py tests/test_motion_analysis.py tests/test_review_ui.py

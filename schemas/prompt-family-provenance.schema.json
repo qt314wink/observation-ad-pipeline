@@ -25,7 +25,7 @@
     },
     "sourceHash": {
       "type": "string",
-      "pattern": "^(sha256:[a-f0-9]{64}|unresolved)$"
+      "pattern": "^(sha256:[a-f0-9]{64}|git-blob-sha1:[a-f0-9]{40}|unresolved)$"
     },
     "familyBinding": {
       "type": "object",

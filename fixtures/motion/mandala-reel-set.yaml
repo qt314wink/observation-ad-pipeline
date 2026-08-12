@@ -1,0 +1,33 @@
+schemaVersion: 1.0.0
+fixtureId: motion:mandala-reel-set-2026-08-12
+title: Mandala Reel Set — governed source intake
+storage:
+  strategy: git-lfs
+  trackingRule: input/videos/*.mp4
+taxonomy:
+  - symmetry
+  - radial-topology
+  - phase-change
+  - morphing
+  - alignment
+  - frequency-behavior
+  - splice-points
+  - musical-synchronization
+sources:
+  - id: video:mandala:10006
+    path: input/videos/10006.mp4
+    evidenceStatus: pending-source-verification
+    requiredNextAction: Hydrate the Git LFS object, derive technical metadata and frames, then record evidence-bound observations.
+  - id: video:mandala:9040
+    path: input/videos/9040.mp4
+    evidenceStatus: pending-source-verification
+    requiredNextAction: Hydrate the Git LFS object, derive technical metadata and frames, then record evidence-bound observations.
+  - id: video:mandala:8594
+    path: input/videos/8594.mp4
+    evidenceStatus: pending-source-verification
+    requiredNextAction: Hydrate the Git LFS object, derive technical metadata and frames, then record evidence-bound observations.
+  - id: video:mandala:8586
+    path: input/videos/8586.mp4
+    evidenceStatus: pending-source-verification
+    requiredNextAction: Hydrate the Git LFS object, derive technical metadata and frames, then record evidence-bound observations.
+
