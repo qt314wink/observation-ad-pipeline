@@ -1,0 +1,8 @@
+id: fixture.mandala-videos.v1
+source_status: user_supplied_external
+inspection_method: ffprobe_metadata_and_one_frame_per_second_contact_sheets
+sources:
+  - {id: "10006", filename: 10006.mp4, duration_seconds: 16.0, width: 960, height: 960, fps: 24, binary_committed: false, hash_status: pending_governed_ingestion}
+  - {id: "8586", filename: 8586.mp4, duration_seconds: 10.041667, width: 640, height: 1408, fps: 24, binary_committed: false, hash_status: pending_governed_ingestion}
+  - {id: "8594", filename: 8594.mp4, duration_seconds: 10.041667, width: 640, height: 1408, fps: 24, binary_committed: false, hash_status: pending_governed_ingestion}
+  - {id: "9040", filename: 9040.mp4, duration_seconds: 10.041667, width: 640, height: 1408, fps: 24, binary_committed: false, hash_status: pending_governed_ingestion}
