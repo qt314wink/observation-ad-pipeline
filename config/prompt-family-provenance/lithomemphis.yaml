@@ -1,0 +1,15 @@
+canonicalSource:
+  project: LithoMemphis
+  locator: unresolved-canonical-repository
+  authorityStatus: unresolved
+derivationType: bounded-adaptation
+sourceVersion: unresolved
+sourceHash: unresolved
+allowedLocalOverrides:
+  - ad-specific intent phrasing
+  - campaign-local camera guidance
+  - engine-specific negative constraints
+forbiddenLocalMutations:
+  - canonical LithoMemphis visual-language definition
+  - upstream semantic token meanings
+  - upstream project ownership or naming
