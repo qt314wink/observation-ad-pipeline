@@ -1,0 +1,28 @@
+id: recursive-mandala-motion-01
+operation: motion_spec
+provider: manifest_only
+reference: null
+contract: null
+workflow: null
+prompt_budget: {positive_chars: 2200, negative_chars: 1200}
+prompt:
+  task: Create a seamless recursive mandala segment for rhythm-led vertical video.
+  locks: [crisp motif boundaries]
+  motion: []
+  camera: [fixed optical axis]
+  event: ""
+  final_state: ""
+  style: [nacre tessellation, colored glass, botanical filigree]
+  avoid: [generated text]
+motion_system:
+  topology: {family: recursive_nested, center_lock: true, symmetry_order: 8, radial_registration: strict}
+  layers:
+    - {id: core, region: center, operator: aperture_revelation}
+    - {id: ring-01, region: ring, index: 1, operator: radial_wave, phase_offset_beats: 0.125}
+  transform: {primary: recursive_zoom, direction: inward, temporal_mode: phase_delayed, scale_start: 1.0, scale_end: 4.0, morph_depth: 0.65, topology_preservation: 0.95}
+  color: {mode: chromatic_migration, palette_states: [violet-cyan, emerald-gold], interpolation: perceptual}
+  audio_binding: {timing_source: external_markers, downbeat_action: exact radial alignment, transient_action: restrained light pulse, low_band_action: radial expansion, high_band_action: texture shimmer}
+  splice: {strategy: scale_equivalent, outgoing_phase_degrees: 0, preserve_velocity: true, handle_frames: 12}
+  qa: {max_center_drift_percent: 1.0, symmetry_tolerance_degrees: 0.5, require_first_last_comparison: true}
+parameters: {seed: 314159}
+output: {directory: output/recursive-mandala-motion-01, prefix: recursive-mandala-motion-01}
