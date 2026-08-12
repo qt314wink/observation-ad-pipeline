@@ -28,6 +28,36 @@ def _load_yaml(path: Path) -> dict:
     return data
 
 
+def _validate_authority_semantics(path: Path, data: dict) -> list[str]:
+    errors: list[str] = []
+    source = data.get("canonicalSource") or {}
+    status = source.get("authorityStatus")
+    locator = source.get("locator")
+    version = data.get("sourceVersion")
+    source_hash = data.get("sourceHash")
+    prefix = str(path.relative_to(ROOT))
+
+    if status == "unresolved":
+        if locator != "unresolved-canonical-repository":
+            errors.append(f"{prefix}: unresolved authority must use unresolved-canonical-repository locator")
+        if version != "unresolved":
+            errors.append(f"{prefix}: unresolved authority must keep sourceVersion unresolved")
+        if source_hash != "unresolved":
+            errors.append(f"{prefix}: unresolved authority must keep sourceHash unresolved")
+        return errors
+
+    if status in {"provisional", "canonical"}:
+        if not isinstance(locator, str) or "@" not in locator:
+            errors.append(f"{prefix}: {status} authority must use an immutable locator containing '@<ref>'")
+        if not isinstance(version, str) or not version.startswith("git:") or len(version) != 44:
+            errors.append(f"{prefix}: {status} authority must pin sourceVersion as git:<40-char-sha>")
+
+    if status == "canonical" and source_hash == "unresolved":
+        errors.append(f"{prefix}: canonical authority requires a resolved sourceHash")
+
+    return errors
+
+
 def validate_prompt_family_provenance() -> list[str]:
     schema = json.loads(PROVENANCE_SCHEMA.read_text(encoding="utf-8"))
     validate = fastjsonschema.compile(schema)
@@ -44,6 +74,7 @@ def validate_prompt_family_provenance() -> list[str]:
         try:
             data = _load_yaml(path)
             validate(data)
+            errors.extend(_validate_authority_semantics(path, data))
         except Exception as exc:  # validation boundary intentionally reports all failures
             errors.append(f"{path.relative_to(ROOT)}: {exc}")
     return errors
