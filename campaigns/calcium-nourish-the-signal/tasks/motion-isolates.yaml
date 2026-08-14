@@ -83,7 +83,7 @@ isolates:
   name: final_settle
   start_keyframe: K08
   end_keyframe: K08
-  duration_seconds: 3.0
+  duration_seconds: 1.0
   motion_verb: settle
   workflow: ../workflows/wan-staged-api.json
   seed: 271828
