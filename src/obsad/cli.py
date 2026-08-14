@@ -159,10 +159,11 @@ def campaign_validate(directory: Path) -> None:
 @click.argument("directory", type=click.Path(path_type=Path))
 @click.option("--provider", type=click.Choice(["openai", "xai", "comfyui", "wan"]), required=True)
 @click.option("--model", help="Execution-time model override; otherwise the configured environment variable is used.")
+@click.option("--task-id", help="Keyframe task ID (for example K01) to compile into the payload.")
 @click.option("--out", type=click.Path(path_type=Path))
-def campaign_compile(directory: Path, provider: str, model: str | None, out: Path | None) -> None:
+def campaign_compile(directory: Path, provider: str, model: str | None, task_id: str | None, out: Path | None) -> None:
     """Compile the shared semantic contract through one provider adapter."""
-    payload = compile_provider(directory.resolve(), provider, model=model)
+    payload = compile_provider(directory.resolve(), provider, model=model, task_id=task_id)
     rendered = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
     if out:
         out.parent.mkdir(parents=True, exist_ok=True)
