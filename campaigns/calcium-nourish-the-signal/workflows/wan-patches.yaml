@@ -1,0 +1,9 @@
+workflow: wan-staged-api.json
+execution_status: template_only_requires_compatible_installed_wan_nodes
+patches:
+  - {node: '1', input: ckpt_name, value_from: model}
+  - {node: '2', input: text, value_from: sections.positive}
+  - {node: '3', input: text, value_from: sections.negative}
+  - {node: '4', input: image, value_from: reference.start_frame}
+  - {node: '5', input: seed, value_from: seed}
+required_receipt_fields: [run_id, workflow_sha256, model, checkpoint, vae, encoder, lora, licenses, seed, sampler, reference_sha256, prompt_values, node_patches, output_sha256]

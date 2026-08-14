@@ -1,0 +1,10 @@
+schema_version: '1.0'
+campaign_id: calcium-nourish-the-signal
+runtime_audit:
+  checked_at: '2026-08-12'
+  credentials_detected: false
+  comfyui_runtime_detected: false
+generation_attempts: []
+selected_candidates: []
+rejected_candidates: []
+notes: No generation was attempted; provider credentials and a compatible ComfyUI/Wan runtime were not available. Planned records are not candidates.

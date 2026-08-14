@@ -1,0 +1,8 @@
+{
+  "1": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": "${OBSAD_WAN_MODEL}"}},
+  "2": {"class_type": "CLIPTextEncode", "inputs": {"text": "${compiled.positive}", "clip": ["1", 1]}},
+  "3": {"class_type": "CLIPTextEncode", "inputs": {"text": "${compiled.negative}", "clip": ["1", 1]}},
+  "4": {"class_type": "LoadImage", "inputs": {"image": "${reference.start_frame}"}},
+  "5": {"class_type": "KSampler", "inputs": {"seed": 0, "steps": 24, "cfg": 5.5, "sampler_name": "euler", "scheduler": "normal", "positive": ["2", 0], "negative": ["3", 0], "model": ["1", 0]}},
+  "6": {"class_type": "SaveAnimatedWEBP", "inputs": {"filename_prefix": "nourish/isolate", "fps": 24}}
+}

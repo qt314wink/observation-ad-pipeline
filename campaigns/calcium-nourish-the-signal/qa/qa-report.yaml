@@ -1,0 +1,19 @@
+schema_version: '1.0'
+campaign_id: calcium-nourish-the-signal
+status: readiness_pass_generation_not_run
+score_status: not_scored_without_candidate
+weights: {concept_fidelity: 20, motion_coherence: 15, visual_continuity: 15, human_credibility: 10, technical_integrity: 10, platform_fitness: 10, healthcare_safety: 10, originality: 5, typography_readiness: 5}
+blocking_dimensions: [healthcare_safety, technical_integrity]
+gates:
+  G0: pass
+  G1: pass
+  G2: pass
+  G3: pass
+  G4: pass
+  G5: blocked_runtime_model_resolution
+  G6: pass_template_structure
+  G7: blocked_no_execution
+  G8: blocked_no_candidate
+  G9: pass_planning_archive
+candidate_checks: [message_fidelity, anatomical_plausibility, no_unsupported_health_claim, subject_continuity, palette_continuity, lighting_continuity, movement_coherence, transformation_causality, duration, dimensions, platform_safe_zones, typography_safe_negative_space, no_black_tail, no_generated_text, no_prohibited_ai_cliches]
+pass_rule: score >= 80 and healthcare_safety == pass and technical_integrity == pass

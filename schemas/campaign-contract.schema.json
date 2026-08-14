@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OBSAD campaign creative contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["campaign_id", "campaign_name", "client_context", "application_context", "objective", "thesis", "audience", "channel_targets", "story_progression", "visual_invariants", "motion_invariants", "camera_invariants", "color_tokens", "material_tokens", "typography_contract", "negative_constraints", "healthcare_claim_constraints", "provider_targets", "platform_targets", "qa_requirements", "provenance"],
+  "properties": {
+    "campaign_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
+    "campaign_name": {"type": "string", "minLength": 1},
+    "client_context": {"type": "string", "minLength": 1},
+    "application_context": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "thesis": {"type": "string", "minLength": 1},
+    "audience": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "channel_targets": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "story_progression": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+    "visual_invariants": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "motion_invariants": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "camera_invariants": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+    "color_tokens": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "material_tokens": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "typography_contract": {"type": "object", "required": ["mode", "copy", "safe_zones"], "properties": {"mode": {"const": "deterministic_post"}, "copy": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "safe_zones": {"type": "object"}}},
+    "negative_constraints": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "healthcare_claim_constraints": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "provider_targets": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "object", "required": ["model_env", "mode"], "properties": {"model_env": {"type": "string"}, "mode": {"type": "string"}, "notes": {"type": "string"}}}},
+    "platform_targets": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "width", "height", "duration_seconds", "derives_from"], "properties": {"id": {"type": "string"}, "width": {"type": "integer", "minimum": 1}, "height": {"type": "integer", "minimum": 1}, "duration_seconds": {"type": "number", "minimum": 0}, "derives_from": {"type": "string"}}}},
+    "qa_requirements": {"type": "object", "required": ["weights", "blocking_dimensions", "minimum_score"], "properties": {"weights": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "integer", "minimum": 1}}, "blocking_dimensions": {"type": "array", "items": {"type": "string"}}, "minimum_score": {"type": "integer", "minimum": 0, "maximum": 100}}},
+    "provenance": {"type": "object", "required": ["source", "created_at", "contract_version"], "properties": {"source": {"type": "string"}, "created_at": {"type": "string"}, "contract_version": {"type": "string"}}}
+  }
+}
