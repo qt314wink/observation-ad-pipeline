@@ -9,6 +9,9 @@ from typing import Any
 import fastjsonschema
 import yaml
 
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_SCHEMA_PATH = ROOT / "schemas" / "motion-program.schema.json"
+
 SUPPORTED_PROVIDERS = {"generic", "xai", "wan", "comfyui"}
 SECTION_ORDER = (
     "SUBJECT",
@@ -46,7 +49,7 @@ def _region_map(program: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {region["id"]: region for region in program["structure"]["regions"]}
 
 
-def validate_motion_program(program: dict[str, Any], schema_path: Path) -> list[str]:
+def validate_motion_program(program: dict[str, Any], schema_path: Path = DEFAULT_SCHEMA_PATH) -> list[str]:
     try:
         fastjsonschema.compile(load(schema_path))(program)
     except fastjsonschema.JsonSchemaException as exc:
@@ -58,6 +61,13 @@ def validate_motion_program(program: dict[str, Any], schema_path: Path) -> list[
     if len(region_ids) != len(set(region_ids)):
         errors.append("structure.regions ids must be unique")
 
+    for region in regions:
+        radius = region.get("radius")
+        if radius is not None and radius[0] > radius[1]:
+            errors.append(
+                f"structure.regions.{region['id']}.radius must be ordered inner<=outer; got {radius}"
+            )
+
     scene_ids = [scene["id"] for scene in program["scenes"]]
     if len(scene_ids) != len(set(scene_ids)):
         errors.append("scenes ids must be unique")
@@ -66,11 +76,10 @@ def validate_motion_program(program: dict[str, Any], schema_path: Path) -> list[
     if declared_order and declared_order != scene_ids:
         errors.append("temporal.scene_order must exactly match scenes order")
 
-    known_targets = set(region_ids) | set(program["materials"]) | {
-        "all_movable_regions",
-        "paper_microtexture",
-        "micro_patterns",
-    }
+    # Only declared regions/materials plus derivable symbolic targets are valid.
+    # Microtexture/micro-pattern masks must be explicitly declared rather than
+    # silently receiving provider binding authority.
+    known_targets = set(region_ids) | set(program["materials"]) | {"all_movable_regions"}
     region_by_id = _region_map(program)
     for scene in program["scenes"]:
         for channel in scene["channels"]:
@@ -121,8 +130,8 @@ def _fmt_motion(program: dict[str, Any]) -> str:
 
 def _fmt_materials(program: dict[str, Any]) -> str:
     return "; ".join(
-        f"{name}: {spec['description']} / response={spec['response']}"
-        for name, spec in program["materials"].items()
+        f"{name}: {program['materials'][name]['description']} / response={program['materials'][name]['response']}"
+        for name in sorted(program["materials"])
     )
 
 
@@ -145,6 +154,10 @@ def compile_motion_program(program: dict[str, Any], provider: str = "generic") -
     if provider not in SUPPORTED_PROVIDERS:
         raise ValueError(f"unsupported provider {provider!r}; expected one of {sorted(SUPPORTED_PROVIDERS)}")
 
+    validation_errors = validate_motion_program(program)
+    if validation_errors:
+        raise ValueError("invalid motion program: " + "; ".join(validation_errors))
+
     sections = [
         {"name": "SUBJECT", "text": f"{program['semantic']['subject']}. Intent: {program['semantic']['intent']}. Perceptual goal: {', '.join(program['semantic']['perceptual_goal'])}."},
         {"name": "STRUCTURE", "text": _fmt_structure(program)},
@@ -159,18 +172,22 @@ def compile_motion_program(program: dict[str, Any], provider: str = "generic") -
     joiner = PROVIDER_JOINERS[provider]
     positive = joiner.join(section["text"] for section in sections)
     negative_terms = list(program["preservation"]["prohibited"])
-    for values in program["constraints"]["failure_classes"].values():
-        negative_terms.extend(values)
+    for key in sorted(program["constraints"]["failure_classes"]):
+        negative_terms.extend(program["constraints"]["failure_classes"][key])
     negative = joiner.join(dict.fromkeys(negative_terms))
 
-    controls = {
+    # Deep-copy the entire structured control snapshot. Compiled payloads must
+    # remain immutable even if the caller mutates the source program for a
+    # later calibration experiment.
+    controls = copy.deepcopy({
         "structure": program["structure"],
+        "materials": program["materials"],
         "scenes": program["scenes"],
         "lighting": program["lighting"],
         "camera": program["camera"],
         "temporal": program["temporal"],
         "constraints": program["constraints"],
-    }
+    })
 
     payload: dict[str, Any] = {
         "motion_program_id": program["id"],
@@ -188,7 +205,7 @@ def compile_motion_program(program: dict[str, Any], provider: str = "generic") -
                 "scene_id": scene["id"],
                 "grammar": scene["grammar"],
                 "duration_s": scene["duration_s"],
-                "channels": scene["channels"],
+                "channels": copy.deepcopy(scene["channels"]),
                 "execution_status": "requires_provider_workflow_binding",
             }
             for scene in program["scenes"]
@@ -207,7 +224,29 @@ def compile_motion_program(program: dict[str, Any], provider: str = "generic") -
     return payload
 
 
+def get_dotted(value: dict[str, Any], dotted: str) -> Any:
+    current: Any = value
+    for part in dotted.split("."):
+        if isinstance(current, list):
+            try:
+                index = int(part)
+            except ValueError as exc:
+                raise KeyError(f"list segment {part!r} is not an integer index") from exc
+            if index < 0 or index >= len(current):
+                raise KeyError(f"list index {index} out of range")
+            current = current[index]
+        elif isinstance(current, dict):
+            if part not in current:
+                raise KeyError(f"mapping key {part!r} does not exist")
+            current = current[part]
+        else:
+            raise KeyError(f"cannot descend through scalar at segment {part!r}")
+    return current
+
+
 def set_dotted(value: dict[str, Any], dotted: str, replacement: Any) -> None:
+    # Resolve first so a typo can never create a new permissive mapping key.
+    get_dotted(value, dotted)
     current: Any = value
     parts = dotted.split(".")
     for part in parts[:-1]:
@@ -219,17 +258,34 @@ def set_dotted(value: dict[str, Any], dotted: str, replacement: Any) -> None:
         current[leaf] = replacement
 
 
-def build_experiment_variants(program: dict[str, Any]) -> list[dict[str, Any]]:
+def build_experiment_variants(
+    program: dict[str, Any],
+    schema_path: Path = DEFAULT_SCHEMA_PATH,
+) -> list[dict[str, Any]]:
     calibration = program.get("calibration", {})
     variants: list[dict[str, Any]] = []
     for experiment in calibration.get("experiments", []):
+        parameter = experiment["parameter"]
+        try:
+            get_dotted(program, parameter)
+        except (KeyError, IndexError, TypeError, ValueError) as exc:
+            raise ValueError(
+                f"{experiment['id']}: experiment parameter {parameter!r} does not resolve: {exc}"
+            ) from exc
+
         for candidate in experiment["values"]:
             mutated = copy.deepcopy(program)
-            set_dotted(mutated, experiment["parameter"], candidate)
+            set_dotted(mutated, parameter, candidate)
+            errors = validate_motion_program(mutated, schema_path)
+            if errors:
+                raise ValueError(
+                    f"{experiment['id']}: candidate {candidate!r} for {parameter!r} produces an invalid motion program: "
+                    + "; ".join(errors)
+                )
             variants.append(
                 {
                     "experiment_id": experiment["id"],
-                    "parameter": experiment["parameter"],
+                    "parameter": parameter,
                     "value": candidate,
                     "prediction": experiment["prediction"],
                     "program": mutated,
