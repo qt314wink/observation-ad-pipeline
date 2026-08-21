@@ -6,8 +6,9 @@ on:
       - 'schemas/motion-program.schema.json'
       - 'src/obsad/motion_program.py'
       - 'examples/motion-programs/**'
+      - 'config/motion-program-semantics-authority.yaml'
       - 'docs/MOTION_PROGRAM.md'
-      - 'tests/test_motion_program.py'
+      - 'tests/test_motion_*.py'
       - '.github/workflows/motion-program-validation.yml'
   push:
     branches: [main]
@@ -15,8 +16,9 @@ on:
       - 'schemas/motion-program.schema.json'
       - 'src/obsad/motion_program.py'
       - 'examples/motion-programs/**'
+      - 'config/motion-program-semantics-authority.yaml'
       - 'docs/MOTION_PROGRAM.md'
-      - 'tests/test_motion_program.py'
+      - 'tests/test_motion_*.py'
       - '.github/workflows/motion-program-validation.yml'
 
 permissions:
@@ -35,4 +37,4 @@ jobs:
       - name: Install package
         run: python -m pip install -e .
       - name: Run focused Motion Program tests
-        run: python -m unittest discover -s tests -p 'test_motion_program.py' -v
+        run: python -m unittest discover -s tests -p 'test_motion_*.py' -v
