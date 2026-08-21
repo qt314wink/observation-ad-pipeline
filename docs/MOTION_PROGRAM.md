@@ -14,6 +14,12 @@ Compiler order:
 
 The prompt is a compiled view, not the parameter store. Numeric controls remain available in `controls`; Wan/ComfyUI payloads are explicitly marked `requires_provider_workflow_binding` until a concrete installed workflow maps them to nodes.
 
+## Semantic authority
+
+Motion Program consumes, but does not own, the meaning of the generative motion vocabulary. `config/motion-program-semantics-authority.yaml` pins the current provisional Motion Oracle authority to an immutable Melodyfire commit and states which fields are upstream-owned versus local OBSAD authority.
+
+Motion Oracle owns topology/grammar identifiers, material-response meanings, modifier/easing profiles, and the failure taxonomy. OBSAD owns the Motion Program contract, evidence/preservation records, deterministic compilation, calibration programs, and experiment receipts. The authority pin must be advanced and revalidated after the upstream Motion Oracle PR merges; provider behavior is never allowed to silently redefine the semantic layer.
+
 ## Motion grammar
 
 The first grammar set is intentionally topology-based rather than aesthetic:
@@ -42,10 +48,10 @@ The included experiments use one-factor sweeps for fold strength, sector phase o
 Run:
 
 ```bash
-PYTHONPATH=src python -m unittest discover -s tests -p 'test_motion_program.py' -v
+PYTHONPATH=src python -m unittest discover -s tests -p 'test_motion_*.py' -v
 ```
 
-The tests assert deterministic compilation, target locality, loop closure, explicit global-spin prohibition, graph-control retention, and one-factor experiment isolation.
+The tests assert deterministic compilation, target locality, loop closure, explicit global-spin prohibition, graph-control retention, one-factor experiment isolation, and an immutable cross-repo semantic-authority boundary.
 
 ## Boundary with existing OBSAD work
 
