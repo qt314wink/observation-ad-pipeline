@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/qt314wink/observation-ad-pipeline/schemas/motion-primitive-candidate.schema.json",
+  "title": "Motion Primitive Candidate",
+  "type": "object",
+  "required": ["schemaVersion", "primitiveId", "name", "status", "sourceReference", "states", "requiredCues", "antiPatterns", "evidenceRefs", "directorControlRefs", "promotionGate"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "primitiveId": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "status": {"enum": ["candidate", "approved", "rejected"]},
+    "sourceReference": {"type": "string", "pattern": "^video:reference:"},
+    "states": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+    "requiredCues": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "optionalCues": {"type": "array", "items": {"type": "string"}},
+    "antiPatterns": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "evidenceRefs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "directorControlRefs": {"type": "array", "items": {"type": "string"}},
+    "motionOracleDestination": {"type": "string"},
+    "promotionGate": {
+      "type": "object",
+      "required": ["status", "reason"],
+      "properties": {
+        "status": {"enum": ["blocked", "approved", "rejected"]},
+        "reason": {"type": "string", "minLength": 1},
+        "approval": {"type": "object"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
