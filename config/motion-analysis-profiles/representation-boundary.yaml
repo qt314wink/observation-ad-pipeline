@@ -1,0 +1,82 @@
+schemaVersion: '1.0.0'
+profileId: representation-boundary.v1
+title: Representation Boundary — dimensional emergence and shared-space proof
+purpose: >-
+  Analyze references in which an image, page, screen, drawing, diagram, package,
+  or other representational surface becomes spatially consequential while the
+  original source boundary remains visually meaningful.
+questions:
+  sourcePlanePersistence:
+    prompt: Does the original page/image/surface remain readable while depth emerges?
+    whyItMatters: Without a retained source plane, the event can read as a generic morph instead of a boundary breach.
+  activationCue:
+    prompt: What gives the viewer the first reason to suspect the representation is becoming active?
+    whyItMatters: The threshold needs a readable cause or cue before the impossible event escalates.
+  dimensionalization:
+    prompt: What changes first from flat representation toward relief or volume?
+    whyItMatters: Localized depth often feels more causal and controllable than a whole-frame transformation.
+  boundaryCrossing:
+    prompt: Which part crosses the original frame, page, margin, gutter, or surface first?
+    whyItMatters: Crossing is the strongest visual proof that the representation and surrounding world now share space.
+  materialContinuity:
+    prompt: Which appearance, material, texture, construction, and silhouette traits survive the transition?
+    whyItMatters: The emerging subject should feel like the same thing becoming spatial, not a replacement asset appearing nearby.
+  movementQuality:
+    prompt: How does it move — bound/free, sudden/sustained, direct/indirect, segmented/continuous, soft/stiff?
+    whyItMatters: Motion quality carries character and material believability independently of path.
+  mannerism:
+    prompt: How is that quality performed — lead/lag, stagger, catch/release, lock, ripple, asymmetry, settle?
+    whyItMatters: This is often the difference between copying geometry and reproducing the movement's character.
+  occlusionContact:
+    prompt: What overlaps, touches, shadows, blocks, receives, or is displaced by the emergent subject?
+    whyItMatters: Shared occlusion/contact is strong evidence that two previously separate spatial systems now interact.
+  environmentSpill:
+    prompt: What leaves the representation and affects the room — particles, water, light, smoke, shadow, sound?
+    whyItMatters: Spill extends the event beyond the source object and can make the impossible state feel materially consequential.
+  witnessInteraction:
+    prompt: Does a hand/person/real-world object cross, touch, receive, illuminate, or cast a shadow on the impossible content?
+    whyItMatters: A familiar physical witness supplies scale, occlusion, and credibility.
+  cameraResponse:
+    prompt: Does the camera remain observational, push in, pan, pull back, or otherwise react to the event?
+    whyItMatters: Camera behavior can either clarify the mechanism or hide weaknesses behind spectacle.
+  closureReversibility:
+    prompt: Can the impossible state resolve back into the source object without breaking identity or continuity?
+    whyItMatters: A reversible mechanism is easier to treat as a reusable state model rather than a one-way effect.
+subjectStateStory:
+  phases: [before-emergence, threshold, emerging, newly-spatial, aftermath]
+  requiredFacets:
+    - appearance
+    - material
+    - texture
+    - construction
+    - composition
+    - behavior
+    - characteristics
+    - movementQuality
+movementVocabulary:
+  mechanics:
+    - hinge
+    - crease
+    - bend
+    - curl
+    - wrap
+    - twist
+    - slide
+    - shuffle
+    - stack-separate
+    - interlock-link
+    - tessellate
+    - extrude
+    - inflate
+    - morph
+    - unknown
+  manner:
+    coordination: [simultaneous, sequential, overlapping, counterphase, leader-follower, cascading, unknown]
+    cadence: [continuous, staggered, alternating, step-hold-release, pulse-pause, accelerating, decelerating, irregular, unknown]
+    transitions: [snap, ease, catch, drag, rebound, overshoot, settle, lock, release, unknown]
+paperFoldBoundary:
+  allowedClassifications: [paper-textured-3d, paper-constructed, origami-like, fold-constrained, true-origami-verified, unknown]
+  rule: true-origami-verified requires human-verified structural evidence; paper texture alone is insufficient.
+humanReadability:
+  rule: Every technical record should expose a director phrase or plain-language question explaining what a human would see or change.
+  defaultProofChain: reference -> subject state story -> scene evidence -> movement quality -> manner -> interpretation -> director control -> controlled test
