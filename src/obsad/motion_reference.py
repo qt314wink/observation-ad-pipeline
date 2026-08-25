@@ -64,11 +64,13 @@ def validate_motion_reference(path: Path, root: Path) -> list[str]:
     interpretations = data.get("interpretations", [])
     controls = data.get("directorControls", [])
     candidates = data.get("candidatePrimitives", [])
+    subjects = data.get("subjectContinuity", [])
 
     id_groups = {
         "observation": [item["id"] for item in observations],
         "scene": [item["id"] for item in scenes],
         "movement event": [item["id"] for item in events],
+        "subject continuity": [item["id"] for item in subjects],
         "interpretation": [item["id"] for item in interpretations],
         "director control": [item["id"] for item in controls],
         "candidate primitive": [item["id"] for item in candidates],
@@ -90,6 +92,14 @@ def validate_motion_reference(path: Path, root: Path) -> list[str]:
         for field in sorted(MEASURED_FIELDS):
             if field in source:
                 errors.append(f"unmeasured source cannot claim measured field {field}")
+
+    for subject in subjects:
+        if subject.get("sceneRef") not in scene_ids:
+            errors.append(f"{subject['id']}: unknown scene {subject.get('sceneRef')}")
+        state_ids = [state["id"] for state in subject.get("states", [])]
+        duplicate_states = _duplicates(state_ids)
+        if duplicate_states:
+            errors.append(f"{subject['id']}: duplicate subject state ids: {duplicate_states}")
 
     for observation in observations:
         scene_ref = observation.get("sceneRef")
@@ -162,11 +172,12 @@ def build_review_payload(data: dict[str, Any]) -> dict[str, Any]:
         "point": guide.get("point", "Recover how the motion works, not just what it resembles."),
         "proofChain": guide.get(
             "proofChain",
-            ["reference", "scenes", "observations", "movement quality", "manner", "hypothesis", "director controls", "test"],
+            ["reference", "subject states", "scenes", "observations", "movement quality", "manner", "hypothesis", "director controls", "test"],
         ),
         "analysisRuns": data.get("analysisRuns", []),
         "directorVocabulary": data.get("directorVocabulary", []),
         "paperFoldEvidence": data.get("paperFoldEvidence", {}),
+        "subjectContinuity": data.get("subjectContinuity", []),
         "scenes": data.get("scenes", []),
         "observations": data.get("observations", []),
         "interpretations": data.get("interpretations", []),
