@@ -9,6 +9,7 @@
     "source",
     "analysisRuns",
     "directorVocabulary",
+    "subjectContinuity",
     "scenes",
     "observations",
     "interpretations",
@@ -85,9 +86,14 @@
           "enum": ["paper-textured-3d", "paper-constructed", "origami-like", "fold-constrained", "true-origami-verified", "unknown"]
         },
         "structuralEvidenceRefs": {"type": "array", "items": {"type": "string"}},
-        "notes": {"type": "string"}
+        "notes": {"type": "string"},
+        "provenance": {"$ref": "#/$defs/provenance"}
       },
       "additionalProperties": true
+    },
+    "subjectContinuity": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/subjectContinuity"}
     },
     "scenes": {
       "type": "array",
@@ -134,6 +140,56 @@
       "properties": {
         "kind": {"enum": ["source-derived", "model-derived-observation", "director-provided", "derived-measurement", "interpretation"]},
         "sourceRef": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "subjectContinuity": {
+      "type": "object",
+      "required": ["id", "label", "sceneRef", "role", "states", "continuityQuestions", "unknowns"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^SUBJ\\."},
+        "label": {"type": "string", "minLength": 1},
+        "sceneRef": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "states": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/subjectState"}
+        },
+        "continuityQuestions": {"type": "array", "items": {"type": "string"}},
+        "unknowns": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "subjectState": {
+      "type": "object",
+      "required": [
+        "id", "phase", "appearance", "material", "texture", "construction", "composition",
+        "behavior", "characteristics", "movementQuality", "provenance", "verificationStatus"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "phase": {"enum": ["before-emergence", "threshold", "emerging", "newly-spatial", "aftermath", "other"]},
+        "appearance": {
+          "type": "object",
+          "required": ["summary"],
+          "properties": {"summary": {"type": "string", "minLength": 1}},
+          "additionalProperties": true
+        },
+        "material": {"type": "object", "additionalProperties": true},
+        "texture": {"type": "object", "additionalProperties": true},
+        "construction": {"type": "object", "additionalProperties": true},
+        "composition": {
+          "type": "object",
+          "required": ["relationshipToSourcePlane"],
+          "properties": {"relationshipToSourcePlane": {"type": "string", "minLength": 1}},
+          "additionalProperties": true
+        },
+        "behavior": {"type": "object", "additionalProperties": true},
+        "characteristics": {"type": "object", "additionalProperties": true},
+        "movementQuality": {"type": "object", "additionalProperties": true},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "verificationStatus": {"$ref": "#/$defs/verificationStatus"}
       },
       "additionalProperties": true
     },
