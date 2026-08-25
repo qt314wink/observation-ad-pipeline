@@ -82,5 +82,10 @@ jobs:
           python -m pip install -e . pytest
       - name: Validate provenance, governed evolution, downstream impacts, semantic drift, and Wan boundary
         run: python -m obsad.validate_governance
+      - name: Verify Python compiles
+        run: python -m compileall -q src tests
+      - name: Report canonical motion-reference digest
+        run: >-
+          python -c "from pathlib import Path; from obsad.motion_reference import load_reference, canonical_sha256; print('MOTION_REFERENCE_DIGEST=' + canonical_sha256(load_reference(Path('fixtures/motion-references/magical-ai-books.yaml'))))"
       - name: Run governance tests
         run: pytest -q tests/test_governance_validation.py tests/test_motion_analysis.py tests/test_motion_reference_cli.py tests/test_review_ui.py
