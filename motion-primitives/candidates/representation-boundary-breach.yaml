@@ -1,0 +1,56 @@
+schemaVersion: '1.0.0'
+primitiveId: representation-boundary-breach.v1
+name: Representation Boundary Breach
+status: candidate
+sourceReference: video:reference:kelly-boesch:magical-ai-books
+states:
+  - latent
+  - activated
+  - dimensionalized
+  - boundary-crossing
+  - consequential
+  - expanded
+  - resolved
+requiredCues:
+  - A recognizable source plane, page, frame, screen, diagram, package, or other containing representation remains legible.
+  - A localized subject or region gains relief/depth rather than the entire image globally morphing at once.
+  - The subject occupies or crosses space that was previously outside the source representation.
+  - Identity remains traceable from representation to spatial subject.
+optionalCues:
+  - Real-world witness interaction such as touch, occlusion, handoff, shadow, or light exchange.
+  - Environmental spill such as particles, water, smoke, light, or sound leaving the representation.
+  - Material-specific constrained motion such as fold, hinge, bend, stack, link, or tessellation.
+  - Reverse closure that returns the impossible state to its source object.
+antiPatterns:
+  - Global soup morph that destroys the source plane before the boundary change is legible.
+  - Instant subject replacement with no continuity from represented state to spatial state.
+  - Spectacular camera motion that hides unstable geometry or ambiguous causality.
+  - Paper-looking surfaces that stretch like rubber when a fold-constrained manner is intended.
+  - Claiming origami mechanics from paper texture alone.
+evidenceRefs:
+  - OBS.S01.OWL_BEHAVIOR
+  - OBS.S02.WAVE_EDGE
+  - OBS.S03.DEER_GUTTER
+  - OBS.S04.GEAR_RISE
+  - OBS.S06.PYRAMIDS
+  - OBS.S09.CITY_DEPTH
+directorControlRefs:
+  - source_plane_persistence
+  - breach_amount
+  - panel_rigidity
+  - fold_localization
+  - stagger_amount
+  - cascade_direction
+  - catch_lock_strength
+  - secondary_lag
+  - asymmetry
+  - settling_amount
+  - witness_interaction
+  - camera_reaction
+  - environment_spill
+motionOracleDestination: MelodicBloom/melodyfire Motion Oracle — candidate only; no write or canonization in this branch
+promotionGate:
+  status: blocked
+  reason: >-
+    Scene evidence is analyzer-derived and not yet verified against hydrated frame-level media. Movement-manner claims for the owl,
+    especially fold/crease/panel behavior and lead-lag phrasing, remain open. Promotion requires explicit human approval after evidence review.
