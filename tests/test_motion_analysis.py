@@ -1,4 +1,3 @@
-from copy import deepcopy
 from pathlib import Path
 
 import yaml
@@ -74,6 +73,7 @@ def _base_reference():
             "classification": "origami-like",
             "structuralEvidenceRefs": [],
         },
+        "subjectContinuity": [],
         "scenes": [{
             "id": "S01",
             "temporalSpan": {"start": "0:00", "end": "0:01", "provenanceRef": "AN01"},
@@ -254,6 +254,26 @@ def test_magical_ai_books_fixture_preserves_imported_scene_and_director_context(
     }
 
 
+def test_owl_subject_continuity_reads_as_a_before_during_after_story():
+    _validator()
+    fixture = yaml.safe_load((ROOT / "fixtures/motion-references/magical-ai-books.yaml").read_text(encoding="utf-8"))
+    owl = next(item for item in fixture["subjectContinuity"] if item["id"] == "SUBJ.OWL")
+    assert owl["sceneRef"] == "S01"
+    assert [state["phase"] for state in owl["states"]] == [
+        "before-emergence", "threshold", "emerging", "newly-spatial", "aftermath"
+    ]
+    required_story_fields = {
+        "appearance", "material", "texture", "construction", "composition",
+        "behavior", "characteristics", "movementQuality", "provenance", "verificationStatus"
+    }
+    for state in owl["states"]:
+        assert required_story_fields <= set(state)
+        assert state["appearance"]["summary"]
+        assert state["composition"]["relationshipToSourcePlane"]
+    assert owl["continuityQuestions"]
+    assert owl["unknowns"]
+
+
 def test_director_controls_explain_visible_effect_and_failure_extremes():
     _validator()
     fixture = yaml.safe_load((ROOT / "fixtures/motion-references/magical-ai-books.yaml").read_text(encoding="utf-8"))
@@ -271,3 +291,20 @@ def test_director_controls_explain_visible_effect_and_failure_extremes():
         assert control["tooLowLooksLike"]
         assert control["tooHighLooksLike"]
         assert control["basis"] in {"observation-backed", "inference-backed", "exploratory"}
+
+
+def test_future_information_ablation_experiment_is_case_study_ready():
+    manifest = yaml.safe_load((ROOT / "experiments/wan/representation-boundary-breach.yaml").read_text(encoding="utf-8"))
+    ablation = manifest["informationAblation"]
+    assert ablation["status"] == "planned-blocked"
+    assert {variant["id"] for variant in ablation["variants"]} >= {
+        "full-record", "every-third-field", "every-fourth-field", "targeted-erasure", "mad-libs-replacement"
+    }
+    capture = manifest["caseStudyCapture"]
+    for field in (
+        "challenge", "hypothesis", "inputSnapshot", "compiledArtifact", "runtimeReceipt",
+        "outputAssets", "evaluation", "failureAnalysis", "selectionDecision", "lessons"
+    ):
+        assert field in capture
+    assert "mannerism_fidelity" in manifest["evaluationMetrics"]
+    assert "subject_state_fidelity" in manifest["evaluationMetrics"]
