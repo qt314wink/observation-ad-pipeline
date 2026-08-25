@@ -1,0 +1,181 @@
+schemaVersion: '1.0.0'
+experimentId: experiment:representation-boundary-breach:v1
+status: planned-blocked
+primitiveRef: representation-boundary-breach.v1
+sourceReference: video:reference:kelly-boesch:magical-ai-books
+purpose: >-
+  Test whether the recovered mechanism transfers to new work without copying the reference surface, and identify which evidence fields
+  are actually load-bearing for subject identity, material behavior, movement manner, and boundary-crossing believability.
+blockers:
+  - primitive remains candidate rather than approved
+  - source video is not hydrated for frame-level verification
+  - exact owl fold/panel mechanics remain unresolved
+providerNeutralIntent:
+  subject: a new non-owl paper-like subject emerging from a clearly readable printed source plane
+  rule: preserve source identity and source-plane legibility while escalating local depth into shared-space physical consequence
+  prohibited: imitate Kelly Boesch's exact owl, book styling, scene composition, palette, or shot sequence
+controlledConstants:
+  - source/reference frame or equivalent source composition
+  - subject identity within each experiment family
+  - seed where runtime supports deterministic seed control
+  - duration
+  - fps
+  - resolution
+  - base camera framing
+  - base negative constraints
+  - evaluation rubric
+benchmarkVariants:
+  - id: relief_only
+    variedMechanism: depth stops at shallow relief; no complete boundary crossing
+    question: Can the source plane remain readable while the subject gains convincing local depth?
+    expectedUse: establishes the lowest-complexity dimensionalization baseline
+  - id: partial_breach
+    variedMechanism: only selected subject regions cross the source boundary
+    question: Which local crossings create a convincing threshold without losing representation-to-subject continuity?
+    expectedUse: isolates the transition zone and tests source-plane persistence
+  - id: full_breach_contact
+    variedMechanism: the subject fully enters shared space and creates a cross-world light, shadow, occlusion, touch, or contact consequence
+    question: Does physical consequence materially improve believability after full boundary crossing?
+    expectedUse: tests the complete candidate primitive
+movementMannerChallenges:
+  - id: rigid_staggered_foldlike
+    status: blocked-pending-source-verification
+    challenge: >-
+      Preserve rigid-looking local regions while movement propagates through visibly localized articulation with a staggered lead/follow rhythm;
+      avoid rubbery global morphing.
+    evidenceBoundary: Director hypothesis only until source frames verify where rigidity, stagger, folding, or creasing actually occur.
+  - id: smooth_vs_segmented
+    status: planned
+    challenge: Generate matched variants with continuous smooth motion versus segmented/stepped motion while holding subject, path, and composition constant.
+    reason: Separates geometric path from movement quality and makes the effect of cadence visible.
+  - id: witness_vs_no_witness
+    status: planned
+    challenge: Generate matched variants with and without a real-world hand/object producing occlusion, shadow, contact, or handoff.
+    reason: Tests the diegetic-witness hypothesis directly.
+evaluationMetrics:
+  identity_retention:
+    description: Does the same subject remain recognizable from represented state through spatial state?
+    scale: 0-5
+  subject_state_fidelity:
+    description: Are appearance, material, texture, construction cues, composition, and behavior preserved or intentionally changed according to the subject-state story?
+    scale: 0-5
+  source_plane_retention:
+    description: Does the original representation remain readable long enough for the breach to be understood?
+    scale: 0-5
+  depth_legibility:
+    description: Is the transition from flat/relief to volume spatially readable?
+    scale: 0-5
+  boundary_crossing_legibility:
+    description: Can a reviewer point to where and when the subject crosses the containing surface or frame?
+    scale: 0-5
+  contact_plausibility:
+    description: Are shadow, occlusion, touch, spill, and handoff cues spatially coherent?
+    scale: 0-5
+  temporal_causality:
+    description: Does activation precede dimensionalization, crossing, consequence, and settling in a believable order?
+    scale: 0-5
+  topology_stability:
+    description: Does the subject avoid unmotivated limb/panel duplication, collapse, fusion, or identity drift?
+    scale: 0-5
+  mannerism_fidelity:
+    description: Does the output preserve the intended lead/lag, cadence, stiffness, catch/release, cascade, asymmetry, and settling character rather than only the motion path?
+    scale: 0-5
+  artifact_rate:
+    description: Count and severity of visible generation failures that undermine the mechanism.
+    scale: lower-is-better
+  closure_stability:
+    description: If closure is tested, can the impossible state resolve without identity or geometry collapse?
+    scale: 0-5
+informationAblation:
+  status: planned-blocked
+  purpose: >-
+    Test how much of the structured observation is genuinely necessary. Sparse variants deliberately remove information to distinguish
+    load-bearing descriptors from redundant prose and to discover which omissions create useful surprise versus loss of control.
+  rule: Each ablation run must be derived mechanically from one frozen full-record snapshot so the removed information is auditable.
+  variants:
+    - id: full-record
+      keepRule: keep every approved input field in the frozen subject + mechanism + director-control record
+      purpose: reference condition
+    - id: every-third-field
+      keepRule: retain every third eligible leaf field in deterministic canonical field order; remove the rest
+      purpose: coarse sparsity test
+    - id: every-fourth-field
+      keepRule: retain every fourth eligible leaf field in deterministic canonical field order; remove the rest
+      purpose: stronger sparsity test
+    - id: targeted-erasure
+      keepRule: generate separate runs erasing one semantic family at a time
+      families:
+        - appearance
+        - material
+        - texture
+        - construction
+        - composition
+        - behavior
+        - movement-quality
+        - manner
+        - source-plane/boundary logic
+        - witness/physical-consequence logic
+      purpose: measure semantic-family contribution
+    - id: mad-libs-replacement
+      keepRule: replace selected eligible values with constrained alternatives of the same type while preserving the rest of the record
+      purpose: >-
+        Probe whether the system can generate coherent but meaningfully different outcomes and reveal hidden dependencies between fields.
+  comparisons:
+    - full-record versus every-third-field
+    - full-record versus every-fourth-field
+    - full-record versus each targeted-erasure family
+    - full-record versus matched mad-libs replacements
+  primaryQuestions:
+    - Which fields can disappear with little perceptual loss?
+    - Which omissions destroy subject continuity first?
+    - Which omissions make movement generic even when geometry survives?
+    - Which fields are redundant because another field already carries the same instruction?
+    - Which replacements create valuable novelty without breaking the recovered mechanism?
+  metrics:
+    - identity_retention
+    - subject_state_fidelity
+    - source_plane_retention
+    - boundary_crossing_legibility
+    - mannerism_fidelity
+    - contact_plausibility
+    - topology_stability
+    - reviewer_preference
+caseStudyCapture:
+  challenge:
+    required: true
+    description: The precise visual/mechanical question given to the generator, including what is held constant and what is allowed to vary.
+  hypothesis:
+    required: true
+    description: What we expect to happen and why, with evidence references.
+  inputSnapshot:
+    required: true
+    description: Immutable path/digest for the exact governed input record or ablated derivative.
+  compiledArtifact:
+    required: true
+    description: Provider-specific compiled prompt/workflow plus digest, with semantic source fields still traceable.
+  runtimeReceipt:
+    required: true
+    description: Provider/model/workflow version, seed, duration, fps, resolution, runtime settings, timestamps, and status where available.
+  outputAssets:
+    required: true
+    description: Generated images/videos, contact sheets, representative frames, and immutable asset identifiers/digests.
+  evaluation:
+    required: true
+    description: Metric scores plus human notes tied to visible evidence.
+  failureAnalysis:
+    required: true
+    description: What broke, where it broke, likely cause, and which field/control could address it.
+  selectionDecision:
+    required: true
+    description: Select/reject/iterate decision and reason; rejected candidates remain useful evidence.
+  lessons:
+    required: true
+    description: What the run teaches about the primitive, model, schema, director controls, or next experiment.
+  caseStudyFrames:
+    description: Before/during/after stills, annotated crops, comparison grids, and the smallest visual proof needed to support the written claim.
+receiptRules:
+  - Never describe a planned run as generated.
+  - Never silently change an input between matched variants.
+  - Record rejected outputs and failure reasons, not only winners.
+  - Tie every case-study claim to a specific run, frame, observation, or metric.
+  - Preserve provider/model as execution context, not conceptual authority.
