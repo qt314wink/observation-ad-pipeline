@@ -1,6 +1,10 @@
 import json
 from pathlib import Path
 
+import yaml
+
+from obsad.motion_reference import build_review_payload
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -39,6 +43,14 @@ def test_magical_ai_books_review_payload_is_traceable_and_read_only():
     assert payload["experimentGate"]["status"] == "blocked"
     assert payload["candidatePrimitives"][0]["status"] == "candidate"
     assert all("question" in control and "whatYouWillSee" in control for control in payload["directorControls"])
+
+
+def test_magical_ai_books_review_payload_digest_matches_canonical_yaml():
+    fixture = yaml.safe_load((ROOT / "fixtures/motion-references/magical-ai-books.yaml").read_text(encoding="utf-8"))
+    expected = build_review_payload(fixture)
+    committed = json.loads((ROOT / "review/data/magical-ai-books.json").read_text(encoding="utf-8"))
+    assert committed["canonicalDigest"] == expected["canonicalDigest"]
+    assert committed["subjectContinuity"] == expected["subjectContinuity"]
 
 
 def test_vercel_serves_review_as_static_root():
