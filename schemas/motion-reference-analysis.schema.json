@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/qt314wink/observation-ad-pipeline/schemas/motion-reference-analysis.schema.json",
+  "title": "Governed Motion Reference Analysis",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "referenceId",
+    "source",
+    "analysisRuns",
+    "directorVocabulary",
+    "scenes",
+    "observations",
+    "interpretations",
+    "directorControls",
+    "candidatePrimitives",
+    "experimentGate"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "referenceId": {"type": "string", "pattern": "^video:reference:"},
+    "humanGuide": {"type": "object"},
+    "source": {
+      "type": "object",
+      "required": ["kind", "title", "creator", "platform", "canonicalUrl", "rightsStatus", "mediaMeasurementStatus"],
+      "properties": {
+        "kind": {"type": "string"},
+        "title": {"type": "string", "minLength": 1},
+        "creator": {"type": "string", "minLength": 1},
+        "platform": {"type": "string", "minLength": 1},
+        "canonicalUrl": {"type": "string", "minLength": 1},
+        "videoId": {"type": "string"},
+        "accessedAt": {"type": "string"},
+        "rightsStatus": {"type": "string"},
+        "mediaMeasurementStatus": {"enum": ["unmeasured", "measured"]},
+        "retainedMediaStatus": {"type": "string"},
+        "sha256": {"type": "string"},
+        "bytes": {"type": "integer", "minimum": 0},
+        "durationSeconds": {"type": "number", "minimum": 0},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "fps": {"type": "number", "exclusiveMinimum": 0},
+        "codec": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "analysisRuns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "provider", "status", "coverage"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "provider": {"type": "string", "minLength": 1},
+          "analysisId": {"type": "string"},
+          "status": {"type": "string", "minLength": 1},
+          "createdAt": {"type": "string"},
+          "coverage": {"type": "string", "minLength": 1},
+          "limitations": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    },
+    "directorVocabulary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["term", "scope", "provenance", "verificationStatus"],
+        "properties": {
+          "term": {"type": "string", "minLength": 1},
+          "scope": {"type": "string", "minLength": 1},
+          "provenance": {"$ref": "#/$defs/provenance"},
+          "verificationStatus": {"$ref": "#/$defs/verificationStatus"},
+          "verificationTask": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "paperFoldEvidence": {
+      "type": "object",
+      "required": ["classification", "structuralEvidenceRefs"],
+      "properties": {
+        "classification": {
+          "enum": ["paper-textured-3d", "paper-constructed", "origami-like", "fold-constrained", "true-origami-verified", "unknown"]
+        },
+        "structuralEvidenceRefs": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/scene"}
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/observation"}
+    },
+    "interpretations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/interpretation"}
+    },
+    "directorControls": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/directorControl"}
+    },
+    "candidatePrimitives": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/candidatePrimitive"}
+    },
+    "experimentGate": {
+      "type": "object",
+      "required": ["status", "candidatePrimitiveRefs", "reason"],
+      "properties": {
+        "status": {"enum": ["blocked", "planned", "executable", "completed"]},
+        "candidatePrimitiveRefs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "reason": {"type": "string", "minLength": 1},
+        "experimentManifest": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "verificationStatus": {
+      "enum": ["imported-unverified", "human-verified", "contested", "rejected"]
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["kind", "sourceRef"],
+      "properties": {
+        "kind": {"enum": ["source-derived", "model-derived-observation", "director-provided", "derived-measurement", "interpretation"]},
+        "sourceRef": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "scene": {
+      "type": "object",
+      "required": [
+        "id", "temporalSpan", "visualSummary", "audioSummary", "camera", "lightColor", "environment",
+        "actorsObjects", "interaction", "provenance", "movementEvents"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^S[0-9]{2,}$"},
+        "label": {"type": "string"},
+        "temporalSpan": {
+          "type": "object",
+          "required": ["start", "end", "provenanceRef"],
+          "properties": {
+            "start": {"type": "string"},
+            "end": {"type": "string"},
+            "provenanceRef": {"type": "string"}
+          },
+          "additionalProperties": true
+        },
+        "visualSummary": {"type": "string", "minLength": 1},
+        "audioSummary": {"type": "string"},
+        "camera": {"type": "string"},
+        "lightColor": {"type": "string"},
+        "environment": {"type": "string"},
+        "actorsObjects": {"type": "array", "items": {"type": "string"}},
+        "interaction": {"type": "string"},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "movementEvents": {"type": "array", "items": {"$ref": "#/$defs/movementEvent"}}
+      },
+      "additionalProperties": true
+    },
+    "observation": {
+      "type": "object",
+      "required": ["id", "scope", "category", "statement", "provenance", "confidence", "verificationStatus"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "scope": {"enum": ["reference", "scene", "event", "object", "part"]},
+        "category": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "verificationStatus": {"$ref": "#/$defs/verificationStatus"},
+        "sceneRef": {"type": "string"},
+        "eventRef": {"type": "string"},
+        "objectRef": {"type": "string"},
+        "timeRef": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "materialBehavior": {
+      "type": "object",
+      "required": ["rigidity", "surfaceStretch", "facePlanarity", "articulationLocality", "thicknessBehavior", "collisionContact"],
+      "properties": {
+        "rigidity": {"enum": ["rigid", "semi-rigid", "flexible", "mixed", "unknown"]},
+        "surfaceStretch": {"enum": ["none-visible", "limited", "substantial", "unknown"]},
+        "facePlanarity": {"enum": ["preserved", "partly-preserved", "not-preserved", "unknown"]},
+        "articulationLocality": {"enum": ["edge/crease-localized", "distributed", "mixed", "unknown"]},
+        "thicknessBehavior": {"enum": ["constant-looking", "variable-looking", "unknown"]},
+        "collisionContact": {"enum": ["none-visible", "contact", "interpenetration-suspected", "unknown"]}
+      },
+      "additionalProperties": true
+    },
+    "movementQuality": {
+      "type": "object",
+      "required": ["flow", "time", "space", "weight", "continuity", "stiffness"],
+      "properties": {
+        "flow": {"enum": ["bound", "free", "mixed", "unknown"]},
+        "time": {"enum": ["sudden", "sustained", "mixed", "unknown"]},
+        "space": {"enum": ["direct", "indirect", "mixed", "unknown"]},
+        "weight": {"enum": ["light", "strong", "mixed", "unknown"]},
+        "continuity": {"enum": ["continuous", "segmented", "stepped", "pulsed", "mixed", "unknown"]},
+        "stiffness": {"enum": ["soft", "supple", "firm", "stiff", "rigid", "mixed", "unknown"]}
+      },
+      "additionalProperties": true
+    },
+    "manner": {
+      "type": "object",
+      "required": ["coordination", "cadence", "transitionCharacter", "phaseSequence", "directorPhrase"],
+      "properties": {
+        "leadPart": {"type": "string"},
+        "followParts": {"type": "array", "items": {"type": "string"}},
+        "coordination": {"enum": ["simultaneous", "sequential", "overlapping", "counterphase", "leader-follower", "cascading", "unknown"]},
+        "cadence": {"enum": ["continuous", "staggered", "alternating", "step-hold-release", "pulse-pause", "accelerating", "decelerating", "irregular", "unknown"]},
+        "transitionCharacter": {"type": "array", "items": {"enum": ["snap", "ease", "catch", "drag", "rebound", "overshoot", "settle", "lock", "release", "unknown"]}},
+        "phaseSequence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "microMannerisms": {"type": "array", "items": {"type": "string"}},
+        "directorPhrase": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "movementEvent": {
+      "type": "object",
+      "required": ["id", "actor", "action", "structuralMechanisms", "materialBehavior", "movementQuality", "manner", "spatialPath", "timing", "provenance"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "actor": {"type": "string", "minLength": 1},
+        "part": {"type": "string"},
+        "action": {"type": "string", "minLength": 1},
+        "sourceState": {"type": "string"},
+        "destinationState": {"type": "string"},
+        "structuralMechanisms": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "materialBehavior": {"$ref": "#/$defs/materialBehavior"},
+        "movementQuality": {"$ref": "#/$defs/movementQuality"},
+        "manner": {"$ref": "#/$defs/manner"},
+        "spatialPath": {"type": "object"},
+        "timing": {"type": "object"},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      },
+      "additionalProperties": true
+    },
+    "interpretation": {
+      "type": "object",
+      "required": ["id", "label", "statement", "evidence", "confidence", "status", "falsifier", "usefulness"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "status": {"enum": ["candidate", "supported", "contested", "rejected"]},
+        "falsifier": {"type": "string", "minLength": 1},
+        "usefulness": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "directorControl": {
+      "type": "object",
+      "required": ["id", "label", "question", "targetFields", "valueType", "whatYouWillSee", "tooLowLooksLike", "tooHighLooksLike", "evidence", "confidence", "basis"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "question": {"type": "string", "minLength": 1},
+        "targetFields": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "valueType": {"enum": ["enum", "number", "boolean", "text"]},
+        "allowedValues": {"type": "array"},
+        "min": {"type": "number"},
+        "max": {"type": "number"},
+        "defaultValue": {},
+        "locked": {"type": "boolean"},
+        "whatYouWillSee": {"type": "string", "minLength": 1},
+        "tooLowLooksLike": {"type": "string", "minLength": 1},
+        "tooHighLooksLike": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "items": {"type": "string"}},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "basis": {"enum": ["observation-backed", "inference-backed", "exploratory"]}
+      },
+      "additionalProperties": true
+    },
+    "candidatePrimitive": {
+      "type": "object",
+      "required": ["id", "status", "evidence", "directorControls"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["candidate", "approved", "rejected"]},
+        "evidence": {"type": "array", "items": {"type": "string"}},
+        "directorControls": {"type": "array", "items": {"type": "string"}},
+        "states": {"type": "array", "items": {"type": "string"}},
+        "requiredCues": {"type": "array", "items": {"type": "string"}},
+        "optionalCues": {"type": "array", "items": {"type": "string"}},
+        "antiPatterns": {"type": "array", "items": {"type": "string"}},
+        "approval": {"type": "object"}
+      },
+      "additionalProperties": true
+    }
+  }
+}
