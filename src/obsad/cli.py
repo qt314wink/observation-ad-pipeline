@@ -6,6 +6,8 @@ import click, requests, yaml
 from dotenv import load_dotenv
 import fastjsonschema
 
+from obsad.motion_reference import build_review_payload, load_reference, validate_motion_reference
+
 load_dotenv()
 ROOT = Path(os.getenv("OBSAD_ROOT", ".")).expanduser().resolve()
 SCHEMAS = ROOT / "schemas"
@@ -226,6 +228,29 @@ def run_task(taskfile: str, url: str, dry_run: bool) -> None:
         status = "error"; error = repr(exc); raise
     finally:
         append_ledger({"run_id": run_id, "timestamp": stamp, "task_id": task.get("id", ""), "operation": task.get("operation", ""), "provider": provider, "workflow_sha256": wfhash, "references": "|".join(map(str, refs)), "positive": compiled["positive"], "negative": compiled["negative"], "outputs": "|".join(outputs), "status": status, "error": error})
+
+@main.command("motion-reference-validate")
+@click.argument("reference_file", type=click.Path(path_type=Path))
+def motion_reference_validate_command(reference_file: Path) -> None:
+    path = reference_file.expanduser().resolve()
+    errors = validate_motion_reference(path, ROOT)
+    if errors:
+        raise click.ClickException("\n".join(errors))
+    click.echo("valid")
+
+@main.command("motion-reference-render")
+@click.argument("reference_file", type=click.Path(path_type=Path))
+@click.option("--out", required=True, type=click.Path(path_type=Path))
+def motion_reference_render_command(reference_file: Path, out: Path) -> None:
+    path = reference_file.expanduser().resolve()
+    errors = validate_motion_reference(path, ROOT)
+    if errors:
+        raise click.ClickException("\n".join(errors))
+    payload = build_review_payload(load_reference(path))
+    target = out.expanduser().resolve()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
+    click.echo(str(target))
 
 @main.command("new-task")
 @click.argument("operation", type=click.Choice(sorted(VALID_OPERATIONS)))
