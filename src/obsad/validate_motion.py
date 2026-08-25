@@ -5,6 +5,8 @@ import re
 
 import yaml
 
+from obsad.motion_reference import validate_motion_reference
+
 
 REQUIRED_DIMENSIONS = {
     "symmetry", "radial-topology", "phase-change", "morphing",
@@ -42,4 +44,3 @@ def validate_motion_fixture(path: Path, root: Path) -> list[str]:
         elif status != "verified":
             errors.append(f"{source.get('id')}: unsupported evidenceStatus")
     return errors
-
