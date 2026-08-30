@@ -35,6 +35,14 @@ on:
       - 'schemas/downstream-impact.schema.json'
       - 'src/obsad/validate_governance.py'
       - 'tests/test_governance_validation.py'
+      - 'fixtures/motion/**'
+      - 'schemas/motion-analysis.schema.json'
+      - 'src/obsad/validate_motion.py'
+      - 'tests/test_motion_analysis.py'
+      - 'tests/test_review_ui.py'
+      - 'review/**'
+      - '.gitattributes'
+      - 'vercel.json'
       - '.github/workflows/governance-validation.yml'
 
 permissions:
