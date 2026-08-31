@@ -36,7 +36,7 @@ class MotionProgramTest(unittest.TestCase):
         invalid = copy.deepcopy(self.program)
         invalid["scenes"][0]["channels"][0]["target"] = "outer_anchor"
         errors = validate_motion_program(invalid, SCHEMA)
-        self.assertTrue(any("stationary region" in error for error in errors), errors)
+        self.assertTrue(any("locked region" in error for error in errors), errors)
 
     def test_loop_requires_state_closure(self) -> None:
         invalid = copy.deepcopy(self.program)
