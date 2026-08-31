@@ -1,0 +1,21 @@
+canonicalSource:
+  project: LithoMemphis
+  locator: github:qt314wink/nextjs-boilerplate@b1bcbcc3199b41b37616bd377a0461e4a6f489bf/docs/lithomemphis-v2-plan.md
+  authorityStatus: canonical
+derivationType: bounded-adaptation
+sourceVersion: git:b1bcbcc3199b41b37616bd377a0461e4a6f489bf
+sourceHash: git-blob-sha1:cb0504a0172fea90985d1ba1aa9476b70e1101ff
+familyBinding:
+  path: prompt-packs/photo/lithomemphis.yaml
+  id: photo.lithomemphis.v1
+  protectedFields: [name, materials, palette]
+  protectedDigest: sha256:799cda490631b46b2a4815afa281040aafa7cc3ee28ecee8c566b91d0cb3558e
+allowedLocalOverrides:
+  - ad-specific intent phrasing
+  - campaign-local camera guidance
+  - engine-specific negative constraints
+forbiddenLocalMutations:
+  - canonical LithoMemphis visual-language definition
+  - upstream semantic token meanings
+  - upstream project ownership or naming
+
