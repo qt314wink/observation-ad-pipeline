@@ -3,14 +3,15 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import math
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
 import fastjsonschema
 import yaml
 
-ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SCHEMA_PATH = ROOT / "schemas" / "motion-program.schema.json"
+DEFAULT_SCHEMA_PATH = files("obsad.schemas").joinpath("motion-program.schema.json")
 
 SUPPORTED_PROVIDERS = {"generic", "xai", "wan", "comfyui"}
 SECTION_ORDER = (
@@ -32,13 +33,20 @@ PROVIDER_JOINERS = {
 }
 
 
-def load(path: Path) -> Any:
+def load(path: Any) -> Any:
     text = path.read_text(encoding="utf-8")
-    return yaml.safe_load(text) if path.suffix.lower() in {".yaml", ".yml"} else json.loads(text)
+    suffix = Path(path.name).suffix.lower()
+    return yaml.safe_load(text) if suffix in {".yaml", ".yml"} else json.loads(text)
 
 
 def canonical_json(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    )
 
 
 def sha256(value: Any) -> str:
@@ -49,7 +57,29 @@ def _region_map(program: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {region["id"]: region for region in program["structure"]["regions"]}
 
 
-def validate_motion_program(program: dict[str, Any], schema_path: Path = DEFAULT_SCHEMA_PATH) -> list[str]:
+def _non_finite_number_paths(value: Any, path: str = "$") -> list[str]:
+    if isinstance(value, float) and not math.isfinite(value):
+        return [path]
+    if isinstance(value, dict):
+        return [
+            child
+            for key, item in value.items()
+            for child in _non_finite_number_paths(item, f"{path}.{key}")
+        ]
+    if isinstance(value, list):
+        return [
+            child
+            for index, item in enumerate(value)
+            for child in _non_finite_number_paths(item, f"{path}[{index}]")
+        ]
+    return []
+
+
+def validate_motion_program(program: dict[str, Any], schema_path: Any = DEFAULT_SCHEMA_PATH) -> list[str]:
+    non_finite_paths = _non_finite_number_paths(program)
+    if non_finite_paths:
+        return [f"{path} must be a finite number" for path in non_finite_paths]
+
     try:
         fastjsonschema.compile(load(schema_path))(program)
     except fastjsonschema.JsonSchemaException as exc:
@@ -81,13 +111,16 @@ def validate_motion_program(program: dict[str, Any], schema_path: Path = DEFAULT
     # silently receiving provider binding authority.
     known_targets = set(region_ids) | set(program["materials"]) | {"all_movable_regions"}
     region_by_id = _region_map(program)
+    locked_regions = set(program["preservation"]["locks"]) & set(region_ids)
     for scene in program["scenes"]:
         for channel in scene["channels"]:
             target = channel["target"]
             if target not in known_targets:
                 errors.append(f"{scene['id']}: channel target {target!r} is not a declared region/material target")
-            if target in region_by_id and not region_by_id[target]["movable"]:
-                primitive = channel["primitive"]
+            primitive = channel["primitive"]
+            if target in locked_regions and primitive.startswith(("rotate.", "translate.", "fold.")):
+                errors.append(f"{scene['id']}: {primitive} cannot target locked region {target!r}")
+            elif target in region_by_id and not region_by_id[target]["movable"]:
                 if primitive.startswith(("rotate.", "translate.", "fold.")):
                     errors.append(f"{scene['id']}: {primitive} cannot target stationary region {target!r}")
 
@@ -258,22 +291,39 @@ def set_dotted(value: dict[str, Any], dotted: str, replacement: Any) -> None:
         current[leaf] = replacement
 
 
+def _candidate_matches_control_type(reference: Any, candidate: Any) -> bool:
+    if isinstance(reference, bool):
+        return isinstance(candidate, bool)
+    if isinstance(reference, (int, float)) and not isinstance(reference, bool):
+        return (
+            isinstance(candidate, (int, float))
+            and not isinstance(candidate, bool)
+            and math.isfinite(float(candidate))
+        )
+    return type(candidate) is type(reference)
+
+
 def build_experiment_variants(
     program: dict[str, Any],
-    schema_path: Path = DEFAULT_SCHEMA_PATH,
+    schema_path: Any = DEFAULT_SCHEMA_PATH,
 ) -> list[dict[str, Any]]:
     calibration = program.get("calibration", {})
     variants: list[dict[str, Any]] = []
     for experiment in calibration.get("experiments", []):
         parameter = experiment["parameter"]
         try:
-            get_dotted(program, parameter)
+            reference_value = get_dotted(program, parameter)
         except (KeyError, IndexError, TypeError, ValueError) as exc:
             raise ValueError(
                 f"{experiment['id']}: experiment parameter {parameter!r} does not resolve: {exc}"
             ) from exc
 
         for candidate in experiment["values"]:
+            if not _candidate_matches_control_type(reference_value, candidate):
+                raise ValueError(
+                    f"{experiment['id']}: candidate {candidate!r} for {parameter!r} "
+                    f"must match the existing {type(reference_value).__name__} control type"
+                )
             mutated = copy.deepcopy(program)
             set_dotted(mutated, parameter, candidate)
             errors = validate_motion_program(mutated, schema_path)
