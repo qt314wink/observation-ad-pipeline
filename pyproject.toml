@@ -12,3 +12,5 @@ obsad="obsad.cli:main"
 package-dir={""="src"}
 [tool.setuptools.packages.find]
 where=["src"]
+[tool.setuptools.package-data]
+"obsad.schemas"=["*.json"]
