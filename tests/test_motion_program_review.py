@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from obsad.motion_program import (
+    DEFAULT_SCHEMA_PATH,
     build_experiment_variants,
     compile_motion_program,
     load,
@@ -90,6 +91,42 @@ class MotionProgramReviewRegressionTest(unittest.TestCase):
         ]
         with self.assertRaisesRegex(ValueError, "invalid motion program"):
             build_experiment_variants(invalid, SCHEMA)
+
+    def test_nonnumeric_lighting_experiment_candidate_is_rejected(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["calibration"]["experiments"] = [
+            {
+                "id": "EXP-BAD-LIGHT",
+                "parameter": "lighting.mineral_probe.incidence_deg",
+                "values": ["wrong", 24],
+                "prediction": "string controls are invalid",
+            }
+        ]
+        with self.assertRaisesRegex(ValueError, "must match the existing int control type"):
+            build_experiment_variants(invalid, SCHEMA)
+
+    def test_unknown_motion_primitive_is_rejected(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["scenes"][0]["channels"][0]["primitive"] = "rotate.locla"
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("primitive" in error for error in errors), errors)
+
+    def test_non_finite_numeric_controls_are_rejected(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["scenes"][0]["duration_s"] = float("nan")
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("finite number" in error for error in errors), errors)
+
+    def test_locked_region_cannot_move_even_if_marked_movable(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["structure"]["regions"][-1]["movable"] = True
+        invalid["scenes"][0]["channels"][0]["target"] = "outer_anchor"
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("locked region" in error for error in errors), errors)
+
+    def test_packaged_schema_matches_repository_authority(self) -> None:
+        self.assertEqual(load(SCHEMA), load(DEFAULT_SCHEMA_PATH))
+        self.assertEqual([], validate_motion_program(self.program))
 
 
 if __name__ == "__main__":
