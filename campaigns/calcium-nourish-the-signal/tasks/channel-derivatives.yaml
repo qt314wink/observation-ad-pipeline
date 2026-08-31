@@ -1,0 +1,12 @@
+schema_version: '1.0'
+build_stage: 4
+precondition: social_master has a passing blocking QA receipt
+outputs:
+  - {id: social_master, width: 1080, height: 1920, duration_seconds: 15, derives_from: campaign_contract, status: planned}
+  - {id: email_hero, width: 1600, height: 900, duration_seconds: 6, derives_from: social_master, status: blocked_pending_master}
+  - {id: business_square, width: 1080, height: 1080, duration_seconds: 6, derives_from: social_master, status: blocked_pending_master}
+  - {id: business_portrait, width: 1080, height: 1350, duration_seconds: 6, derives_from: social_master, status: blocked_pending_master}
+postproduction:
+  typography: deterministic
+  crop_rule: focal-point-aware crop from approved master; never independent regeneration
+  audio: optional; visual story and type remain legible muted

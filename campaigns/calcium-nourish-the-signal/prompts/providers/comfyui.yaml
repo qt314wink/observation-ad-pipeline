@@ -1,0 +1,4 @@
+joiner: ", "
+directives:
+  - Keep text semantic; express seed, sampler, references, timing, and motion controls in graph nodes.
+  - Persist the patched workflow, model identifiers, hashes, output hashes, and immutable run ID.

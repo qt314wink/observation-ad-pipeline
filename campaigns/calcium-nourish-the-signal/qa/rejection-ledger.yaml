@@ -1,0 +1,12 @@
+schema_version: '1.0'
+receipts: []
+reason_catalog:
+  - REJECT.ANATOMY.DRIFT
+  - REJECT.MOTION.RANDOM_MORPH
+  - REJECT.HUMAN.PLASTIC_SKIN
+  - REJECT.PALETTE.NEON_DRIFT
+  - REJECT.MESSAGE.UNREADABLE
+  - REJECT.COMPOSITION.NO_TYPE_SAFE_ZONE
+  - REJECT.CLAIM.IMPLIED_EFFICACY
+  - REJECT.CONTINUITY.IDENTITY_DRIFT
+note: Empty until a generated candidate is meaningfully rejected; reasons are never fabricated for planned work.

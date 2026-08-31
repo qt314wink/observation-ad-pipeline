@@ -1,0 +1,33 @@
+{
+  "campaign_id": "calcium-nourish-the-signal",
+  "campaign_name": "NOURISH THE SIGNAL",
+  "client_context": "Speculative Calcium+Company healthcare communications campaign.",
+  "application_context": "Portfolio artifact for an AI Art Specialist – Motion application and bounded OBSAD test.",
+  "objective": "Translate microscopic biological information into recognizable human experience through directed, causal motion without claims or biotech cliché.",
+  "thesis": "Every health story begins as a signal. Creative makes that signal meaningful enough to move someone.",
+  "audience": ["Calcium+Company creative reviewers", "health communication audiences", "AI motion art directors"],
+  "channel_targets": ["vertical_social", "email", "facebook_google_business", "portfolio"],
+  "story_progression": ["cellular signal", "synaptic branching propagation", "vascular organic network", "breath", "eye focus", "human gesture", "connection", "message"],
+  "visual_invariants": ["directional biological luminosity carries the signal", "causal continuity between adjacent states", "restrained editorial realism", "negative space reserved for deterministic typography"],
+  "motion_invariants": ["pulse", "propagate", "branch", "diffuse", "breathe", "focus", "reach", "settle"],
+  "camera_invariants": {"microscopic": ["90–100 mm macro feeling", "shallow depth", "slow controlled push"], "human": ["35–50 mm documentary/editorial feeling", "broader depth", "settled human-scale camera"]},
+  "color_tokens": ["mineral_white", "warm_mineral", "carbon", "botanical_green", "bioelectric_cyan"],
+  "material_tokens": ["membrane", "translucent_tissue", "mineral", "atmospheric_particulate", "subtle_glass_refraction"],
+  "typography_contract": {"mode": "deterministic_post", "copy": ["EVERY STORY BEGINS AS A SIGNAL.", "THE DIFFERENCE IS WHAT WE MAKE OF IT.", "FROM SIGNAL.", "TO STORY.", "TO MOVEMENT.", "NOURISH THE SIGNAL."], "safe_zones": {"9:16": "central 80% width; avoid top 14% and bottom 20%", "4:5": "central 84% width; avoid outer 8%", "1:1": "central 82%", "16:9": "right third or left third reserved per crop manifest"}},
+  "negative_constraints": ["uncontrolled warping", "random morphing", "constant camera movement", "excessive particles", "impossible anatomy", "floating UI or HUD", "chrome biotech", "neon cyberpunk", "generic AI gloss", "generated text or logos", "sentimental healthcare stock photography", "fear or disease dramatization"],
+  "healthcare_claim_constraints": ["no treatment promise", "no drug or outcome claim", "no implied efficacy", "no diagnostic representation", "no exaggerated wellness result"],
+  "provider_targets": {
+    "openai": {"model_env": "OBSAD_OPENAI_MODEL", "mode": "keyframe_and_supported_motion", "notes": "Semantic consistency and reference-guided art direction."},
+    "xai": {"model_env": "OBSAD_XAI_MODEL", "mode": "exploration_and_short_motion", "notes": "Concise motion studies and reference-guided iteration."},
+    "comfyui": {"model_env": "OBSAD_COMFY_CHECKPOINT", "mode": "reproducible_graph", "notes": "Graph holds control, seeds, patches, hashes, and references."},
+    "wan": {"model_env": "OBSAD_WAN_MODEL", "mode": "staged_video", "notes": "Keyframe to controlled motion to selected transition."}
+  },
+  "platform_targets": [
+    {"id": "social_master", "width": 1080, "height": 1920, "duration_seconds": 15, "derives_from": "campaign_contract"},
+    {"id": "email_hero", "width": 1600, "height": 900, "duration_seconds": 6, "derives_from": "social_master"},
+    {"id": "business_square", "width": 1080, "height": 1080, "duration_seconds": 6, "derives_from": "social_master"},
+    {"id": "business_portrait", "width": 1080, "height": 1350, "duration_seconds": 6, "derives_from": "social_master"}
+  ],
+  "qa_requirements": {"weights": {"concept_fidelity": 20, "motion_coherence": 15, "visual_continuity": 15, "human_credibility": 10, "technical_integrity": 10, "platform_fitness": 10, "healthcare_safety": 10, "originality": 5, "typography_readiness": 5}, "blocking_dimensions": ["healthcare_safety", "technical_integrity"], "minimum_score": 80},
+  "provenance": {"source": "user-approved CODEX handoff; semantic transcription into OBSAD conventions", "created_at": "2026-08-12", "contract_version": "1.0.0"}
+}

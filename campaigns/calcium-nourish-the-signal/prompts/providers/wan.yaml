@@ -1,0 +1,4 @@
+joiner: ", "
+directives:
+  - Generate controlled keyframe-to-motion stages, then selected transitions; never solve the full film in one pass.
+  - Bind start and end keyframes and record video workflow settings in the run receipt.

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "campaign_id": "calcium-nourish-the-signal",
+  "contract": "../creative-contract.json",
+  "contract_sha256": "224296825e54317ef99ccc5a3a1f76a62d0be8790df67ef0d902acf84e147691",
+  "master": {
+    "id": "social_master",
+    "status": "planned",
+    "asset": null,
+    "qa_receipt": null
+  },
+  "derivatives": [
+    {
+      "id": "email_hero",
+      "status": "blocked_pending_master",
+      "asset": null,
+      "derives_from": "social_master",
+      "qa_receipt": null
+    },
+    {
+      "id": "business_square",
+      "status": "blocked_pending_master",
+      "asset": null,
+      "derives_from": "social_master",
+      "qa_receipt": null
+    },
+    {
+      "id": "business_portrait",
+      "status": "blocked_pending_master",
+      "asset": null,
+      "derives_from": "social_master",
+      "qa_receipt": null
+    }
+  ],
+  "note": "No final media is claimed. Populate hashes and receipts only after generation, selection, assembly, and QA."
+}

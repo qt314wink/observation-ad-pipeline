@@ -1,0 +1,16 @@
+observations:
+  - id: OBS-01
+    statement: Health communication frequently begins with scientific or behavioral information that must become understandable to a non-specialist audience.
+    source: approved campaign brief
+  - id: OBS-02
+    statement: A motion application must demonstrate continuity, art direction, reproducibility, adaptation, and editorial judgment rather than novelty alone.
+    source: approved application brief
+creative_inferences:
+  - id: INF-01
+    statement: A visible signal propagating from microscopic abstraction into a human gesture can provide continuity for that translation.
+    evidence: [OBS-01]
+    confidence: 0.9
+  - id: INF-02
+    statement: Controlled stage-to-stage transformations and visible rejection evidence can demonstrate directed generative creativity.
+    evidence: [OBS-02]
+    confidence: 0.9

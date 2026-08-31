@@ -1,0 +1,4 @@
+joiner: " "
+directives:
+  - Favor art-directed keyframes, reference-guided transformation, and semantic consistency.
+  - Treat each named section as binding; do not render typography.

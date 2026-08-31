@@ -5,6 +5,7 @@ import csv, hashlib, json, os, shutil, subprocess, sys, time, uuid
 import click, requests, yaml
 from dotenv import load_dotenv
 import fastjsonschema
+from .campaign import compile_provider, validate_campaign
 
 load_dotenv()
 ROOT = Path(os.getenv("OBSAD_ROOT", ".")).expanduser().resolve()
@@ -142,6 +143,32 @@ def healthcheck(url: str) -> tuple[bool, str]:
 @click.version_option("0.2.1")
 def main() -> None:
     """Observation-led image/video ad pipeline."""
+
+
+@main.command("campaign-validate")
+@click.argument("directory", type=click.Path(path_type=Path))
+def campaign_validate(directory: Path) -> None:
+    """Validate a governed campaign package and its cross-file invariants."""
+    errors = validate_campaign(directory.resolve(), SCHEMAS / "campaign-contract.schema.json")
+    if errors:
+        raise click.ClickException("\n".join(errors))
+    click.echo("valid")
+
+
+@main.command("campaign-compile")
+@click.argument("directory", type=click.Path(path_type=Path))
+@click.option("--provider", type=click.Choice(["openai", "xai", "comfyui", "wan"]), required=True)
+@click.option("--model", help="Execution-time model override; otherwise the configured environment variable is used.")
+@click.option("--task-id", help="Keyframe task ID (for example K01) to compile into the payload.")
+@click.option("--out", type=click.Path(path_type=Path))
+def campaign_compile(directory: Path, provider: str, model: str | None, task_id: str | None, out: Path | None) -> None:
+    """Compile the shared semantic contract through one provider adapter."""
+    payload = compile_provider(directory.resolve(), provider, model=model, task_id=task_id)
+    rendered = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    if out:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(rendered, encoding="utf-8")
+    click.echo(rendered, nl=False)
 
 @main.command("doctor")
 @click.option("--url", default=lambda: os.getenv("COMFY_URL", "http://127.0.0.1:8188"))

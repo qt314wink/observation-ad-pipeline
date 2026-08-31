@@ -1,0 +1,132 @@
+schema_version: '1.0'
+build_stage: 1
+keyframes:
+- contract: ../creative-contract.json
+  semantic_prompt: ../prompts/semantic.yaml
+  provider_candidates: &id001
+  - openai
+  - xai
+  - comfyui
+  model: runtime_configured
+  status: planned
+  references: &id002 []
+  candidate_receipt: null
+  qa_receipt: null
+  id: K01
+  name: microscopic_signal
+  subject_override: A single restrained cyan pulse appears inside a mineral-white
+    translucent membrane.
+  motion_verb: pulse
+  camera_phase: macro
+  seed: 314151
+  lineage: null
+- contract: ../creative-contract.json
+  semantic_prompt: ../prompts/semantic.yaml
+  provider_candidates: *id001
+  model: runtime_configured
+  status: planned
+  references: *id002
+  candidate_receipt: null
+  qa_receipt: null
+  id: K02
+  name: signal_propagation
+  subject_override: The same pulse travels along one branching translucent path.
+  motion_verb: propagate
+  camera_phase: macro
+  seed: 314152
+  lineage: K01
+- contract: ../creative-contract.json
+  semantic_prompt: ../prompts/semantic.yaml
+  provider_candidates: *id001
+  model: runtime_configured
+  status: planned
+  references: *id002
+  candidate_receipt: null
+  qa_receipt: null
+  id: K03
+  name: biological_branching
+  subject_override: The luminous path branches into a plausible organic network.
+  motion_verb: branch
+  camera_phase: macro
+  seed: 314153
+  lineage: K02
+- contract: ../creative-contract.json
+  semantic_prompt: ../prompts/semantic.yaml
+  provider_candidates: *id001
+  model: runtime_configured
+  status: planned
+  references: *id002
+  candidate_receipt: null
+  qa_receipt: null
+  id: K04
+  name: biology_human_transition
+  subject_override: The network geometry resolves causally into breathable human-scale
+    fabric and shoulder contour.
+  motion_verb: diffuse
+  camera_phase: transition
+  seed: 314154
+  lineage: K03
+- contract: ../creative-contract.json
+  semantic_prompt: ../prompts/semantic.yaml
+  provider_candidates: *id001
+  model: runtime_configured
+  status: planned
+  references: *id002
+  candidate_receipt: null
+  qa_receipt: null
+  id: K05
+  name: breath_fabric_transition
+  subject_override: A natural inhale lifts fabric slightly while the signal remains
+    a subtle edge light.
+  motion_verb: breathe
+  camera_phase: human
+  seed: 314155
+  lineage: K04
+- contract: ../creative-contract.json
+  semantic_prompt: ../prompts/semantic.yaml
+  provider_candidates: *id001
+  model: runtime_configured
+  status: planned
+  references: *id002
+  candidate_receipt: null
+  qa_receipt: null
+  id: K06
+  name: eye_focus
+  subject_override: An authentic eye settles focus toward a nearby person, without
+    beauty-ad retouching.
+  motion_verb: focus
+  camera_phase: human
+  seed: 314156
+  lineage: K05
+- contract: ../creative-contract.json
+  semantic_prompt: ../prompts/semantic.yaml
+  provider_candidates: *id001
+  model: runtime_configured
+  status: planned
+  references: *id002
+  candidate_receipt: null
+  qa_receipt: null
+  id: K07
+  name: hand_connection
+  subject_override: A plausible hand reaches and settles into an understated human
+    connection.
+  motion_verb: reach
+  camera_phase: human
+  seed: 314157
+  lineage: K06
+- contract: ../creative-contract.json
+  semantic_prompt: ../prompts/semantic.yaml
+  provider_candidates: *id001
+  model: runtime_configured
+  status: planned
+  references: *id002
+  candidate_receipt: null
+  qa_receipt: null
+  id: K08
+  name: negative_space_hold
+  subject_override: The connected human silhouette settles with clean message-safe
+    negative space.
+  motion_verb: settle
+  camera_phase: human
+  seed: 314158
+  lineage: K07

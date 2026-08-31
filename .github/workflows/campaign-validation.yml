@@ -1,0 +1,40 @@
+name: Campaign Validation
+
+on:
+  pull_request:
+    paths:
+      - 'campaigns/**'
+      - 'schemas/campaign-contract.schema.json'
+      - 'src/obsad/campaign.py'
+      - 'src/obsad/cli.py'
+      - 'tests/test_campaign.py'
+      - '.github/workflows/campaign-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'campaigns/**'
+      - 'schemas/campaign-contract.schema.json'
+      - 'src/obsad/campaign.py'
+      - 'src/obsad/cli.py'
+      - 'tests/test_campaign.py'
+      - '.github/workflows/campaign-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-campaign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install package and test runner
+        run: python -m pip install -e . pytest
+      - name: Validate governed campaign
+        run: python -m obsad.cli campaign-validate campaigns/calcium-nourish-the-signal
+      - name: Run campaign regression tests
+        run: pytest -q tests/test_campaign.py
