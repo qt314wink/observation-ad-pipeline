@@ -154,7 +154,13 @@
             "type": "string"
           },
           "response": {
-            "type": "string"
+            "enum": [
+              "rigid",
+              "rigid_fold_only",
+              "incidence_iridescent",
+              "angle_threshold_flash",
+              "micro_iridescent"
+            ]
           }
         }
       }
@@ -272,7 +278,12 @@
                     "expoIn"
                   ]
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "$ref": "#/$defs/channelControlRequirements"
+                }
+              ]
             }
           }
         }
@@ -373,6 +384,122 @@
           }
         }
       }
+    }
+  },
+  "$defs": {
+    "channelControlRequirements": {
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "enum": [
+                  "rotate.local",
+                  "rotate.counterphase",
+                  "translate.radial",
+                  "translate.tangential",
+                  "translate.depth",
+                  "fold.root_hinge",
+                  "fold.medial_ridge",
+                  "fold.saddle",
+                  "fold.counter",
+                  "cell.normal_displace",
+                  "camera.dolly",
+                  "camera.pan"
+                ]
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "required": [
+              "amplitude",
+              "unit"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "enum": [
+                  "reveal.occlusion",
+                  "reveal.mask_growth",
+                  "reveal.density",
+                  "reveal.aperture"
+                ]
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "required": [
+              "start",
+              "end"
+            ],
+            "properties": {
+              "start": {
+                "minimum": 0,
+                "maximum": 1
+              },
+              "end": {
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "enum": [
+                  "light.specular_sweep",
+                  "light.vein_propagate",
+                  "light.caustic_confined",
+                  "light.rim_migrate",
+                  "network.propagate",
+                  "network.tension",
+                  "cell.neighbor_diffuse",
+                  "camera.focus_rack",
+                  "temporal.pulse",
+                  "temporal.settle",
+                  "temporal.inverse_reassemble"
+                ]
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "required": [
+              "strength"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "temporal.phase_offset"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "required": [
+              "phase_offset_s"
+            ]
+          }
+        }
+      ]
     }
   }
 }

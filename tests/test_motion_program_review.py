@@ -128,6 +128,90 @@ class MotionProgramReviewRegressionTest(unittest.TestCase):
         self.assertEqual(load(SCHEMA), load(DEFAULT_SCHEMA_PATH))
         self.assertEqual([], validate_motion_program(self.program))
 
+    def test_compiled_controls_include_immutable_preservation_constraints(self) -> None:
+        compiled = compile_motion_program(self.program, "wan")
+        self.assertEqual(self.program["preservation"], compiled["controls"]["preservation"])
+        self.program["preservation"]["locks"].append("nucleus")
+        self.assertNotIn("nucleus", compiled["controls"]["preservation"]["locks"])
+
+    def test_scene_grammar_must_match_declared_topology(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["scenes"][0]["grammar"] = "portrait.anchor"
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("incompatible with topology" in error for error in errors), errors)
+
+    def test_geometry_displacement_cannot_target_locked_region(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        channel = invalid["scenes"][0]["channels"][0]
+        channel.update({"primitive": "cell.normal_displace", "target": "outer_anchor"})
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("cell.normal_displace cannot target locked region" in error for error in errors), errors)
+
+    def test_non_string_mapping_keys_are_rejected_before_canonicalization(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["lighting"][7] = "invalid YAML key"
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("string mapping keys" in error for error in errors), errors)
+        with self.assertRaisesRegex(ValueError, "string mapping keys"):
+            compile_motion_program(invalid)
+
+    def test_motion_primitives_require_executable_controls(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        del invalid["scenes"][0]["channels"][0]["amplitude"]
+        del invalid["scenes"][0]["channels"][0]["unit"]
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("amplitude" in error and "unit" in error for error in errors), errors)
+
+    def test_material_response_must_use_authoritative_vocabulary(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["materials"]["opal"]["response"] = "rigdi"
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("response" in error for error in errors), errors)
+
+    def test_calibration_experiment_ids_must_be_unique(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        duplicate = copy.deepcopy(invalid["calibration"]["experiments"][0])
+        invalid["calibration"]["experiments"].append(duplicate)
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("experiments ids must be unique" in error for error in errors), errors)
+        with self.assertRaisesRegex(ValueError, "experiments ids must be unique"):
+            build_experiment_variants(invalid, SCHEMA)
+
+    def test_explicit_empty_scene_order_is_rejected(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["temporal"]["scene_order"] = []
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("scene_order" in error for error in errors), errors)
+
+    def test_region_and_material_target_names_must_be_disjoint(self) -> None:
+        invalid = copy.deepcopy(self.program)
+        invalid["materials"]["nucleus"] = copy.deepcopy(invalid["materials"]["opal"])
+        errors = validate_motion_program(invalid, SCHEMA)
+        self.assertTrue(any("must be disjoint" in error for error in errors), errors)
+
+    def test_json_pointer_experiment_path_addresses_dot_containing_mapping_keys(self) -> None:
+        pointer_program = copy.deepcopy(self.program)
+        pointer_program["materials"]["blue.opal"] = pointer_program["materials"].pop("opal")
+        for scene in pointer_program["scenes"]:
+            for channel in scene["channels"]:
+                if channel["target"] == "opal":
+                    channel["target"] = "blue.opal"
+        pointer_program["lighting"]["mineral_probe"]["mask"] = [
+            "blue.opal" if material == "opal" else material
+            for material in pointer_program["lighting"]["mineral_probe"]["mask"]
+        ]
+        pointer_program["calibration"]["experiments"] = [
+            {
+                "id": "EXP-DOTTED-MATERIAL",
+                "parameter": "/materials/blue.opal/roughness",
+                "values": [0.2, 0.4],
+                "prediction": "must update the dot-containing material key only",
+            }
+        ]
+        self.assertEqual([], validate_motion_program(pointer_program, SCHEMA))
+        variants = build_experiment_variants(pointer_program, SCHEMA)
+        self.assertEqual([0.2, 0.4], [variant["program"]["materials"]["blue.opal"]["roughness"] for variant in variants])
+
 
 if __name__ == "__main__":
     unittest.main()

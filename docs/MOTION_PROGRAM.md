@@ -41,7 +41,7 @@ A mandala does not imply spinning. A portrait does not imply facial motion. Mate
 
 `examples/motion-programs/radial-relief-calibration.yaml` is a deliberately information-rich test plate contract. Its base-image prompt separates four radial zones and several materials so locality, topology drift, material spill, loop error and texture boiling can be judged independently.
 
-The included experiments use one-factor sweeps for fold strength, sector phase offset, contained distortion strength and mineral-light incidence angle. Run the same reference, model, seed and execution settings while changing only the declared parameter.
+The included experiments use one-factor sweeps for fold strength, sector phase offset, contained distortion strength and mineral-light incidence angle. Run the same reference, model, seed and execution settings while changing only the declared parameter. Calibration parameters may use the existing dotted notation for ordinary keys, or an [RFC 6901 JSON Pointer](https://www.rfc-editor.org/rfc/rfc6901) beginning with `/`; use JSON Pointer whenever a mapping key contains a literal `.` or `/` (escape `~` as `~0` and `/` as `~1`).
 
 ## Validation
 

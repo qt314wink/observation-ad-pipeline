@@ -14,6 +14,37 @@ import yaml
 DEFAULT_SCHEMA_PATH = files("obsad.schemas").joinpath("motion-program.schema.json")
 
 SUPPORTED_PROVIDERS = {"generic", "xai", "wan", "comfyui"}
+
+# These relationships are pinned to the Motion Oracle compatibility surface.
+TOPOLOGY_GRAMMARS = {
+    "radial_annular": {"radial.counterphase", "radial.hinged_aperture"},
+    "radial_petaled": {"radial.counterphase", "radial.hinged_aperture"},
+    "lattice": {"lattice.excavation"},
+    "stratified_relief": {"relief.stratified"},
+    "directional_procession": {"directional.procession"},
+    "network": {"network.propagation"},
+    "cellular": {"cellular.diffusion"},
+    "architecture": {"architecture.depth"},
+    "portrait_anchor": {"portrait.anchor"},
+    "material_macro": {"material.macro"},
+}
+
+# Only these primitives change a region's physical placement or shape. They
+# must not be applied to locked or stationary regions.
+GEOMETRY_CHANGING_PRIMITIVES = {
+    "rotate.local",
+    "rotate.counterphase",
+    "translate.radial",
+    "translate.tangential",
+    "translate.depth",
+    "fold.root_hinge",
+    "fold.medial_ridge",
+    "fold.saddle",
+    "fold.counter",
+    "cell.normal_displace",
+    "cell.neighbor_diffuse",
+}
+
 SECTION_ORDER = (
     "SUBJECT",
     "STRUCTURE",
@@ -57,6 +88,25 @@ def _region_map(program: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {region["id"]: region for region in program["structure"]["regions"]}
 
 
+def _mapping_key_path(path: str, key: Any) -> str:
+    return f"{path}.{key}" if isinstance(key, str) else f"{path}[{key!r}]"
+
+
+def _non_string_mapping_key_paths(value: Any, path: str = "$") -> list[str]:
+    if isinstance(value, dict):
+        errors = [path for key in value if not isinstance(key, str)]
+        for key, item in value.items():
+            errors.extend(_non_string_mapping_key_paths(item, _mapping_key_path(path, key)))
+        return errors
+    if isinstance(value, list):
+        return [
+            child
+            for index, item in enumerate(value)
+            for child in _non_string_mapping_key_paths(item, f"{path}[{index}]")
+        ]
+    return []
+
+
 def _non_finite_number_paths(value: Any, path: str = "$") -> list[str]:
     if isinstance(value, float) and not math.isfinite(value):
         return [path]
@@ -64,7 +114,7 @@ def _non_finite_number_paths(value: Any, path: str = "$") -> list[str]:
         return [
             child
             for key, item in value.items()
-            for child in _non_finite_number_paths(item, f"{path}.{key}")
+            for child in _non_finite_number_paths(item, _mapping_key_path(path, key))
         ]
     if isinstance(value, list):
         return [
@@ -76,6 +126,10 @@ def _non_finite_number_paths(value: Any, path: str = "$") -> list[str]:
 
 
 def validate_motion_program(program: dict[str, Any], schema_path: Any = DEFAULT_SCHEMA_PATH) -> list[str]:
+    non_string_key_paths = _non_string_mapping_key_paths(program)
+    if non_string_key_paths:
+        return [f"{path} must use string mapping keys" for path in non_string_key_paths]
+
     non_finite_paths = _non_finite_number_paths(program)
     if non_finite_paths:
         return [f"{path} must be a finite number" for path in non_finite_paths]
@@ -102,26 +156,44 @@ def validate_motion_program(program: dict[str, Any], schema_path: Any = DEFAULT_
     if len(scene_ids) != len(set(scene_ids)):
         errors.append("scenes ids must be unique")
 
-    declared_order = program["temporal"].get("scene_order", [])
-    if declared_order and declared_order != scene_ids:
+    temporal = program["temporal"]
+    if "scene_order" in temporal and temporal["scene_order"] != scene_ids:
         errors.append("temporal.scene_order must exactly match scenes order")
+
+    material_names = set(program["materials"])
+    shared_target_names = set(region_ids) & material_names
+    if shared_target_names:
+        errors.append(
+            "structure.regions ids and materials keys must be disjoint; shared names: "
+            + ", ".join(sorted(shared_target_names))
+        )
+
+    experiment_ids = [experiment["id"] for experiment in program.get("calibration", {}).get("experiments", [])]
+    if len(experiment_ids) != len(set(experiment_ids)):
+        errors.append("calibration.experiments ids must be unique")
 
     # Only declared regions/materials plus derivable symbolic targets are valid.
     # Microtexture/micro-pattern masks must be explicitly declared rather than
     # silently receiving provider binding authority.
-    known_targets = set(region_ids) | set(program["materials"]) | {"all_movable_regions"}
+    known_targets = set(region_ids) | material_names | {"all_movable_regions"}
     region_by_id = _region_map(program)
     locked_regions = set(program["preservation"]["locks"]) & set(region_ids)
+    allowed_grammars = TOPOLOGY_GRAMMARS[program["semantic"]["topology"]]
     for scene in program["scenes"]:
+        if scene["grammar"] not in allowed_grammars:
+            errors.append(
+                f"{scene['id']}: grammar {scene['grammar']!r} is incompatible with "
+                f"topology {program['semantic']['topology']!r}"
+            )
         for channel in scene["channels"]:
             target = channel["target"]
             if target not in known_targets:
                 errors.append(f"{scene['id']}: channel target {target!r} is not a declared region/material target")
             primitive = channel["primitive"]
-            if target in locked_regions and primitive.startswith(("rotate.", "translate.", "fold.")):
+            if target in locked_regions and primitive in GEOMETRY_CHANGING_PRIMITIVES:
                 errors.append(f"{scene['id']}: {primitive} cannot target locked region {target!r}")
             elif target in region_by_id and not region_by_id[target]["movable"]:
-                if primitive.startswith(("rotate.", "translate.", "fold.")):
+                if primitive in GEOMETRY_CHANGING_PRIMITIVES:
                     errors.append(f"{scene['id']}: {primitive} cannot target stationary region {target!r}")
 
     if program["temporal"].get("loop") and not program["temporal"].get("first_last_state_match", False):
@@ -214,6 +286,7 @@ def compile_motion_program(program: dict[str, Any], provider: str = "generic") -
     # later calibration experiment.
     controls = copy.deepcopy({
         "structure": program["structure"],
+        "preservation": program["preservation"],
         "materials": program["materials"],
         "scenes": program["scenes"],
         "lighting": program["lighting"],
@@ -257,9 +330,37 @@ def compile_motion_program(program: dict[str, Any], provider: str = "generic") -
     return payload
 
 
+def _json_pointer_parts(pointer: str) -> list[str]:
+    if not pointer.startswith("/"):
+        raise ValueError("JSON Pointer paths must begin with '/'")
+
+    parts: list[str] = []
+    for token in pointer[1:].split("/"):
+        decoded: list[str] = []
+        index = 0
+        while index < len(token):
+            if token[index] != "~":
+                decoded.append(token[index])
+                index += 1
+                continue
+            if index + 1 >= len(token) or token[index + 1] not in {"0", "1"}:
+                raise ValueError(f"invalid JSON Pointer escape in segment {token!r}")
+            decoded.append("~" if token[index + 1] == "0" else "/")
+            index += 2
+        parts.append("".join(decoded))
+    return parts
+
+
+def _path_parts(path: str) -> list[str]:
+    if not isinstance(path, str) or not path:
+        raise ValueError("experiment parameter paths must be non-empty strings")
+    return _json_pointer_parts(path) if path.startswith("/") else path.split(".")
+
+
 def get_dotted(value: dict[str, Any], dotted: str) -> Any:
+    """Resolve a legacy dotted path or an RFC 6901 JSON Pointer path."""
     current: Any = value
-    for part in dotted.split("."):
+    for part in _path_parts(dotted):
         if isinstance(current, list):
             try:
                 index = int(part)
@@ -281,7 +382,7 @@ def set_dotted(value: dict[str, Any], dotted: str, replacement: Any) -> None:
     # Resolve first so a typo can never create a new permissive mapping key.
     get_dotted(value, dotted)
     current: Any = value
-    parts = dotted.split(".")
+    parts = _path_parts(dotted)
     for part in parts[:-1]:
         current = current[int(part)] if isinstance(current, list) else current[part]
     leaf = parts[-1]
@@ -308,8 +409,13 @@ def build_experiment_variants(
     schema_path: Any = DEFAULT_SCHEMA_PATH,
 ) -> list[dict[str, Any]]:
     calibration = program.get("calibration", {})
+    experiments = calibration.get("experiments", [])
+    experiment_ids = [experiment["id"] for experiment in experiments]
+    if len(experiment_ids) != len(set(experiment_ids)):
+        raise ValueError("calibration.experiments ids must be unique")
+
     variants: list[dict[str, Any]] = []
-    for experiment in calibration.get("experiments", []):
+    for experiment in experiments:
         parameter = experiment["parameter"]
         try:
             reference_value = get_dotted(program, parameter)
