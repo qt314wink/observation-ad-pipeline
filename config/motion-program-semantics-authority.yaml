@@ -1,0 +1,28 @@
+schema_version: 0.1.0
+system: Motion Oracle
+role: semantic_authority
+repository: MelodicBloom/melodyfire
+commit: af44d5341397d9a08a09e98c298bb5dba828ea46
+path: client/src/content/motion-oracle/generativeMotionGrammar.ts
+semantic_version: 0.1.0
+status: provisional-pending-upstream-merge
+owned_fields:
+  - topology vocabulary
+  - motion grammar identifiers and meanings
+  - motion primitive semantic names
+  - material-response meanings
+  - modifier profiles
+  - easing profiles
+  - failure taxonomy
+  - substitution hypotheses
+local_authority:
+  - Motion Program schema structure
+  - evidence and preservation records
+  - provider compilation
+  - calibration programs
+  - experiment variants and receipts
+prohibited_local_redefinition:
+  - silently changing a Motion Oracle grammar meaning under the same identifier
+  - silently changing material semantic meaning under the same identifier
+  - treating provider behavior as upstream semantic authority
+promotion_rule: Replace status with canonical and advance commit only after the upstream Motion Oracle PR merges and this compatibility surface has been revalidated.

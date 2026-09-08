@@ -1,0 +1,209 @@
+schema_version: 0.1.0
+id: motion:radial-relief:calibration-001
+semantic:
+  subject: precision-built layered sixfold wood, paper, opal, labradorite and abalone relief calibration object
+  topology: radial_annular
+  intent: evaluate local counterphase motion, rigid folds, material-local lighting, reveal density and loop closure without global composition drift
+  perceptual_goal:
+    - structural_legibility
+    - depth
+    - material_differentiation
+    - controlled_complexity
+structure:
+  symmetry_order: 6
+  regions:
+    - id: nucleus
+      movable: true
+      radius: [0.0, 0.22]
+      description: small six-petal mineral nucleus
+    - id: inner_lattice
+      movable: true
+      radius: [0.22, 0.48]
+      description: black-white patterned petal lattice
+    - id: aperture_band
+      movable: true
+      radius: [0.48, 0.76]
+      description: six opaline rigid beveled petals
+    - id: outer_anchor
+      movable: false
+      radius: [0.76, 1.0]
+      description: stationary walnut circular frame
+preservation:
+  locks:
+    - center
+    - outer_silhouette
+    - symmetry_order
+    - region_order
+    - petal_count
+    - material_identity
+    - outer_anchor
+  prohibited:
+    - whole_object_spin
+    - transparent_duplicate
+    - crossfade_ghost
+    - outer_frame_deformation
+    - liquid_background
+    - paper_boiling
+    - wood_melting
+    - material_identity_drift
+materials:
+  wood:
+    description: precision-cut walnut veneer, matte and visibly grained
+    response: rigid
+    roughness: 0.72
+    specular: 0.12
+    glow: 0
+  paper:
+    description: dry fibrous cotton paper with black stipple and crosshatch printing
+    response: rigid_fold_only
+    roughness: 0.88
+    microtexture_density: 0.74
+    glow: 0
+  opal:
+    description: milky opal with broad internal spectral fire
+    response: incidence_iridescent
+    roughness: 0.24
+    internal_scatter: 0.56
+    flash_strength: 0.62
+  labradorite:
+    description: dark mineral with narrow blue-green directional flash
+    response: angle_threshold_flash
+    roughness: 0.31
+    flash_strength: 0.82
+    flash_threshold_deg: 22
+  abalone:
+    description: fine-scale shell interference with green-violet-gold shimmer
+    response: micro_iridescent
+    roughness: 0.26
+    shimmer_density: 0.68
+scenes:
+  - id: 0B
+    grammar: radial.counterphase
+    duration_s: 8.0
+    channels:
+      - primitive: rotate.local
+        target: nucleus
+        amplitude: 14
+        unit: deg
+        easing: sineInOut
+      - primitive: rotate.local
+        target: inner_lattice
+        amplitude: -9
+        unit: deg
+        easing: sineInOut
+      - primitive: fold.medial_ridge
+        target: aperture_band
+        amplitude: 3.5
+        unit: deg
+        strength: 0.42
+        phase_offset_s: 0.18
+        easing: smoothstep
+      - primitive: reveal.density
+        target: paper
+        start: 0.35
+        end: 0.92
+        easing: quinticInOut
+  - id: 0A
+    grammar: radial.hinged_aperture
+    duration_s: 8.0
+    channels:
+      - primitive: fold.root_hinge
+        target: aperture_band
+        amplitude: 5.0
+        unit: deg
+        strength: 0.52
+        phase_offset_s: 0.22
+        easing: sineOut
+      - primitive: reveal.occlusion
+        target: labradorite
+        start: 0.12
+        end: 0.82
+        easing: smoothstep
+      - primitive: light.vein_propagate
+        target: opal
+        strength: 0.62
+        phase_offset_s: 0.22
+        easing: linear
+      - primitive: temporal.inverse_reassemble
+        target: all_movable_regions
+        strength: 1.0
+        easing: sineInOut
+lighting:
+  key:
+    type: soft_directional
+    temperature_k: 4700
+    elevation_deg: 34
+    azimuth_start_deg: -24
+    azimuth_end_deg: 80
+    intensity: 0.54
+  mineral_probe:
+    type: narrow_specular
+    temperature_k: 7200
+    incidence_deg: 24
+    angular_speed_deg_s: 31
+    intensity: 0.68
+    mask: [opal, labradorite, abalone]
+  rim:
+    temperature_k: 3200
+    intensity: 0.24
+  effects:
+    ombre:
+      mode: material_confined
+      direction: center_to_tip
+      strength: 0.38
+      stops: [opal_white, mint, teal, cobalt, violet]
+    glow:
+      mask: [opal, labradorite]
+      strength: 0.22
+      radius_px_720p: 2
+    bleed:
+      strength: 0.08
+      maximum_width_px_720p: 1.5
+    distortion:
+      type: contained_ridge_warp
+      strength: 0.04
+      frequency: 0.42
+      octaves: 2
+      boundary_lock: true
+camera:
+  lens_mm: 48
+  aperture: 2.8
+  projection: perspective
+  orientation: locked_front
+  dolly_percent: 1.6
+  yaw_deg: 0
+  roll_deg: 0
+temporal:
+  loop: true
+  fps: 24
+  scene_order: [0B, 0A]
+  first_last_state_match: true
+constraints:
+  maximum_silhouette_delta_percent: 0.8
+  failure_classes:
+    topology: [petal_multiplication, outer_frame_deformation]
+    temporal: [ghost_frame, crossfade_echo, loop_jump]
+    camera: [unintended_orbit, turntable_spin]
+    material: [wood_liquefaction, paper_boiling, mineral_smear]
+    environment: [water_ripple_background, radial_wall_wave]
+calibration:
+  base_image_prompt: >-
+    Create a perfectly centered sixfold radial relief calibration object with four clearly separated concentric zones: a small six-petal mineral nucleus; a black-and-white patterned inner lattice; six large opaline petals with rigid beveled edges; and a thick stationary walnut outer frame. Use matte walnut, dry white cotton paper printed with black stippling and crosshatching, milky opal, dark blue-green labradorite, and small abalone inserts. Make all six sectors geometrically identical. Use a flat matte charcoal background, neutral frontal camera, high edge clarity, clean layer separation and strong contact shadows. No pre-existing motion, blur, rays, liquid effects, transparency, asymmetry or floating fragments.
+  negative_prompt: No text, no water, no motion blur, no asymmetry, no duplicate petals, no transparent layers, no soft outer silhouette, no pre-baked glow.
+  experiments:
+    - id: EXP-FOLD
+      parameter: scenes.1.channels.0.strength
+      values: [0.2, 0.4, 0.6]
+      prediction: Higher values deepen occlusion and contact shadow but increase topology-drift risk.
+    - id: EXP-PHASE
+      parameter: scenes.1.channels.0.phase_offset_s
+      values: [0.08, 0.18, 0.34]
+      prediction: Larger offsets move behavior from near-synchronous breathing toward legible sector relay.
+    - id: EXP-DISTORT
+      parameter: lighting.effects.distortion.strength
+      values: [0.0, 0.04, 0.1]
+      prediction: Higher distortion increases apparent material energy but risks rigid-edge loss and texture boiling.
+    - id: EXP-LIGHT
+      parameter: lighting.mineral_probe.incidence_deg
+      values: [14, 24, 36]
+      prediction: Incidence changes should alter labradorite flash timing without recoloring wood or paper.
