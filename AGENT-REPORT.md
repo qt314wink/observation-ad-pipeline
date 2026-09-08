@@ -3,7 +3,7 @@
 ## Receipts
 
 - Starting SHA: `8d30f3c752af2a9393a8fc8dc42d23e24dbf0d68`
-- Resulting SHA(s): pending commit
+- Resulting SHA(s): `75becc620e27d17f156a68e6509f2c8cb74a9a6b`
 - Branch: `feature/motion-reference-representation-boundary`
 - Merge conflicts: none present in the checked-out worktree.
 - Exact files changed:
@@ -48,7 +48,7 @@ The workbench depends on static hosting semantics for relative fetches. Human fr
 
 ### Cherry-pickable commit list
 
-- Pending commit from this agent.
+- `75becc620e27d17f156a68e6509f2c8cb74a9a6b feat(review): add deterministic dual-corpus workbench`
 
 ### Recommendation
 
