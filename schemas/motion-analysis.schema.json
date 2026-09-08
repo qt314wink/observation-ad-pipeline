@@ -9,7 +9,7 @@
     "fixtureId": {"type": "string", "pattern": "^motion:"},
     "taxonomy": {"type": "array", "minItems": 8, "uniqueItems": true},
     "sources": {
-      "type": "array", "minItems": 4, "maxItems": 4,
+      "type": "array", "minItems": 1,
       "items": {
         "type": "object",
         "required": ["id", "path", "evidenceStatus", "requiredNextAction"],
@@ -26,4 +26,3 @@
   },
   "additionalProperties": true
 }
-
