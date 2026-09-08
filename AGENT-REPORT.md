@@ -3,9 +3,9 @@
 ## Receipts
 
 - Starting SHA: `8d30f3c752af2a9393a8fc8dc42d23e24dbf0d68`
-- Resulting SHA(s): `75becc620e27d17f156a68e6509f2c8cb74a9a6b`
+- Resulting SHA(s): `75becc620e27d17f156a68e6509f2c8cb74a9a6b`, `04414e5e8a021c96af1eca522ad12cbdfc807d2d`, `9b5330d21012b2c364522f7981beeeb82c47535a`
 - Branch: `feature/motion-reference-representation-boundary`
-- Merge conflicts: none present in the checked-out worktree.
+- Merge conflicts: resolved while merging `governance/prompt-provenance-workflow` at `c21bd6d6b752df8f494dc544f47687b286484e2a`.
 - Exact files changed:
   - `review/data/index.json`
   - `review/data/magical-ai-books.json`
