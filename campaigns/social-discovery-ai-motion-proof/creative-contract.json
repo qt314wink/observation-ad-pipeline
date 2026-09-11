@@ -1,0 +1,188 @@
+{
+  "campaign_id": "social-discovery-ai-motion-proof",
+  "campaign_name": "SDG AI Motion Proof v0",
+  "client_context": "Speculative application and portfolio proof for a Social Discovery Group AI Motion Designer (Freelance) opportunity; no commissioned client work.",
+  "application_context": "Governed OBSAD specimen for demonstrating observation-led creative direction, controlled motion hooks, repeatable identity, and future provider translation.",
+  "objective": "Represent a performance-oriented AI motion experiment without fabricating an employer requirement, product claim, commissioned deliverable, or performance result.",
+  "thesis": "One visually immutable relational symbol can support distinct acquisition entry points while preserving a recognisable campaign body and a reproducible production record.",
+  "audience": [
+    "Social Discovery Group hiring reviewers",
+    "creative directors evaluating AI-assisted motion systems",
+    "prospective paid-trial collaborators",
+    "OBSAD pipeline maintainers"
+  ],
+  "channel_targets": [
+    "meta_reels",
+    "tiktok",
+    "youtube_shorts",
+    "google_video",
+    "portfolio"
+  ],
+  "story_progression": [
+    "pattern interruption",
+    "Connection Nucleus becomes legible",
+    "echo core recognition",
+    "relational synchronisation",
+    "meaning reveal",
+    "CTA hold"
+  ],
+  "visual_invariants": [
+    "dominant pearl-like core remains distinct from smaller echo core",
+    "fixed gilded orbital relationship preserves distance without collapse",
+    "restrained cobalt and spectral illumination remain subordinate to the nucleus",
+    "tactile paper-fiber depth stays within a shallow visual family",
+    "negative space remains available for deterministic post-production typography",
+    "the Connection Nucleus is recognisable by approximately 0.8 seconds"
+  ],
+  "motion_invariants": [
+    "coherent levitation rather than free-floating drift",
+    "approach and recognition without collision or merger",
+    "one restrained synchronisation pulse at the shared body event",
+    "shared body begins by approximately 1.2 seconds",
+    "final 1.5 seconds settle into poised suspension"
+  ],
+  "camera_invariants": {
+    "hook": [
+      "variant-specific initial camera behavior is the only permitted opening camera delta",
+      "no orbiting camera",
+      "no handheld noise"
+    ],
+    "shared_body": [
+      "restrained push with shallow parallax",
+      "50–65 mm focal equivalent feeling",
+      "stable framing at convergence"
+    ]
+  },
+  "color_tokens": [
+    "pearl_white",
+    "gilded_gold",
+    "cobalt_blue",
+    "spectral_lilac",
+    "carbon"
+  ],
+  "material_tokens": [
+    "pearl_substrate",
+    "echo_substrate",
+    "gilded_orbit",
+    "paper_fiber",
+    "spectral_bloom"
+  ],
+  "typography_contract": {
+    "mode": "deterministic_post",
+    "copy": [
+      "Still waiting to feel seen?",
+      "There you are.",
+      "Find the signal in the noise.",
+      "Some connections feel different.",
+      "Meet beyond the surface.",
+      "Discover your connection."
+    ],
+    "safe_zones": {
+      "9:16": "central 80% width; avoid top 14% and bottom 20%",
+      "4:5": "central 84% width; avoid outer 8%",
+      "1:1": "central 82%",
+      "16:9": "reserve the quieter third per crop manifest"
+    }
+  },
+  "negative_constraints": [
+    "identity drift between variants",
+    "merging or collision of the two cores",
+    "generic glowing sphere",
+    "chrome or liquid-metal material",
+    "planet, eye, heart, or character substitution",
+    "uncontrolled warping or random morphing",
+    "constant camera movement",
+    "excessive particles or glitter",
+    "neon cyberpunk treatment",
+    "generated text or logos",
+    "opening title card",
+    "slow cinematic establishing shot",
+    "fabricated employer, product, or performance claim"
+  ],
+  "healthcare_claim_constraints": [
+    "no treatment promise",
+    "no drug or outcome claim",
+    "no implied efficacy",
+    "no fabricated campaign performance result",
+    "no implication that speculative work was commissioned"
+  ],
+  "provider_targets": {
+    "openai": {
+      "model_env": "OBSAD_OPENAI_MODEL",
+      "mode": "keyframe_and_supported_motion",
+      "notes": "Future semantic and reference-guided experiment; no execution evidence in this envelope."
+    },
+    "xai": {
+      "model_env": "OBSAD_XAI_MODEL",
+      "mode": "exploration_and_short_motion",
+      "notes": "Future exploration candidate; provider behavior remains experimental evidence."
+    },
+    "comfyui": {
+      "model_env": "OBSAD_COMFY_CHECKPOINT",
+      "mode": "reproducible_graph",
+      "notes": "Future graph-based identity-preservation experiment with recorded seeds and hashes."
+    },
+    "wan": {
+      "model_env": "OBSAD_WAN_MODEL",
+      "mode": "staged_video",
+      "notes": "Future staged motion experiment after a source frame and execution authority exist."
+    }
+  },
+  "platform_targets": [
+    {
+      "id": "social_master",
+      "width": 1080,
+      "height": 1920,
+      "duration_seconds": 10,
+      "derives_from": "campaign_contract"
+    },
+    {
+      "id": "meta_reels",
+      "width": 1080,
+      "height": 1920,
+      "duration_seconds": 10,
+      "derives_from": "social_master"
+    },
+    {
+      "id": "tiktok_short",
+      "width": 1080,
+      "height": 1920,
+      "duration_seconds": 10,
+      "derives_from": "social_master"
+    },
+    {
+      "id": "youtube_short",
+      "width": 1080,
+      "height": 1920,
+      "duration_seconds": 10,
+      "derives_from": "social_master"
+    },
+    {
+      "id": "portfolio_breakdown",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 10,
+      "derives_from": "social_master"
+    }
+  ],
+  "qa_requirements": {
+    "weights": {
+      "contract_validity": 25,
+      "evidence_integrity": 25,
+      "identity_preservation": 25,
+      "hook_isolation": 15,
+      "platform_fitness": 10
+    },
+    "blocking_dimensions": [
+      "contract_validity",
+      "evidence_integrity",
+      "identity_preservation"
+    ],
+    "minimum_score": 80
+  },
+  "provenance": {
+    "source": "User-approved Connection Nucleus Observation handoff; semantic transcription into existing OBSAD campaign conventions.",
+    "created_at": "2026-09-10",
+    "contract_version": "1.0.0"
+  }
+}

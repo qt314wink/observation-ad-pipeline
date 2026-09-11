@@ -1,0 +1,72 @@
+campaign_id: social-discovery-ai-motion-proof
+status: planned
+purpose: Test three acquisition openings against one immutable Connection Nucleus body.
+shared_body:
+  duration_seconds: 10.0
+  aspect_ratio: 9:16
+  master_resolution: 1080x1920
+  fallback_resolution: 720x1280
+  frame_rate: 24
+  convergence_seconds: 1.2
+  synchronisation_seconds: 5.55
+  cta_start_seconds: 8.5
+  output: null
+allowed_hook_deltas:
+  - opening_visual_event
+  - opening_copy
+  - initial_camera_behavior
+  - initial_audio_transient
+shared_invariants:
+  - Connection Nucleus geometry
+  - dominant pearl core remains distinct from echo core
+  - gilded orbital structure
+  - restrained cobalt and spectral illumination
+  - shared body after convergence
+  - one synchronisation event at 5.55 seconds
+  - CTA sequence and end-card composition
+variants:
+  - id: A
+    name: absence_to_arrival
+    emotional_vector: loneliness to recognition
+    test_question: Does sudden arrival from an empty field create immediate recognition?
+    opening:
+      visual_event: Nearly empty torn-paper aperture; faint cobalt light precedes the nucleus.
+      copy: Still waiting to feel seen?
+      camera_behavior: Fast restrained rise into frame, decelerating before center.
+      audio_transient: Low vacuum rise followed by one gilded chime.
+      timing_seconds: 0.8
+    output: null
+    status: planned
+  - id: B
+    name: curiosity_to_recognition
+    emotional_vector: curiosity to discovery
+    test_question: Does briefly withholding the complete object increase attentional curiosity?
+    opening:
+      visual_event: Extreme material macro resolves into the two-core silhouette.
+      copy: There you are.
+      camera_behavior: Controlled pullback reveals the dominant core before the echo core crosses the gilded edge.
+      audio_transient: Tactile scrape followed by a reversed breath.
+      timing_seconds: 0.8
+    output: null
+    status: planned
+  - id: C
+    name: noise_to_signal
+    emotional_vector: overload to meaningful connection
+    test_question: Does contrast between social noise and relational clarity strengthen the opening proposition?
+    opening:
+      visual_event: Fragmented silhouettes and paper shards cross frame while the nucleus stays stable.
+      copy: Find the signal in the noise.
+      camera_behavior: Static nucleus framing while surrounding fragments accelerate and then quiet.
+      audio_transient: Indistinct fractured voices collapse into a spectral mute.
+      timing_seconds: 0.8
+    output: null
+    status: planned
+future_execution_record:
+  source_frame_id: null
+  provider: null
+  model_version: null
+  workflow_file: null
+  seed: null
+  prompt_version: null
+  selected_take: null
+  rejected_takes: null
