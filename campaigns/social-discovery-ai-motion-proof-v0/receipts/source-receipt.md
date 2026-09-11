@@ -36,11 +36,13 @@ git log -1 --oneline
 
 Recorded after execution:
 
-- Campaign validation: `PENDING`
-- Campaign regression tests: `PENDING`
-- Whitespace check: `PENDING`
-- Branch SHA: `PENDING`
-- Draft PR: `PENDING`
-- Vercel preview: `PENDING`
+- Campaign validation: `valid`
+- Campaign regression tests: `10 passed` (`python -m pytest -q tests/test_campaign.py`)
+- Whitespace check: `passed` (`git diff --check`)
+- Envelope commit SHA: `fd278a6383c30a01ad2087e788313ab7db0e45ea`
+- Draft PR: `#5` — https://github.com/qt314wink/observation-ad-pipeline/pull/5
+- Vercel preview state: `Ready` / GitHub status `success`
+- Vercel preview URL: https://observation-ad-pipeline-git-campaign-social-3a39ab-melodicbloom.vercel.app
+- Preview access: the URL responds with the Vercel login page because deployment protection is enabled; the deployment itself is ready.
 
-The commit and external review receipts are intentionally recorded after their respective systems return evidence. The content commit must remain limited to this seven-file envelope.
+The content commit remains limited to this seven-file envelope. The receipt update is confined to this approved receipt path and does not alter generic architecture or campaign semantics.
