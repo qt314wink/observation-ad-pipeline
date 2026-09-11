@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "campaign_id": "social-discovery-ai-motion-proof-v0",
+  "contract": "../creative-contract.json",
+  "contract_sha256": "5073063c711f7e85bbb1cf40f9ef65a845e70d6a968d623aa5b93384c8848ab5",
+  "master": {
+    "id": "social_master",
+    "status": "planned",
+    "asset": null,
+    "qa_receipt": null
+  },
+  "derivatives": [
+    {
+      "id": "meta_reels",
+      "status": "planned",
+      "asset": null,
+      "derives_from": "social_master",
+      "qa_receipt": null
+    },
+    {
+      "id": "tiktok_short",
+      "status": "planned",
+      "asset": null,
+      "derives_from": "social_master",
+      "qa_receipt": null
+    },
+    {
+      "id": "youtube_short",
+      "status": "planned",
+      "asset": null,
+      "derives_from": "social_master",
+      "qa_receipt": null
+    },
+    {
+      "id": "portfolio_breakdown",
+      "status": "planned",
+      "asset": null,
+      "derives_from": "social_master",
+      "qa_receipt": null
+    }
+  ],
+  "note": "No final media is claimed. Populate hashes and receipts only after an authorized generation, selection, assembly, and QA pass. This is speculative application proof, not commissioned Social Discovery Group work."
+}

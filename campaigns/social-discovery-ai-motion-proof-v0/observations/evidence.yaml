@@ -1,0 +1,39 @@
+observations:
+  - id: OBS-01
+    evidence_class: observed_supplied
+    statement: The supplied Social Discovery Group opportunity brief requests performance video ads and motion assets for paid-social and video channels.
+    source: user-supplied opportunity brief in Connection Nucleus Observation
+  - id: OBS-02
+    evidence_class: observed_supplied
+    statement: The supplied brief names AI-assisted image and video generation, prompting, consistency techniques, and rapid creative iteration as relevant role capabilities.
+    source: user-supplied opportunity brief in Connection Nucleus Observation
+  - id: OBS-03
+    evidence_class: observed_supplied
+    statement: The supplied brief describes the work as a freelance opportunity; compensation, a client product, approved claims, and a paid trial are not supplied here.
+    source: user-supplied opportunity brief in Connection Nucleus Observation
+  - id: OBS-04
+    evidence_class: repository_evidence
+    statement: OBSAD already validates campaign contracts, observation and inference provenance, token consistency, provider declarations, platform derivation, and manifest contract hashes.
+    source: repository main at 36e1775d7c42fa34963ea44fdd5a200e884ccffe
+  - id: OBS-05
+    evidence_class: repository_evidence
+    statement: The repository contains provider-neutral campaign compilation and motion-program infrastructure that can be exercised by a campaign package without changing generic semantics.
+    source: repository main at 36e1775d7c42fa34963ea44fdd5a200e884ccffe
+  - id: OBS-06
+    evidence_class: repository_evidence
+    statement: Campaign manifests use explicit planned and null states so absent media is not represented as completed output.
+    source: campaigns/calcium-nourish-the-signal on repository main
+
+creative_inferences:
+  - id: INF-01
+    statement: A two-core levitating Connection Nucleus can act as a stable relationship metaphor for a portfolio proof while remaining controllable across generation and editorial stages.
+    evidence: [OBS-01, OBS-02, OBS-03]
+    confidence: 0.72
+  - id: INF-02
+    statement: Isolating three emotional opening hooks and converging them into one shared body can demonstrate rapid acquisition iteration without rebuilding the visual family.
+    evidence: [OBS-01, OBS-02, OBS-04]
+    confidence: 0.78
+  - id: INF-03
+    statement: An explicit planned-output manifest and source receipt can make the application proof reproducible without implying that a commissioned project or campaign result exists.
+    evidence: [OBS-03, OBS-04, OBS-06]
+    confidence: 0.88
