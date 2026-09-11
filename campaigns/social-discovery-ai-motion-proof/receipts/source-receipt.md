@@ -2,7 +2,7 @@
 
 ## Authority and scope
 
-- Campaign root: `campaigns/social-discovery-ai-motion-proof-v0/`
+- Campaign root: `campaigns/social-discovery-ai-motion-proof/`
 - Repository: `qt314wink/observation-ad-pipeline`
 - Base: `main@36e1775d7c42fa34963ea44fdd5a200e884ccffe`
 - Requested branch: `campaign/social-discovery-ai-motion-proof-v0`
@@ -27,7 +27,7 @@ The three hooks are recorded as hypotheses. No provider has been executed, no so
 The exact commands for this handoff are:
 
 ```text
-python -m obsad.cli campaign-validate campaigns/social-discovery-ai-motion-proof-v0
+python -m obsad.cli campaign-validate campaigns/social-discovery-ai-motion-proof
 pytest -q tests/test_campaign.py
 git diff --check
 git status --short --branch
