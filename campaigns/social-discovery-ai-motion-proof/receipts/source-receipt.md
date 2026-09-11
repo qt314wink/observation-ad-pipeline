@@ -39,7 +39,8 @@ Recorded after execution:
 - Campaign validation: `valid`
 - Campaign regression tests: `10 passed` (`python -m pytest -q tests/test_campaign.py`)
 - Whitespace check: `passed` (`git diff --check`)
-- Envelope commit SHA: `fd278a6383c30a01ad2087e788313ab7db0e45ea`
+- Initial seven-file envelope commit SHA: `fd278a6383c30a01ad2087e788313ab7db0e45ea`
+- Approved-root correction and identifier commit SHA: `47493a05d32b5f16e429940168f76263b368b33c`
 - Draft PR: `#5` — https://github.com/qt314wink/observation-ad-pipeline/pull/5
 - Vercel preview state: `Ready` / GitHub status `success`
 - Vercel preview URL: https://observation-ad-pipeline-git-campaign-social-3a39ab-melodicbloom.vercel.app
