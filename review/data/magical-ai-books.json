@@ -1,0 +1,1319 @@
+{
+  "analysisRuns": [
+    {
+      "analysisId": "1f45a6f6-3795-4502-834f-732e53730173",
+      "coverage": "10 scenes returned, approximately 0:00–1:57 in the analyzer segmentation.",
+      "createdAt": "2026-08-24",
+      "id": "AN.HIGGSFIELD.001",
+      "limitations": [
+        "Scene boundaries and descriptions require human verification.",
+        "No crease graph, fold sequence, panel adjacency, or frame-accurate motion phrasing is provided.",
+        "Analyzer-estimated distances are not treated as measured source facts."
+      ],
+      "provider": "Higgsfield",
+      "status": "completed"
+    }
+  ],
+  "blockers": [
+    "Source media is not hydrated, so frame-level timing and technical media measurements remain blocked.",
+    "Higgsfield scene descriptions are imported-unverified until a human checks source frames.",
+    "The owl is paper-textured in the analyzer description; true origami structure is not verified.",
+    "Director manner words still require scene-by-scene mapping against source media."
+  ],
+  "candidatePrimitives": [
+    {
+      "antiPatterns": [
+        "global soup morph",
+        "instant subject replacement",
+        "camera spectacle hiding unstable geometry",
+        "rubbery paper when fold-constrained motion is intended"
+      ],
+      "directorControls": [
+        "source_plane_persistence",
+        "breach_amount",
+        "panel_rigidity",
+        "fold_localization",
+        "stagger_amount",
+        "cascade_direction",
+        "catch_lock_strength",
+        "secondary_lag",
+        "asymmetry",
+        "settling_amount",
+        "witness_interaction",
+        "camera_reaction",
+        "environment_spill"
+      ],
+      "evidence": [
+        "OBS.S01.OWL_BEHAVIOR",
+        "OBS.S02.WAVE_EDGE",
+        "OBS.S03.DEER_GUTTER",
+        "OBS.S04.GEAR_RISE",
+        "OBS.S06.PYRAMIDS",
+        "OBS.S09.CITY_DEPTH"
+      ],
+      "id": "representation-boundary-breach.v1",
+      "optionalCues": [
+        "witness interaction",
+        "environment spill",
+        "closure or reversibility",
+        "material-specific mannerism"
+      ],
+      "requiredCues": [
+        "recognizable source plane",
+        "localized depth change",
+        "legible crossing or above-plane occupation",
+        "traceable subject identity"
+      ],
+      "states": [
+        "latent",
+        "activated",
+        "dimensionalized",
+        "boundary-crossing",
+        "consequential",
+        "expanded",
+        "resolved"
+      ],
+      "status": "candidate"
+    }
+  ],
+  "canonicalDigest": "sha256:be3996be00d419a23fcb5a343648a1d3e13884a65c499b87da94329aa918f850",
+  "canonicalUrl": "https://www.youtube.com/watch?v=kvsjRbUgzNI",
+  "creator": "Kelly Boesch AI Art",
+  "directorControls": [
+    {
+      "basis": "observation-backed",
+      "confidence": 0.9,
+      "defaultValue": 0.85,
+      "evidence": [
+        "OBS.S01.BOOK_CONTEXT",
+        "OBS.S02.WAVE_EDGE"
+      ],
+      "id": "source_plane_persistence",
+      "label": "Source-plane persistence",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "How long should the original page remain readable while the subject becomes spatial?",
+      "targetFields": [
+        "composition.relationshipToSourcePlane"
+      ],
+      "tooHighLooksLike": "The subject never feels free of the source.",
+      "tooLowLooksLike": "The scene reads like a cut or global morph.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values keep the page visible behind or beneath emerging content longer."
+    },
+    {
+      "basis": "observation-backed",
+      "confidence": 0.9,
+      "defaultValue": 0.75,
+      "evidence": [
+        "OBS.S01.OWL_BEHAVIOR",
+        "OBS.S02.WAVE_EDGE",
+        "OBS.S03.DEER_GUTTER"
+      ],
+      "id": "breach_amount",
+      "label": "Breach amount",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "How far should the subject cross from representation into shared physical space?",
+      "targetFields": [
+        "spatialPath",
+        "composition.relationshipToSourcePlane"
+      ],
+      "tooHighLooksLike": "The subject detaches so completely that its origin becomes unclear.",
+      "tooLowLooksLike": "Relief only; the subject never clearly crosses.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values move more of the subject beyond the source plane."
+    },
+    {
+      "allowedValues": [
+        "soft",
+        "supple",
+        "firm",
+        "stiff",
+        "rigid"
+      ],
+      "basis": "inference-backed",
+      "confidence": 0.45,
+      "defaultValue": "stiff",
+      "evidence": [
+        "OBS.S01.OWL_APPEARANCE",
+        "OBS.DIR.MANNER_VOCAB"
+      ],
+      "id": "panel_rigidity",
+      "label": "Panel rigidity",
+      "locked": false,
+      "question": "How stiff should paper-like regions remain while they move?",
+      "targetFields": [
+        "materialBehavior.rigidity",
+        "movementQuality.stiffness"
+      ],
+      "tooHighLooksLike": "The subject becomes mechanically frozen.",
+      "tooLowLooksLike": "Paper-like forms wobble like cloth or rubber.",
+      "valueType": "enum",
+      "whatYouWillSee": "Higher values keep local regions flatter and less rubbery."
+    },
+    {
+      "basis": "exploratory",
+      "confidence": 0.4,
+      "defaultValue": 0.7,
+      "evidence": [
+        "OBS.S01.OWL_APPEARANCE",
+        "OBS.DIR.MANNER_VOCAB"
+      ],
+      "id": "fold_localization",
+      "label": "Fold localization",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "Should deformation happen mostly at crease-like joints or across the whole surface?",
+      "targetFields": [
+        "materialBehavior.articulationLocality",
+        "structuralMechanisms"
+      ],
+      "tooHighLooksLike": "Every movement becomes an obvious hinge whether or not the source supports it.",
+      "tooLowLooksLike": "The whole form bends and loses constructed-paper character.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values concentrate angle change around seams while faces remain calmer."
+    },
+    {
+      "basis": "exploratory",
+      "confidence": 0.35,
+      "defaultValue": 0.5,
+      "evidence": [
+        "OBS.DIR.MANNER_VOCAB"
+      ],
+      "id": "stagger_amount",
+      "label": "Stagger amount",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "How much delay should neighboring parts have before following the leader?",
+      "targetFields": [
+        "manner.coordination",
+        "manner.cadence"
+      ],
+      "tooHighLooksLike": "Parts react so late that the structure seems broken.",
+      "tooLowLooksLike": "Everything moves at once and loses phrasing.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values create more obvious lead-lag and sequential release."
+    },
+    {
+      "basis": "exploratory",
+      "confidence": 0.4,
+      "defaultValue": "source-root outward",
+      "evidence": [
+        "OBS.DIR.MANNER_VOCAB",
+        "OBS.S07.PAGE_BLOOM"
+      ],
+      "id": "cascade_direction",
+      "label": "Cascade direction",
+      "locked": false,
+      "question": "Where should movement begin and in what order should it travel?",
+      "targetFields": [
+        "manner.leadPart",
+        "manner.followParts",
+        "manner.phaseSequence"
+      ],
+      "tooHighLooksLike": "The sequence becomes theatrically mechanical.",
+      "tooLowLooksLike": "There is no clear initiation point.",
+      "valueType": "text",
+      "whatYouWillSee": "A readable initiation point followed by a propagation path."
+    },
+    {
+      "basis": "exploratory",
+      "confidence": 0.35,
+      "defaultValue": 0.35,
+      "evidence": [
+        "OBS.DIR.MANNER_VOCAB",
+        "OBS.S04.GEAR_RISE"
+      ],
+      "id": "catch_lock_strength",
+      "label": "Catch and lock strength",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "Should parts briefly catch or settle into intermediate configurations?",
+      "targetFields": [
+        "manner.transitionCharacter"
+      ],
+      "tooHighLooksLike": "Motion repeatedly stalls.",
+      "tooLowLooksLike": "Motion becomes frictionless and generic.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values create brief perceptible holds before release."
+    },
+    {
+      "basis": "exploratory",
+      "confidence": 0.4,
+      "defaultValue": 0.35,
+      "evidence": [
+        "OBS.S01.OWL_BEHAVIOR",
+        "OBS.S07.PAGE_BLOOM",
+        "OBS.DIR.MANNER_VOCAB"
+      ],
+      "id": "secondary_lag",
+      "label": "Secondary lag",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "How much should secondary parts trail the main movement?",
+      "targetFields": [
+        "manner.followParts",
+        "manner.phaseSequence",
+        "manner.microMannerisms"
+      ],
+      "tooHighLooksLike": "Secondary motion detaches from the cause.",
+      "tooLowLooksLike": "Everything feels mathematically synchronized.",
+      "valueType": "number",
+      "whatYouWillSee": "Edges, appendages, or particles continue after the initiating mass."
+    },
+    {
+      "basis": "exploratory",
+      "confidence": 0.25,
+      "defaultValue": 0.2,
+      "evidence": [
+        "OBS.DIR.MANNER_VOCAB"
+      ],
+      "id": "asymmetry",
+      "label": "Asymmetry",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "How perfectly should paired or repeated parts match in timing and pose?",
+      "targetFields": [
+        "manner.microMannerisms",
+        "movementQuality"
+      ],
+      "tooHighLooksLike": "The structure loses coherence.",
+      "tooLowLooksLike": "Mirror-perfect motion can feel sterile.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values introduce small timing and pose differences."
+    },
+    {
+      "basis": "inference-backed",
+      "confidence": 0.55,
+      "defaultValue": 0.3,
+      "evidence": [
+        "OBS.S10.CLOSURE",
+        "OBS.S01.OWL_BEHAVIOR"
+      ],
+      "id": "settling_amount",
+      "label": "Settling amount",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "After the main movement, how much visible settling should remain?",
+      "targetFields": [
+        "manner.transitionCharacter",
+        "manner.microMannerisms"
+      ],
+      "tooHighLooksLike": "The object keeps wobbling and weakens the reveal.",
+      "tooLowLooksLike": "Motion stops abruptly.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values allow a final adjustment, fade, or residual motion."
+    },
+    {
+      "basis": "observation-backed",
+      "confidence": 0.9,
+      "defaultValue": 0.75,
+      "evidence": [
+        "OBS.S08.FLOAT_HANDOFF",
+        "OBS.S09.HAND_SHADOW"
+      ],
+      "id": "witness_interaction",
+      "label": "Witness interaction",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "How strongly should a real hand or object prove shared space?",
+      "targetFields": [
+        "interaction"
+      ],
+      "tooHighLooksLike": "The witness becomes a demonstration gimmick.",
+      "tooLowLooksLike": "The magical layer reads like an overlay.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values add touch, handoff, occlusion, shadow, or light exchange."
+    },
+    {
+      "basis": "observation-backed",
+      "confidence": 0.75,
+      "defaultValue": 0.35,
+      "evidence": [
+        "OBS.S01.BOOK_CONTEXT",
+        "OBS.S10.CLOSURE"
+      ],
+      "id": "camera_reaction",
+      "label": "Camera reaction",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "How much should the camera react to the impossible event?",
+      "targetFields": [
+        "camera"
+      ],
+      "tooHighLooksLike": "Camera spectacle hides whether the effect is coherent.",
+      "tooLowLooksLike": "Scale changes can be harder to read.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values allow push, pan, or pullback motivated by emergence."
+    },
+    {
+      "basis": "observation-backed",
+      "confidence": 0.9,
+      "defaultValue": 0.65,
+      "evidence": [
+        "OBS.S01.OWL_BEHAVIOR",
+        "OBS.S02.WAVE_EDGE",
+        "OBS.S05.LIGHT_SPILL",
+        "OBS.S09.HAND_SHADOW"
+      ],
+      "id": "environment_spill",
+      "label": "Environment spill",
+      "locked": false,
+      "max": 1,
+      "min": 0,
+      "question": "How much should light, particles, water, smoke, or shadow escape into the room?",
+      "targetFields": [
+        "interaction",
+        "environment",
+        "lightColor"
+      ],
+      "tooHighLooksLike": "Spill overwhelms the source relationship.",
+      "tooLowLooksLike": "The effect stays sealed inside the page.",
+      "valueType": "number",
+      "whatYouWillSee": "Higher values make the room visibly respond to impossible content."
+    }
+  ],
+  "directorVocabulary": [
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "rigid",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Verify rigid regions versus merely stiff-looking motion."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "staggered",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Map lead-lag and cascade timing."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "stiff",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Separate stiffness impression from physical rigidity."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "shuffling",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Locate sliding, stacking, or reordering behavior."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "tessellating",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Verify repeated tiling or panel reconfiguration."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "bending",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Locate distributed curvature."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "wrapping",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Locate surfaces curling around edges or bodies."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "folding",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Verify fold-like articulation without inventing crease assignments."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "contorting",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Locate identity-preserving but substantial shape change."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "linking",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Locate mechanically or visually coupled parts."
+    },
+    {
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "term": "creasing",
+      "verificationStatus": "imported-unverified",
+      "verificationTask": "Verify visible crease formation or crease-guided rotation."
+    }
+  ],
+  "experimentGate": {
+    "candidatePrimitiveRefs": [
+      "representation-boundary-breach.v1"
+    ],
+    "experimentManifest": "experiments/wan/representation-boundary-breach.yaml",
+    "reason": "Candidate primitive is not promoted and source media is not hydrated for frame-level verification.",
+    "status": "blocked"
+  },
+  "interpretations": [
+    {
+      "confidence": 0.92,
+      "evidence": [
+        "OBS.S01.OWL_BEHAVIOR",
+        "OBS.S02.WAVE_EDGE",
+        "OBS.S03.DEER_GUTTER",
+        "OBS.S04.GEAR_RISE",
+        "OBS.S06.PYRAMIDS",
+        "OBS.S09.CITY_DEPTH"
+      ],
+      "falsifier": "If removing source-plane visibility preserves the same clarity, boundary persistence is less load-bearing than expected.",
+      "id": "INF.REPRESENTATION_BOUNDARY_BREACH",
+      "label": "representation-boundary-breach",
+      "statement": "A recognizable source surface may remain visible while selected content gains depth and crosses into shared room space.",
+      "status": "candidate",
+      "usefulness": "Creates a transferable mechanism rather than a book-specific aesthetic prompt."
+    },
+    {
+      "confidence": 0.9,
+      "evidence": [
+        "OBS.S08.FLOAT_HANDOFF",
+        "OBS.S09.HAND_SHADOW"
+      ],
+      "falsifier": "If matched generations without a witness feel equally spatially credible, the witness is optional rather than structural.",
+      "id": "INF.DIEGETIC_WITNESS_INTERACTION",
+      "label": "diegetic-witness-interaction",
+      "statement": "Hands and bodies may act as scale, occlusion, lighting, and contact witnesses that make impossible content feel co-located with the room.",
+      "status": "candidate",
+      "usefulness": "Provides a concrete art-direction tactic for believable impossible physicality."
+    },
+    {
+      "confidence": 0.9,
+      "evidence": [
+        "OBS.S01.BOOK_CONTEXT",
+        "OBS.S02.WAVE_EDGE",
+        "OBS.S03.DEER_GUTTER",
+        "OBS.S04.GEAR_RISE"
+      ],
+      "falsifier": "If the page can disappear early without reducing the breach reading, persistence is not required.",
+      "id": "INF.SOURCE_PLANE_PERSISTENCE",
+      "label": "source-plane-persistence",
+      "statement": "Keeping the book or page readable lets the viewer compare flat origin and spatial consequence simultaneously.",
+      "status": "candidate",
+      "usefulness": "Becomes a director control and QA metric."
+    },
+    {
+      "confidence": 0.86,
+      "evidence": [
+        "OBS.S01.OWL_APPEARANCE",
+        "OBS.S02.WAVE_EDGE",
+        "OBS.S03.DEER_GUTTER",
+        "OBS.S04.GEAR_RISE",
+        "OBS.S06.PYRAMIDS",
+        "OBS.S09.CITY_DEPTH"
+      ],
+      "falsifier": "If full-frame transformation gives equal clarity and causality, localized escalation is less important.",
+      "id": "INF.LOCALIZED_DEPTH_ESCALATION",
+      "label": "localized-depth-escalation",
+      "statement": "Depth appears to escalate locally while surrounding book context stays stable.",
+      "status": "candidate",
+      "usefulness": "Supports staged relief, partial-breach, and full-breach experiments."
+    },
+    {
+      "confidence": 0.94,
+      "evidence": [
+        "OBS.S01.OWL_BEHAVIOR",
+        "OBS.S02.WAVE_EDGE",
+        "OBS.S05.LIGHT_SPILL",
+        "OBS.S08.FLOAT_HANDOFF",
+        "OBS.S09.HAND_SHADOW"
+      ],
+      "falsifier": "If boundary crossing without cross-world consequence remains equally convincing, consequence is optional.",
+      "id": "INF.PHYSICAL_CONSEQUENCE",
+      "label": "physical-consequence-as-believability-proof",
+      "statement": "Light spill, page-edge spill, particles, direct handoff, and shadow may persuade the eye that impossible content shares the room.",
+      "status": "candidate",
+      "usefulness": "Gives QA a reason to reject pretty outputs that do not affect their surroundings."
+    }
+  ],
+  "measurementStatus": "unmeasured",
+  "observations": [
+    {
+      "category": "composition",
+      "confidence": 0.9,
+      "id": "OBS.S01.BOOK_CONTEXT",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S01",
+      "scope": "scene",
+      "statement": "A weathered dark leather-bound book is centered on a wooden table in a dim library under a static slight high-angle close-up.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "subject-appearance",
+      "confidence": 0.95,
+      "eventRef": "EV.S01.OWL_EMERGE",
+      "id": "OBS.S01.OWL_APPEARANCE",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S01",
+      "scope": "object",
+      "statement": "The analyzer describes a large 3D paper-texture owl with glowing yellow eyes emerging from the pages.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "motion",
+      "confidence": 0.9,
+      "eventRef": "EV.S01.OWL_EMERGE",
+      "id": "OBS.S01.OWL_BEHAVIOR",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S01",
+      "scope": "event",
+      "statement": "The owl emerges from the pages and flaps its wings while gold particles enter the surrounding air.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "boundary-crossing",
+      "confidence": 0.95,
+      "id": "OBS.S02.WAVE_EDGE",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S02",
+      "scope": "scene",
+      "statement": "Animated waves are described as breaking over physical page edges.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "boundary-crossing",
+      "confidence": 0.95,
+      "id": "OBS.S03.DEER_GUTTER",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S03",
+      "scope": "scene",
+      "statement": "A small 3D deer steps out from miniature trees rooted in the book gutter.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "material-motion",
+      "confidence": 0.95,
+      "id": "OBS.S04.GEAR_RISE",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S04",
+      "scope": "scene",
+      "statement": "Brass and copper gears spin, interlock, and rise from the page at different apparent speeds.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "environment-spill",
+      "confidence": 0.9,
+      "id": "OBS.S05.LIGHT_SPILL",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S05",
+      "scope": "scene",
+      "statement": "Purple book-generated glow becomes the primary light source on the woman and dark room.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "depth",
+      "confidence": 0.95,
+      "id": "OBS.S06.PYRAMIDS",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S06",
+      "scope": "scene",
+      "statement": "Three small 3D pyramids rise from the book while tiny camels traverse the lower margin.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "transformation",
+      "confidence": 0.95,
+      "id": "OBS.S07.PAGE_BLOOM",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S07",
+      "scope": "scene",
+      "statement": "Rapid page fanning accompanies edge text transforming into flowers and vines that grow outward.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "witness-interaction",
+      "confidence": 0.95,
+      "id": "OBS.S08.FLOAT_HANDOFF",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S08",
+      "scope": "scene",
+      "statement": "The woman reaches for a book and it floats up into her hand.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "depth",
+      "confidence": 0.9,
+      "id": "OBS.S09.CITY_DEPTH",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S09",
+      "scope": "scene",
+      "statement": "The analyzer describes city towers extending above the page; exact height is unverified.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "witness-interaction",
+      "confidence": 0.95,
+      "id": "OBS.S09.HAND_SHADOW",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S09",
+      "scope": "scene",
+      "statement": "A human hand casts a shadow over the above-page miniature city.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "reversibility",
+      "confidence": 0.95,
+      "id": "OBS.S10.CLOSURE",
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "sceneRef": "S10",
+      "scope": "scene",
+      "statement": "The woman slowly closes the first book and its internal glow fades as the cover shuts.",
+      "verificationStatus": "imported-unverified"
+    },
+    {
+      "category": "director-vocabulary",
+      "confidence": 1.0,
+      "id": "OBS.DIR.MANNER_VOCAB",
+      "provenance": {
+        "kind": "director-provided",
+        "sourceRef": "WORKING-SESSION-2026-08-24"
+      },
+      "scope": "reference",
+      "statement": "The director identified rigid, staggered, stiff, shuffling, tessellating, bending, wrapping, folding, contorting, linking, and creasing as qualities to verify.",
+      "verificationStatus": "imported-unverified"
+    }
+  ],
+  "paperFoldEvidence": {
+    "classification": "origami-like",
+    "notes": "Origami-like or folded-paper behavior is a director hypothesis. The analyzer explicitly reports a 3D paper-texture owl, but no crease graph, fold sequence, mountain-valley assignment, planar-face proof, or panel adjacency.",
+    "provenance": {
+      "kind": "director-provided",
+      "sourceRef": "WORKING-SESSION-2026-08-24"
+    },
+    "structuralEvidenceRefs": []
+  },
+  "platform": "youtube",
+  "point": "Recover what makes representation-to-reality motion believable and directable: what the subject looks like, how its material seems to behave, how movement is phrased, how it crosses the source plane, and what the surrounding room does in response.",
+  "proofChain": [
+    "reference",
+    "subject state story",
+    "scene evidence",
+    "movement quality",
+    "manner",
+    "interpretation",
+    "director control",
+    "controlled test"
+  ],
+  "referenceId": "video:reference:kelly-boesch:magical-ai-books",
+  "rightsStatus": "reference-analysis-only",
+  "scenes": [
+    {
+      "actorsObjects": [
+        "book",
+        "paper-textured owl",
+        "gold particles",
+        "adult female hand"
+      ],
+      "audioSummary": "Whimsical orchestral music, paper rustle, and a soft hoot.",
+      "camera": "static slight high-angle close-up",
+      "environment": "dim home library and wooden table",
+      "id": "S01",
+      "interaction": "A human hand rests near the book while owl and particles occupy the same framed room space.",
+      "label": "Opening Hook — owl emergence",
+      "lightColor": "low-key room light with strong warm light from inside the book",
+      "movementEvents": [
+        {
+          "action": "emerges from the pages and then flaps its wings",
+          "actor": "paper-textured owl",
+          "destinationState": "three-dimensional subject occupying air above the pages",
+          "id": "EV.S01.OWL_EMERGE",
+          "manner": {
+            "cadence": "unknown",
+            "coordination": "unknown",
+            "directorPhrase": "A large paper-textured owl clears the pages and then flaps; exact stiffness, panel sequencing, crease behavior, and lead-lag remain unverified.",
+            "followParts": [],
+            "leadPart": "unknown",
+            "microMannerisms": [],
+            "phaseSequence": [
+              "book opens and glows",
+              "owl emerges from pages",
+              "owl flaps wings",
+              "gold particles disperse"
+            ],
+            "transitionCharacter": [
+              "unknown"
+            ]
+          },
+          "materialBehavior": {
+            "articulationLocality": "unknown",
+            "collisionContact": "none-visible",
+            "facePlanarity": "unknown",
+            "rigidity": "unknown",
+            "surfaceStretch": "unknown",
+            "thicknessBehavior": "unknown"
+          },
+          "movementQuality": {
+            "continuity": "unknown",
+            "flow": "unknown",
+            "space": "direct",
+            "stiffness": "unknown",
+            "time": "unknown",
+            "weight": "unknown"
+          },
+          "part": "whole body and wings",
+          "provenance": {
+            "kind": "model-derived-observation",
+            "sourceRef": "AN.HIGGSFIELD.001"
+          },
+          "sourceState": "represented or contained by the open-book source region",
+          "spatialPath": {
+            "direction": "from page and book volume into air above page",
+            "family": "boundary-crossing"
+          },
+          "structuralMechanisms": [
+            "unknown"
+          ],
+          "timing": {
+            "apparentTempo": "unknown",
+            "measurementStatus": "qualitative-only"
+          }
+        }
+      ],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "0:12",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "0:00"
+      },
+      "visualSummary": "A weathered dark leather-bound book opens and glows. A large 3D paper-texture owl with glowing yellow eyes emerges from the pages, flaps its wings, and sends gold particles into the air."
+    },
+    {
+      "actorsObjects": [
+        "book",
+        "galleon",
+        "waves",
+        "droplets",
+        "adult female hand"
+      ],
+      "audioSummary": "Violin swell, droplets, faint thunder, and crashing-wave sound.",
+      "camera": "extreme close-up after a quick zoom-in cut",
+      "environment": "open book used as stormy ocean terrain",
+      "id": "S02",
+      "interaction": "The page is physically flipped while wave action crosses its edge.",
+      "label": "Ocean spill",
+      "lightColor": "cool saturated teal and white",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "0:25",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "0:12"
+      },
+      "visualSummary": "A miniature galleon is tossed by animated waves that break over page edges while bright droplets move toward camera and a hand flips the page."
+    },
+    {
+      "actorsObjects": [
+        "book",
+        "pine trees",
+        "3D deer",
+        "glowing antlers",
+        "light orbs",
+        "adult female fingers"
+      ],
+      "audioSummary": "Forest ambience over steady music with a magical ping.",
+      "camera": "static close-up",
+      "environment": "miniature forest rooted in the book gutter",
+      "id": "S03",
+      "interaction": "Human fingers move through the same foreground light-orb field.",
+      "label": "Forest deer emergence",
+      "lightColor": "back-lit greens and golden yellows",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "0:38",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "0:25"
+      },
+      "visualSummary": "A small 3D deer with glowing antlers steps out from miniature pine trees rooted in the book gutter while light orbs drift upward and fingers move through them."
+    },
+    {
+      "actorsObjects": [
+        "brass gears",
+        "copper gears",
+        "chimney",
+        "vapor",
+        "adult female finger"
+      ],
+      "audioSummary": "Mechanical clicking, metallic whirring, steam hiss, and rhythmic strings.",
+      "camera": "direct overhead POV-like view",
+      "environment": "page spread becomes a clockwork mechanism",
+      "id": "S04",
+      "interaction": "A human finger points toward the central mechanism.",
+      "label": "Clockwork rise and interlock",
+      "lightColor": "warm directional light",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "0:50",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "0:38"
+      },
+      "visualSummary": "Brass and copper gears spin, interlock, and rise from the page at different apparent speeds while vapor rises and a finger points at the central gear."
+    },
+    {
+      "actorsObjects": [
+        "book",
+        "nebula light",
+        "miniature planets",
+        "adult female"
+      ],
+      "audioSummary": "Low synth pads, hum, and spatial whoosh.",
+      "camera": "slow pan right to left",
+      "environment": "dark room around an open cosmic book",
+      "id": "S05",
+      "interaction": "The woman shares the shot and is illuminated by book-generated glow.",
+      "label": "Cosmic room extension",
+      "lightColor": "purple and magenta book glow",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "1:03",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "0:50"
+      },
+      "visualSummary": "Miniature planets rotate above the pages while purple and magenta book light becomes primary illumination on the woman and room."
+    },
+    {
+      "actorsObjects": [
+        "book",
+        "sand",
+        "pyramids",
+        "camels",
+        "miniature sun",
+        "adult female"
+      ],
+      "audioSummary": "Whimsical piano, wind, and small bells.",
+      "camera": "static close-up",
+      "environment": "page surface becomes miniature desert terrain",
+      "id": "S06",
+      "interaction": "A human observer remains adjacent while miniature structures occupy page terrain.",
+      "label": "Desert relief and procession",
+      "lightColor": "warm orange and terracotta with hard shadows",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "1:16",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "1:03"
+      },
+      "visualSummary": "Sand shifts; three 3D pyramids rise from the pages and tiny camels cross the lower margin under a bright miniature sun and hard shadows."
+    },
+    {
+      "actorsObjects": [
+        "book edge",
+        "fanned pages",
+        "edge text",
+        "flowers",
+        "vines",
+        "adult female thumb"
+      ],
+      "audioSummary": "Page fanning, xylophone trill, and upbeat music.",
+      "camera": "macro extreme close-up",
+      "environment": "wooden table blurred into background",
+      "id": "S07",
+      "interaction": "The thumb physically drives page fanning that accompanies the transformation.",
+      "label": "Fanned-page botanical transformation",
+      "lightColor": "soft natural light",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "1:28",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "1:16"
+      },
+      "visualSummary": "A thumb rapidly fans pages while edge text transforms into flowers and vines that grow outward with smooth time-lapse-like motion."
+    },
+    {
+      "actorsObjects": [
+        "adult female",
+        "multiple open books",
+        "floating book",
+        "colored glows"
+      ],
+      "audioSummary": "String crescendo and shimmering chime.",
+      "camera": "medium shot",
+      "environment": "table surrounded by active books",
+      "id": "S08",
+      "interaction": "A rigid physical book leaves the table and resolves into the woman's receiving hand.",
+      "label": "Floating-book handoff",
+      "lightColor": "mixed multicolored light from several books",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "1:40",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "1:28"
+      },
+      "visualSummary": "The woman reaches toward one of several glowing books and that book floats up into her hand while colored glows illuminate her face."
+    },
+    {
+      "actorsObjects": [
+        "book",
+        "city towers",
+        "flying vehicles",
+        "light particles",
+        "adult female hand"
+      ],
+      "audioSummary": "Electronic synth, rain, and engine hum.",
+      "camera": "close-up",
+      "environment": "book-supported miniature city",
+      "id": "S09",
+      "interaction": "The human hand casts a shadow across the above-page city.",
+      "label": "Cyberpunk city above the page",
+      "lightColor": "high-contrast neon pink and blue",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "1:52",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "1:40"
+      },
+      "visualSummary": "Towers extend above the page while miniature vehicles move between them and rain-like light particles fall; a hand casts a shadow over the city."
+    },
+    {
+      "actorsObjects": [
+        "adult female",
+        "first book",
+        "fading internal glow"
+      ],
+      "audioSummary": "Music decrescendos to a soft piano chord with the heavy cover closing.",
+      "camera": "medium shot with slight pullback",
+      "environment": "ordinary home library reasserts itself",
+      "id": "S10",
+      "interaction": "A human hand closes the source object and the impossible light state resolves with it.",
+      "label": "Closure and resolution",
+      "lightColor": "book glow fades back to natural window light",
+      "movementEvents": [],
+      "provenance": {
+        "kind": "model-derived-observation",
+        "sourceRef": "AN.HIGGSFIELD.001"
+      },
+      "temporalSpan": {
+        "end": "1:57",
+        "provenanceRef": "AN.HIGGSFIELD.001",
+        "start": "1:52"
+      },
+      "visualSummary": "The woman slowly closes the first book; its internal glow fades and natural room light becomes dominant again."
+    }
+  ],
+  "subjectContinuity": [
+    {
+      "continuityQuestions": [
+        "Does silhouette, paper texture, eye treatment, and apparent thickness survive every phase?",
+        "Are wing regions rigid panels, flexing paper surfaces, or free CG morphs?",
+        "Which body part leads emergence and which parts lag?",
+        "Is delay simultaneous, staggered, cascading, or asymmetrical?",
+        "Do parts catch, lock, release, overshoot, or settle?",
+        "Does the owl cast or receive contact shadow after becoming spatial?"
+      ],
+      "id": "SUBJ.OWL",
+      "label": "paper-textured owl",
+      "role": "primary emergent subject and first representation-boundary specimen",
+      "sceneRef": "S01",
+      "states": [
+        {
+          "appearance": {
+            "summary": "The owl is not yet visible; a weathered dark leather-bound book is established on a wooden table."
+          },
+          "behavior": {
+            "summary": "no owl behavior visible yet"
+          },
+          "characteristics": {
+            "summary": "identity not yet visually established"
+          },
+          "composition": {
+            "relationshipToSourcePlane": "The owl is not yet visible outside the source object."
+          },
+          "construction": {
+            "summary": "unknown before visibility; no fold or panel structure is described"
+          },
+          "id": "OWL.BEFORE",
+          "material": {
+            "apparentMaterial": "unknown"
+          },
+          "movementQuality": {
+            "summary": "not observable in this phase"
+          },
+          "phase": "before-emergence",
+          "provenance": {
+            "kind": "model-derived-observation",
+            "sourceRef": "AN.HIGGSFIELD.001"
+          },
+          "texture": {
+            "summary": "unknown before the owl becomes visible"
+          },
+          "verificationStatus": "imported-unverified"
+        },
+        {
+          "appearance": {
+            "bodyColor": "unknown",
+            "summary": "A large 3D paper-texture owl with glowing yellow eyes becomes legible as the book opens and glows."
+          },
+          "behavior": {
+            "summary": "emergence begins"
+          },
+          "characteristics": {
+            "summary": "large, three-dimensional, paper-textured, luminous-eyed"
+          },
+          "composition": {
+            "relationshipToSourcePlane": "The owl becomes visible at the book and page threshold and begins entering above-page space."
+          },
+          "construction": {
+            "summary": "3D form is explicit; faceting, feather panels, folds, creases, and adjacency are unresolved"
+          },
+          "id": "OWL.THRESHOLD",
+          "material": {
+            "apparentMaterial": "paper-like visual treatment"
+          },
+          "movementQuality": {
+            "summary": "stiffness, cadence, lead-lag, and articulation are not resolved by the analyzer"
+          },
+          "phase": "threshold",
+          "provenance": {
+            "kind": "model-derived-observation",
+            "sourceRef": "AN.HIGGSFIELD.001"
+          },
+          "texture": {
+            "summary": "paper-texture is explicitly reported; grain and roughness are unknown"
+          },
+          "verificationStatus": "imported-unverified"
+        },
+        {
+          "appearance": {
+            "summary": "The same large paper-textured owl moves out from the pages while retaining glowing yellow eyes."
+          },
+          "behavior": {
+            "summary": "emerges from the pages and flaps its wings; gold particles enter the air"
+          },
+          "characteristics": {
+            "summary": "recognizable owl identity persists while the representation becomes spatially active"
+          },
+          "composition": {
+            "relationshipToSourcePlane": "The owl crosses from page and book volume into air above it while the book remains visible."
+          },
+          "construction": {
+            "summary": "3D owl form persists; fold topology and panel sequencing remain unverified"
+          },
+          "id": "OWL.EMERGING",
+          "material": {
+            "apparentMaterial": "paper-like visual treatment persists",
+            "deformationEvidence": "insufficient to distinguish hinge folds, bending, or free morphing"
+          },
+          "movementQuality": {
+            "summary": "wing-flap path is reported; rigid, staggered, stiff, crease-bound, or fluid phrasing remains unverified"
+          },
+          "phase": "emerging",
+          "provenance": {
+            "kind": "model-derived-observation",
+            "sourceRef": "AN.HIGGSFIELD.001"
+          },
+          "texture": {
+            "summary": "paper-texture remains the only explicit surface quality"
+          },
+          "verificationStatus": "imported-unverified"
+        },
+        {
+          "appearance": {
+            "summary": "The owl is described as a 3D paper-textured subject occupying air above the book with glowing yellow eyes."
+          },
+          "behavior": {
+            "summary": "wing flapping continues and particles disperse into the air"
+          },
+          "characteristics": {
+            "summary": "impossible subject remains framed inside a recognizable physical room"
+          },
+          "composition": {
+            "relationshipToSourcePlane": "The book remains visible below as origin while the owl occupies a separate depth layer above it."
+          },
+          "construction": {
+            "summary": "no new construction detail is reported after crossing"
+          },
+          "id": "OWL.SPATIAL",
+          "material": {
+            "apparentMaterial": "paper-like visual treatment"
+          },
+          "movementQuality": {
+            "summary": "performance manner remains unresolved beyond emergence plus wing flapping"
+          },
+          "phase": "newly-spatial",
+          "provenance": {
+            "kind": "model-derived-observation",
+            "sourceRef": "AN.HIGGSFIELD.001"
+          },
+          "texture": {
+            "summary": "paper-texture persists as the stated surface descriptor"
+          },
+          "verificationStatus": "imported-unverified"
+        },
+        {
+          "appearance": {
+            "summary": "No separately resolved stable post-emergence owl pose is described before the scene changes."
+          },
+          "behavior": {
+            "summary": "gold particles remain the clearest reported consequence"
+          },
+          "characteristics": {
+            "summary": "aftermath is better documented through particles than through a final owl pose"
+          },
+          "composition": {
+            "relationshipToSourcePlane": "The analyzer does not specify whether the owl settles, returns, or remains hovering before the cut."
+          },
+          "construction": {
+            "summary": "no post-emergence fold or structural state is separately described"
+          },
+          "id": "OWL.AFTERMATH",
+          "material": {
+            "apparentMaterial": "no additional material change reported"
+          },
+          "movementQuality": {
+            "summary": "settling, recoil, secondary flutter, or lock are unknown"
+          },
+          "phase": "aftermath",
+          "provenance": {
+            "kind": "model-derived-observation",
+            "sourceRef": "AN.HIGGSFIELD.001"
+          },
+          "texture": {
+            "summary": "no additional texture change reported"
+          },
+          "verificationStatus": "imported-unverified"
+        }
+      ],
+      "unknowns": [
+        "body color beyond glowing yellow eyes",
+        "feather or panel silhouette construction",
+        "exact crease locations and fold assignments",
+        "rigid-face versus flexible-surface behavior",
+        "thickness and edge treatment",
+        "wing lead-lag and stagger cadence",
+        "micro-mannerisms such as head lag, edge tremor, panel flutter, or corrective settle",
+        "stable final pose before the cut"
+      ]
+    }
+  ],
+  "title": "Magical AI Books"
+}

@@ -6,17 +6,26 @@ on:
       - 'config/prompt-family-provenance/**'
       - 'config/semantic-change-proposals/**'
       - 'config/downstream-impacts/**'
+      - 'config/motion-analysis-profiles/**'
       - 'prompt-packs/**'
       - 'integrations/wan/**'
+      - 'experiments/wan/**'
+      - 'motion-primitives/**'
+      - 'fixtures/motion/**'
+      - 'fixtures/motion-references/**'
       - 'schemas/prompt-family-provenance.schema.json'
       - 'schemas/semantic-change-proposal.schema.json'
       - 'schemas/downstream-impact.schema.json'
-      - 'src/obsad/validate_governance.py'
-      - 'tests/test_governance_validation.py'
-      - 'fixtures/motion/**'
       - 'schemas/motion-analysis.schema.json'
+      - 'schemas/motion-reference-analysis.schema.json'
+      - 'schemas/motion-primitive-candidate.schema.json'
+      - 'src/obsad/validate_governance.py'
       - 'src/obsad/validate_motion.py'
+      - 'src/obsad/motion_reference.py'
+      - 'src/obsad/cli.py'
+      - 'tests/test_governance_validation.py'
       - 'tests/test_motion_analysis.py'
+      - 'tests/test_motion_reference_cli.py'
       - 'tests/test_review_ui.py'
       - 'review/**'
       - '.gitattributes'
@@ -28,17 +37,26 @@ on:
       - 'config/prompt-family-provenance/**'
       - 'config/semantic-change-proposals/**'
       - 'config/downstream-impacts/**'
+      - 'config/motion-analysis-profiles/**'
       - 'prompt-packs/**'
       - 'integrations/wan/**'
+      - 'experiments/wan/**'
+      - 'motion-primitives/**'
+      - 'fixtures/motion/**'
+      - 'fixtures/motion-references/**'
       - 'schemas/prompt-family-provenance.schema.json'
       - 'schemas/semantic-change-proposal.schema.json'
       - 'schemas/downstream-impact.schema.json'
-      - 'src/obsad/validate_governance.py'
-      - 'tests/test_governance_validation.py'
-      - 'fixtures/motion/**'
       - 'schemas/motion-analysis.schema.json'
+      - 'schemas/motion-reference-analysis.schema.json'
+      - 'schemas/motion-primitive-candidate.schema.json'
+      - 'src/obsad/validate_governance.py'
       - 'src/obsad/validate_motion.py'
+      - 'src/obsad/motion_reference.py'
+      - 'src/obsad/cli.py'
+      - 'tests/test_governance_validation.py'
       - 'tests/test_motion_analysis.py'
+      - 'tests/test_motion_reference_cli.py'
       - 'tests/test_review_ui.py'
       - 'review/**'
       - '.gitattributes'
@@ -64,5 +82,10 @@ jobs:
           python -m pip install -e . pytest
       - name: Validate provenance, governed evolution, downstream impacts, semantic drift, and Wan boundary
         run: python -m obsad.validate_governance
+      - name: Verify Python compiles
+        run: python -m compileall -q src tests
+      - name: Report canonical motion-reference digest
+        run: >-
+          python -c "from pathlib import Path; from obsad.motion_reference import load_reference, canonical_sha256; print('MOTION_REFERENCE_DIGEST=' + canonical_sha256(load_reference(Path('fixtures/motion-references/magical-ai-books.yaml'))))"
       - name: Run governance tests
-        run: pytest -q tests/test_governance_validation.py tests/test_motion_analysis.py tests/test_review_ui.py
+        run: pytest -q tests/test_governance_validation.py tests/test_motion_analysis.py tests/test_motion_reference_cli.py tests/test_review_ui.py

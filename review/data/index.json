@@ -1,0 +1,18 @@
+{
+  "datasets": [
+    {
+      "id": "mandala-reel-set",
+      "label": "Mandala reel set",
+      "path": "data/mandala-reel-set.json",
+      "kind": "bounded-source-ledger",
+      "readOnly": true
+    },
+    {
+      "id": "magical-ai-books",
+      "label": "Magical AI Books",
+      "path": "data/magical-ai-books.json",
+      "kind": "derived-motion-reference-analysis",
+      "readOnly": true
+    }
+  ]
+}

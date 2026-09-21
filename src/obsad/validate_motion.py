@@ -7,6 +7,8 @@ import re
 import fastjsonschema
 import yaml
 
+from obsad.motion_reference import validate_motion_reference
+
 
 REQUIRED_DIMENSIONS = {
     "symmetry", "radial-topology", "phase-change", "morphing",
