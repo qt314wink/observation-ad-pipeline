@@ -17,7 +17,7 @@ Use when asked to analyze audio-reactive visual references, implement sound-to-m
 ## Execution plan
 1. Record source identity, version and objective. Prefer a 15–30-second user-owned clip or the built-in synthetic fixture to start.
 2. Establish baseline using Node 20+: node --test integrations/audio-reactive/engine.test.mjs
-3. Serve with python -m http.server 8000, visit http://localhost:8000/integrations/audio-reactive/, click **Synthetic demo**. Confirm visible motion, capture count and packet export.
+3. Serve with python -m http.server 8000 --bind 127.0.0.1, visit http://localhost:8000/integrations/audio-reactive/, click **Synthetic demo**. Confirm visible motion, capture count and packet export.
 4. Load a local audio file, click **Play file**. Observe RMS/novelty and smoothness. Flux is spectral novelty, not a robust beat tracker.
 5. Change **one control at a time**. Keep source, browser, device, resolution, start point, and other sliders fixed.
 6. Export a JSON packet trace and validate shape against [the JSON schema](../../integrations/audio-reactive/control-packet.schema.json). Preserve code SHA, input-file hash (locally if authorized), config, source/permission, browser/device, and measured FPS in a separate run receipt.
