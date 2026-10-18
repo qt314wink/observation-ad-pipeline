@@ -48,8 +48,10 @@ export function analyzeFrame(samples, binsDb, sampleRate, previousMagnitudes = n
   }
   const energy = key => Math.sqrt(bands[key][0] / Math.max(1, bands[key][1]));
   // Normalize positive spectral novelty against previous spectrum; ignore low-level noise.
-  const flux = previousMagnitudes && rms > 0.003 && previousTotal > 0.00001
-    ? clamp(diff / previousTotal) : 0;
+  // Float32Array rounding can otherwise produce positive novelty on an unchanged spectrum.
+  const relativeNovelty = previousMagnitudes && rms > 0.003 && previousTotal > 0.00001
+    ? diff / previousTotal : 0;
+  const flux = relativeNovelty > 1e-6 ? clamp(relativeNovelty) : 0;
   return {
     features: {
       rms: clamp(rms), low: clamp(energy("low")), mid: clamp(energy("mid")),
