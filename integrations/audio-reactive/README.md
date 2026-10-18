@@ -8,7 +8,7 @@ From the repository root:
 
     node --version
     node --test integrations/audio-reactive/engine.test.mjs
-    python -m http.server 8000
+    python -m http.server 8000 --bind 127.0.0.1
 
 Open http://localhost:8000/integrations/audio-reactive/ in a modern browser. Click **Synthetic demo** for a no-audio smoke test. Then choose your own licensed audio file and click **Play file** (user gesture required for Web Audio). Try the sensitivity and attack sliders one at a time, then **Export control JSON**.
 
