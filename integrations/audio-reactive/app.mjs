@@ -71,6 +71,19 @@ $("demo").addEventListener("click", () => {
 $("stop").addEventListener("click", () => {
   player.pause(); reset("idle"); stateLabel.textContent = "Stopped.";
 });
+player.addEventListener("seeking", () => {
+  if (memory.mode === "file") {
+    // Discontinuous seek: prior FFT and packet timeline can no longer be compared.
+    memory.magnitudes = null;
+    memory.controls = silenceControls();
+    memory.records = [];
+    memory.latestCapture = 0;
+    stateLabel.textContent = "Seek detected. Started a fresh capture segment.";
+  }
+});
+player.addEventListener("ended", () => {
+  if (memory.mode === "file") stateLabel.textContent = "Playback ended. Export captured packets.";
+});
 for (const [element,key,min,max] of [
   ["sensitivity","sensitivity",1,40], ["attack","attackSeconds",.02,.8],
   ["release","releaseSeconds",.06,2], ["intensity","visualIntensity",0,1],
@@ -182,7 +195,8 @@ function tick(now) {
   const f=currentFeatures(t);
   memory.controls=smoothControls(mapFeatures(f,config),memory.controls,dt,config);
   render(t,memory.controls);
-  if(memory.mode !== "idle" && now-memory.latestCapture >= 100) {
+  const captureActive = memory.mode === "demo" || (memory.mode === "file" && !player.paused);
+  if(captureActive && now-memory.latestCapture >= 100) {
     const time = memory.mode==="file" ? player.currentTime : t;
     const packet=makePacket(time,memory.controls);
     memory.records.push(packet);
