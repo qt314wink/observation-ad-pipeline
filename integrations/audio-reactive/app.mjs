@@ -86,8 +86,8 @@ for (const [element,key,min,max] of [
 function syntheticFeatures(t) {
   // Contrived signals make mapping reproducible for visual testing; not measured audio.
   const wave = (hz, phase=0) => (Math.sin(2*Math.PI*hz*t+phase)+1)/2;
-  const kick = Math.exp(-((t%1.2)/.14)**2);
-  const transient = Math.exp(-((t%.6)/.075)**2);
+  const kick = Math.exp(-Math.pow((t%1.2)/.14,2));
+  const transient = Math.exp(-Math.pow((t%.6)/.075,2));
   return {
     rms: .02+.06*wave(.11)+.075*kick,
     low: .008+.045*kick,
