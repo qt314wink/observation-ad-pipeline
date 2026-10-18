@@ -1,0 +1,24 @@
+name: Audio Reactive Lab
+on:
+  pull_request:
+    paths:
+      - "integrations/audio-reactive/**"
+      - "docs/audio-reactive-ozora-2025.md"
+      - "skills/audio-reactive-motion/**"
+      - ".github/workflows/audio-reactive-lab.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unit-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Parse browser modules and validate contract tests
+        run: |
+          node --check integrations/audio-reactive/engine.mjs
+          node --check integrations/audio-reactive/app.mjs
+          node --test integrations/audio-reactive/engine.test.mjs

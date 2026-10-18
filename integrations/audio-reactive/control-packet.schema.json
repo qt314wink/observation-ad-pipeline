@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/qt314wink/observation-ad-pipeline/blob/main/integrations/audio-reactive/control-packet.schema.json",
+  "title": "Audio Reactive Control Packet v0.1",
+  "description": "Portable output after bounded semantic mappings; distinct from the raw feature vector.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "time_s",
+    "controls"
+  ],
+  "properties": {
+    "version": {
+      "const": "audio-control.v0.1"
+    },
+    "time_s": {
+      "type": "number",
+      "minimum": 0
+    },
+    "controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "energy",
+        "fold",
+        "shimmer",
+        "hue",
+        "density",
+        "pulse"
+      ],
+      "properties": {
+        "energy": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "fold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "shimmer": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "hue": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "density": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "pulse": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
+  }
+}
