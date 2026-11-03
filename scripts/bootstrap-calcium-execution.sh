@@ -52,10 +52,11 @@ python3 -m obsad.cli doctor || true
 
 log "Campaign validation"
 python3 -m obsad.cli campaign-validate "$CAMPAIGN"
-# Fixtures expect unresolved model placeholders. Keep configured models intact
-# in the parent environment for the later execution-time compilation.
+# Fixtures expect unresolved model placeholders. Explicit placeholders prevent
+# dotenv from repopulating cleared names; the parent environment stays intact.
 baseline_test() {
-  env -u OBSAD_OPENAI_MODEL -u OBSAD_XAI_MODEL -u OBSAD_COMFY_CHECKPOINT -u OBSAD_WAN_MODEL "$@"
+  env 'OBSAD_OPENAI_MODEL=${OBSAD_OPENAI_MODEL}' 'OBSAD_XAI_MODEL=${OBSAD_XAI_MODEL}' \
+    'OBSAD_COMFY_CHECKPOINT=${OBSAD_COMFY_CHECKPOINT}' 'OBSAD_WAN_MODEL=${OBSAD_WAN_MODEL}' "$@"
 }
 baseline_test python3 -m pytest -q tests/test_campaign.py
 baseline_test env PYTHONPATH=src python3 -m unittest discover -s tests -v
