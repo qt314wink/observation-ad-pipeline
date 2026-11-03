@@ -75,6 +75,11 @@ def main():
             stopped_capture=json.loads(stopped.read_text())
             assert stopped_capture['source']=='local-audio-file'
             assert len(stopped_capture['packets'])>=len(capture['packets'])+3
+            page.locator('#demo').click()
+            expect(page.locator('#mode')).to_contain_text('Synthetic signal')
+            page.locator('#player').evaluate('el => el.play()')
+            expect(page.locator('#state')).to_have_text('Playing local audio.')
+            expect(page.locator('#mode')).to_have_text('Local file')
             assert not errors,errors
             broken=browser.new_page()
             broken.add_init_script('''window.AudioContext=class {
