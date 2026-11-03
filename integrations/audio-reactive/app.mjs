@@ -9,7 +9,7 @@ const player = $("player");
 const modeLabel = $("mode"), stateLabel = $("state"), statistics = $("stats");
 const config = {...DEFAULT_CONFIG};
 const memory = {controls:silenceControls(), magnitudes:null, records:[], mode:"idle", firstFrame:0,
-  latestCapture:0, lastFrame:0, fpsFrames:0, lastFpsAt:0, fps:0, meanFlux:0, audioReady:false, captureMode:"idle"};
+  latestCapture:0, lastFrame:0, fpsFrames:0, lastFpsAt:0, fps:0, meanFlux:0, audioReady:false, audioError:null, captureMode:"idle"};
 let audioContext, analyser, waveform, spectrum, mediaSource, fileUrl, audioActivation=0, audioGraphReady=false;
 const LIMIT = 3600; // bounded, 10 Hz capture = latest 6 minutes
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -27,7 +27,7 @@ resize();
 function reset(mode) {
   memory.mode=mode; memory.captureMode=mode; memory.controls=silenceControls(); memory.magnitudes=null;
   memory.records=[]; memory.firstFrame=performance.now(); memory.latestCapture=0; memory.lastFrame=0;
-  memory.meanFlux=0; memory.audioReady=false; audioActivation++;
+  memory.meanFlux=0; memory.audioReady=false; memory.audioError=null; audioActivation++;
   modeLabel.textContent = mode === "demo" ? "Synthetic signal (not festival audio)" : mode === "file" ? "Local file" : "Idle";
 }
 
@@ -73,26 +73,27 @@ player.addEventListener("play", async () => {
   if (player.paused) return;
   if (memory.mode !== "file") reset("file");
   const activation=++audioActivation;
-  memory.audioReady=false; stateLabel.textContent="Starting local audio analysis…";
+  memory.audioReady=false; memory.audioError=null; stateLabel.textContent="Starting local audio analysis…";
   try {
     await ensureAudio();
     if (activation !== audioActivation || player.paused || memory.mode !== "file") return;
     memory.audioReady=true; stateLabel.textContent="Playing local audio.";
   } catch (error) {
     if (activation !== audioActivation || memory.mode !== "file") return;
-    player.pause(); stateLabel.textContent="Audio analysis unavailable: " + error.message;
+    memory.audioError="Audio analysis unavailable: " + error.message;
+    player.pause(); stateLabel.textContent=memory.audioError;
   }
 });
 player.addEventListener("pause", () => {
   if (!player.paused) return;
   audioActivation++; memory.audioReady=false; memory.magnitudes=null;
-  if (memory.mode === "file" && !player.ended) stateLabel.textContent="Audio paused. Export or resume the current capture.";
+  if (memory.mode === "file" && !player.ended && !memory.audioError) stateLabel.textContent="Audio paused. Export or resume the current capture.";
 });
 $("demo").addEventListener("click", () => {
   player.pause(); reset("demo"); stateLabel.textContent = "Synthetic demonstration running.";
 });
 $("stop").addEventListener("click", () => {
-  player.pause(); audioActivation++; memory.mode="idle"; memory.audioReady=false;
+  player.pause(); audioActivation++; memory.mode="idle"; memory.audioReady=false; memory.audioError=null;
   memory.controls=silenceControls(); memory.magnitudes=null; modeLabel.textContent="Idle";
   stateLabel.textContent = "Stopped. Captured controls remain available to export.";
 });

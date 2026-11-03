@@ -22,7 +22,7 @@
 4. **Smoothing**: alpha = 1 - exp(-dt/tau). tau_attack when target rises; tau_release when it falls. Never interpolate based solely on frames; clamp dt after tab-background gaps. Note browser tab throttling still affects real-time timing.
 5. **Validation**: makePacket(version,time_s,controls) rejects unexpected keys, nonfinite values or values outside [0,1]. Packets are JSON-serializable; keep raw features conceptually distinct from controls.
 6. **Render**: Canvas2D mirrored petal topology; fold alters local geometry, shimmer changes local highlights, hue shifts the palette, density changes point count, pulse changes local center/emphasis, energy modulates translucency. The renderer has independent slow idle drift. It is not a reconstruction of the original VJ setup.
-7. **Export**: Up to 3,600 bounded packets in the browser at a 100 ms target sample interval. Captures have source class, model version, config, timestamp and explicit non-inclusion of source media.
+7. **Export**: Up to 3,600 bounded packets in the browser at a 100 ms target sample interval. Capture envelope v0.2 records contiguous per-packet configuration segments, source class, model version, timestamp and explicit non-inclusion of source media; packet contract remains v0.1. The previous envelope's single export-time configuration is not a faithful history.
 
 Reference: [MDN AnalyserNode](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode); [MDN getFloatFrequencyData](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatFrequencyData); [MDN smoothingTimeConstant](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/smoothingTimeConstant). We set WebAudio smoothing to zero and apply explicit time-constant smoothing after feature mapping to make control behavior auditable.
 
@@ -78,3 +78,4 @@ For OBSAD Motion Program: audio control IR sits *upstream* of the existing seman
 
 ## Decision record
 2026-10-18 / DEC-AUD-001 — Isolated experimental module in OBSAD because this repository owns evidence-led motion specification, tests, and cross-provider compilation. Shader Gallery consumes a later validated control contract; Motion Oracle remains source of motion semantics; no forced change to ComfyUI execution.
+
