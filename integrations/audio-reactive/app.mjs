@@ -9,8 +9,8 @@ const player = $("player");
 const modeLabel = $("mode"), stateLabel = $("state"), statistics = $("stats");
 const config = {...DEFAULT_CONFIG};
 const memory = {controls:silenceControls(), magnitudes:null, records:[], mode:"idle", firstFrame:0,
-  latestCapture:0, lastFrame:0, fpsFrames:0, lastFpsAt:0, fps:0, meanFlux:0};
-let audioContext, analyser, waveform, spectrum, mediaSource, fileUrl;
+  latestCapture:0, lastFrame:0, fpsFrames:0, lastFpsAt:0, fps:0, meanFlux:0, audioReady:false, captureMode:"idle"};
+let audioContext, analyser, waveform, spectrum, mediaSource, fileUrl, audioActivation=0, audioGraphReady=false;
 const LIMIT = 3600; // bounded, 10 Hz capture = latest 6 minutes
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -25,9 +25,9 @@ addEventListener("resize", resize, {passive:true});
 resize();
 
 function reset(mode) {
-  memory.mode=mode; memory.controls=silenceControls(); memory.magnitudes=null;
+  memory.mode=mode; memory.captureMode=mode; memory.controls=silenceControls(); memory.magnitudes=null;
   memory.records=[]; memory.firstFrame=performance.now(); memory.latestCapture=0; memory.lastFrame=0;
-  memory.meanFlux=0;
+  memory.meanFlux=0; memory.audioReady=false; audioActivation++;
   modeLabel.textContent = mode === "demo" ? "Synthetic signal (not festival audio)" : mode === "file" ? "Local file" : "Idle";
 }
 
@@ -43,8 +43,11 @@ async function ensureAudio() {
     mediaSource = audioContext.createMediaElementSource(player);
     mediaSource.connect(analyser);
     analyser.connect(audioContext.destination);
+    audioGraphReady=true;
   }
+  if (!audioGraphReady) throw new Error("Audio analysis graph could not be initialized; reload to retry");
   if (audioContext.state === "suspended") await audioContext.resume();
+  if (audioContext.state !== "running") throw new Error("Audio analysis is not running");
 }
 
 $("file").addEventListener("change", event => {
@@ -59,17 +62,39 @@ $("file").addEventListener("change", event => {
 $("play").addEventListener("click", async () => {
   if (!player.src) {stateLabel.textContent = "Choose an audio file first.";return;}
   try {
-    reset("file");
+    if (memory.mode !== "file") reset("file");
     await ensureAudio();
     await player.play();
-    stateLabel.textContent = "Playing local audio.";
   } catch (error) {stateLabel.textContent = "Playback blocked: " + error.message;}
+});
+// Native and custom playback share the same analysis gate. Never capture
+// packets as measured local audio until the analyser is ready.
+player.addEventListener("play", async () => {
+  if (player.paused) return;
+  if (memory.mode !== "file") reset("file");
+  const activation=++audioActivation;
+  memory.audioReady=false; stateLabel.textContent="Starting local audio analysis…";
+  try {
+    await ensureAudio();
+    if (activation !== audioActivation || player.paused || memory.mode !== "file") return;
+    memory.audioReady=true; stateLabel.textContent="Playing local audio.";
+  } catch (error) {
+    if (activation !== audioActivation || memory.mode !== "file") return;
+    player.pause(); stateLabel.textContent="Audio analysis unavailable: " + error.message;
+  }
+});
+player.addEventListener("pause", () => {
+  if (!player.paused) return;
+  audioActivation++; memory.audioReady=false; memory.magnitudes=null;
+  if (memory.mode === "file" && !player.ended) stateLabel.textContent="Audio paused. Export or resume the current capture.";
 });
 $("demo").addEventListener("click", () => {
   player.pause(); reset("demo"); stateLabel.textContent = "Synthetic demonstration running.";
 });
 $("stop").addEventListener("click", () => {
-  player.pause(); reset("idle"); stateLabel.textContent = "Stopped.";
+  player.pause(); audioActivation++; memory.mode="idle"; memory.audioReady=false;
+  memory.controls=silenceControls(); memory.magnitudes=null; modeLabel.textContent="Idle";
+  stateLabel.textContent = "Stopped. Captured controls remain available to export.";
 });
 player.addEventListener("seeking", () => {
   if (memory.mode === "file") {
@@ -112,7 +137,7 @@ function syntheticFeatures(t) {
 }
 function currentFeatures(t) {
   if(memory.mode === "demo") return syntheticFeatures(t);
-  if(memory.mode !== "file" || player.paused || !analyser) return {
+  if(memory.mode !== "file" || player.paused || !memory.audioReady || audioContext?.state !== "running" || player.readyState < 2 || !analyser) return {
     rms:0,low:0,mid:0,high:0,centroid:0,flux:0
   };
   analyser.getFloatTimeDomainData(waveform);
@@ -195,11 +220,11 @@ function tick(now) {
   const f=currentFeatures(t);
   memory.controls=smoothControls(mapFeatures(f,config),memory.controls,dt,config);
   render(t,memory.controls);
-  const captureActive = memory.mode === "demo" || (memory.mode === "file" && !player.paused);
+  const captureActive = memory.mode === "demo" || (memory.mode === "file" && !player.paused && memory.audioReady && audioContext?.state === "running" && player.readyState >= 2);
   if(captureActive && now-memory.latestCapture >= 100) {
     const time = memory.mode==="file" ? player.currentTime : t;
     const packet=makePacket(time,memory.controls);
-    memory.records.push(packet);
+    memory.records.push({packet,config:{...config}});
     if(memory.records.length>LIMIT) memory.records.shift();
     memory.latestCapture=now;
   }
@@ -217,17 +242,24 @@ requestAnimationFrame(tick);
 
 $("export").addEventListener("click", () => {
   if(!memory.records.length){stateLabel.textContent="No captured controls. Play or run synthetic demo first.";return;}
+  const configSegments=[];
+  memory.records.forEach((record,index) => {
+    const last=configSegments.at(-1);
+    if (!last || JSON.stringify(last.config) !== JSON.stringify(record.config)) {
+      configSegments.push({start_packet:index,end_packet_exclusive:index+1,config:{...record.config}});
+    } else last.end_packet_exclusive=index+1;
+  });
   const payload={
-    format:"audio-reactive-capture.v0.1", contract:CONTRACT_VERSION,
-    source: memory.mode === "file" ? "local-audio-file" : "synthetic-demo",
+    format:"audio-reactive-capture.v0.2", contract:CONTRACT_VERSION,
+    source: memory.captureMode === "file" ? "local-audio-file" : "synthetic-demo",
     source_media_included:false, sample_interval_target_ms:100,
-    max_retained_packets:LIMIT, config:{...config},
+    max_retained_packets:LIMIT, config_segments:configSegments,
     provenance:{
       reference:"https://www.youtube.com/watch?v=3GtpHGZZdUc",
       reference_role:"artistic reference only; no extracted video or audio",
       generated_at:new Date().toISOString()
     },
-    packets:memory.records
+    packets:memory.records.map(record=>record.packet)
   };
   const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));
   const link=document.createElement("a");
@@ -235,3 +267,4 @@ $("export").addEventListener("click", () => {
   setTimeout(()=>URL.revokeObjectURL(url),30000);
   stateLabel.textContent="Downloaded JSON control capture; original audio was not included.";
 });
+

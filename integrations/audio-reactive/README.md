@@ -34,11 +34,13 @@ Node 20+ for tests, modern browser with Web Audio for playback, Python 3 for sta
                                                                      ↓
                                                        bounded JSON capture
 
-Feature extraction runs in the animation loop. Control envelopes use elapsed seconds and exponential attack/release smoothing. The JSON capture retains the latest 3,600 packets at roughly 10 Hz (approx. six minutes). All input stays local; the exported control trace contains no audio sample content.
+Feature extraction runs in the animation loop. Control envelopes use elapsed seconds and exponential attack/release smoothing. The JSON capture retains the latest 3,600 packets at roughly 10 Hz (approx. six minutes). Each retained packet is associated with the settings in effect when it was captured. All input stays local; the exported control trace contains no audio sample content.
 
 ## Contract and preservation
 
 The output schema is [control-packet.schema.json](./control-packet.schema.json); the pure compiler is [engine.mjs](./engine.mjs); the unit tests are [engine.test.mjs](./engine.test.mjs). The semantic channels are energy, fold, shimmer, hue, density and pulse (all finite in [0,1]). Reject unexpected channels or nonfinite values. FFT changes require previous-spectrum reset.
+
+The export envelope is `audio-reactive-capture.v0.2`; packet objects remain `audio-control.v0.1`. `config_segments` uses zero-based `start_packet` and exclusive `end_packet_exclusive` indexes into `packets`, recording contiguous settings actually used for those packets. Settings changed after the last packet are not attributed to earlier packets. This differs from the v0.1 envelope's single export-time `config`; consumers must handle the version explicitly. A new source or seek starts a fresh capture. Pause and resume preserve the existing segment, and Stop retains it for export; starting a new source after Stop starts a fresh capture. File playback is captured only while the audio graph is running and current data is available; failed or incomplete initialization pauses playback and does not manufacture zero-valued measurements. Reload the page to retry after audio-graph initialization fails.
 
 This is a **bounded integration candidate**, not an existing provider binding. For OBSAD Motion Program see [MOTION_PROGRAM.md](../../docs/MOTION_PROGRAM.md): an adapter must preserve locked regions and never redefine Motion Oracle topologies. For additional sources, algorithms, calibrations, observed/inferred/authored distinctions and known gaps see [research notes](../../docs/audio-reactive-ozora-2025.md).
 
@@ -56,3 +58,4 @@ This is a **bounded integration candidate**, not an existing provider binding. F
 ## Limitations / next adapters
 
 This v0.1 cannot ingest audio from a third-party YouTube page or automatically synchronize with external festival video. Spectral novelty is **not** BPM, onset labeling, song segmentation or audiovisual causal inference. The preview uses Canvas2D; WebGL2/Hydra/Resolume/Spout and post-production adapters are future tasks. Stable offline replay requires a future timestamp-driven renderer rather than relying on requestAnimationFrame scheduling.
+
