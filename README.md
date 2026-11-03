@@ -34,3 +34,7 @@ obsad run tasks/product-edit-01.yaml --url "$COMFY_URL"
 Put local references under `input/images`, `input/videos`, or any folder named in a task. Generated media and immutable run manifests are saved under the task's `output.directory`. Every execution is recorded in `logs/runs.csv`, `logs/runs.jsonl`, and `logs/runs.txt`.
 
 The full master contract remains the source of truth. The compiler reduces it to: TASK → LOCK → MOTION → CAMERA → EVENT → FINAL → STYLE → NEGATIVE. Text overlays and exact ad timing belong in deterministic post-production.
+
+## Experimental integrations
+
+- [Audio-reactive control lab v0.1](integrations/audio-reactive/README.md): local audio/synthetic signal → validated semantic control packets → mirrored visual study, with [research/algorithm notes](docs/audio-reactive-ozora-2025.md) and [agent skill](skills/audio-reactive-motion/SKILL.md). This is a research instrument, not yet a Wan/ComfyUI provider binding.

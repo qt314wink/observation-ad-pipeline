@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Signal → Form | Audio Reactive Control Lab</title>
+<style>
+:root {font-family:Inter, ui-sans-serif, system-ui, sans-serif;color:#e9f5ff;background:#080b18;--edge:#36405e;--quiet:#adb9d1;--aqua:#7debd9;--focus:#f9bd8e}
+* {box-sizing:border-box}
+body {margin:0;min-height:100vh;background:radial-gradient(circle at 65% 12%,#273053 0,#0b0c1c 43%,#080a14 85%)}
+header,main,footer {max-width:1320px;margin:auto;padding-inline:clamp(18px,4vw,54px)}
+header {padding-top:34px;padding-bottom:20px}
+.eyebrow {color:var(--aqua);text-transform:uppercase;font-size:.72rem;letter-spacing:.23em;font-weight:750}
+h1 {font-weight:550;letter-spacing:-.05em;line-height:1.02;font-size:clamp(2.3rem,5vw,5.5rem);margin:.22em 0}
+h1 span {color:#9fdcf0}
+.lead {max-width:760px;color:#bac8df;line-height:1.62}
+.workspace {display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,1fr);align-items:start;gap:22px}
+.stage {border:1px solid var(--edge);border-radius:20px;overflow:hidden;background:#080818;position:relative}
+canvas {display:block;width:100%;height:auto;aspect-ratio:16/10;background:#0b0a22}
+.stage-footer {display:flex;justify-content:space-between;align-items:center;padding:13px 18px;gap:10px;font-size:.77rem;color:#b5c6e2;background:#121527}
+.stage-footer strong {font-weight:650;color:var(--aqua)}
+.panel {border:1px solid var(--edge);border-radius:20px;padding:23px;background:#15192a}
+.panel h2 {font-size:1.12rem;font-weight:650;letter-spacing:-.02em;margin:0 0 10px}
+.help {color:var(--quiet);font-size:.82rem;line-height:1.5}
+.buttons {display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+button {border:1px solid #5e7090;background:#262d47;color:#f4fbff;padding:11px 13px;border-radius:10px;font:600 .83rem inherit;cursor:pointer;transition:transform .12s,background .12s}
+button:hover {background:#364362;transform:translateY(-1px)}
+button:focus-visible,input:focus-visible,a:focus-visible {outline:3px solid var(--focus);outline-offset:3px}
+button.primary {background:#a3eedf;color:#10282b;border:0}
+input[type=file] {width:100%;font:inherit;font-size:.79rem;color:#bcc8db;margin:10px 0}
+input[type=file]::file-selector-button {background:#263b52;border:1px solid #576984;border-radius:9px;padding:9px;color:#ebfaff;cursor:pointer}
+audio {width:100%;height:38px}
+hr {border:0;border-top:1px solid #3b4359;margin:23px 0}
+.control {display:grid;gap:7px;margin:14px 0}
+.control label {display:flex;justify-content:space-between;gap:10px;font-size:.82rem;font-weight:600}
+.control output {color:var(--aqua);font-variant-numeric:tabular-nums}
+input[type=range] {width:100%;accent-color:#77ddcf;cursor:pointer}
+small {font-size:.73rem;color:#9babc6}
+.stat {padding:10px 13px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#aecbd6;border:1px solid #374561;border-radius:9px;font-size:.72rem;line-height:1.8}
+footer {padding-top:28px;padding-bottom:48px;color:#98a9c3;max-width:1320px;font-size:.8rem;line-height:1.7}
+footer a {color:#a2f2e3}
+@media(max-width:850px){.workspace{grid-template-columns:1fr}.panel{padding:20px}.stage-footer{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){button{transition:none}button:hover{transform:none}}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">OBSAD / RESEARCH INSTRUMENT 001</div>
+<h1>Signal <span>→</span> Form</h1>
+<p class="lead">A provenance-aware, bounded audio-to-visual control study. Use your own licensed local audio, or start with the synthetic test signal. No content leaves your browser. The visual mapping is ours, not a reconstruction of the reference performance.</p>
+</header>
+<main class="workspace">
+<section class="stage" aria-label="Realtime mirrored radial visualization">
+<canvas id="visual" aria-label="Animated radial mirrored geometry responding to sound" role="img"></canvas>
+<div class="stage-footer"><span><strong id="mode">Idle</strong> · symmetrical material-field study</span><span id="state" role="status">Choose a file or run the synthetic demo.</span></div>
+</section>
+<aside class="panel">
+<h2>01 / Source and playback</h2>
+<p class="help">Local audio only. Select a supported MP3/WAV/OGG or other format your browser can decode. No YouTube download or copyrighted media bundled.</p>
+<label class="help" for="file">Audio source</label>
+<input id="file" type="file" accept="audio/*">
+<audio id="player" controls preload="metadata" aria-label="Local audio playback"></audio>
+<div class="buttons">
+<button class="primary" id="play">Play file</button>
+<button id="demo">Synthetic demo</button>
+<button id="stop">Stop</button>
+</div>
+<hr>
+<h2>02 / Authored mapping</h2>
+<p class="help">Features are measured. These sliders affect only the interpretation and easing of those features.</p>
+<div class="control"><label for="sensitivity">Signal sensitivity <output id="sensitivity-out">14</output></label><input id="sensitivity" type="range" min="1" max="40" step="1" value="14"></div>
+<div class="control"><label for="attack">Attack (seconds) <output id="attack-out">0.08</output></label><input id="attack" type="range" min=".02" max=".8" step=".02" value=".08"></div>
+<div class="control"><label for="release">Release (seconds) <output id="release-out">0.4</output></label><input id="release" type="range" min=".06" max="2" step=".02" value=".4"></div>
+<div class="control"><label for="intensity">Visual intensity <output id="intensity-out">0.8</output></label><input id="intensity" type="range" min="0" max="1" step=".05" value=".8"></div>
+<div class="control"><label for="sectors">Mirrored sectors <output id="sectors-out">12</output></label><input id="sectors" type="range" min="4" max="20" step="2" value="12"></div>
+<hr>
+<h2>03 / Evidence</h2>
+<p id="stats" class="stat" aria-live="off">Waiting for signal…</p>
+<div class="buttons"><button id="export" class="primary">Export control JSON</button></div>
+<small>One packet per ~100 ms. Only the latest 3,600 packets (about six minutes) are held in memory; visual frame rate is measured, not guaranteed.</small>
+</aside>
+</main>
+<footer>
+Reference: <a href="https://www.youtube.com/watch?v=3GtpHGZZdUc" target="_blank" rel="noopener noreferrer">Unknown Reality — O.Z.O.R.A. 2025, The Dome opening set</a>.
+This experiment models energy, spectral bands, centroid and spectral novelty. It does not infer the artists' actual production rig or perform beat/BPM detection. <span>Reduced-motion preferences suppress continuous rotation.</span>
+</footer>
+<script type="module" src="./app.mjs"></script>
+</body>
+</html>
