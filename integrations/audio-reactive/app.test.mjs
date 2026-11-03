@@ -57,3 +57,17 @@ test('stop preserves the capture for export', async () => {
   assert.equal(payload.source,'synthetic-demo');
   assert.ok(payload.packets.length>0);
 });
+
+test('rolling retention trims old packets and reindexes configuration segments', async () => {
+  const sensitivity=element('sensitivity'); sensitivity.value='14'; sensitivity.dispatchEvent(new Event('input'));
+  element('demo').click(); for(let i=0;i<10;i++) step();
+  sensitivity.value='22'; sensitivity.dispatchEvent(new Event('input'));
+  for(let i=0;i<3595;i++) step();
+  element('export').click(); let payload=JSON.parse(await lastBlob.text());
+  assert.equal(payload.packets.length,3600);
+  assert.deepEqual(payload.config_segments.map(s=>[s.start_packet,s.end_packet_exclusive,s.config.sensitivity]),[[0,5,14],[5,3600,22]]);
+  for(let i=0;i<5;i++) step();
+  element('export').click(); payload=JSON.parse(await lastBlob.text());
+  assert.equal(payload.packets.length,3600);
+  assert.deepEqual(payload.config_segments.map(s=>[s.start_packet,s.end_packet_exclusive,s.config.sensitivity]),[[0,3600,22]]);
+});
