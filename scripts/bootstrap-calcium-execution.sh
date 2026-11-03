@@ -28,12 +28,12 @@ elif command -v pkg >/dev/null 2>&1; then
   fi
 fi
 
-for cmd in python git curl jq ffmpeg; do
+for cmd in python3 git curl jq ffmpeg; do
   command -v "$cmd" >/dev/null 2>&1 || die "Missing required command: $cmd"
 done
 
 log "Python environment"
-python - <<'PY'
+python3 - <<'PY'
 import sys
 print(sys.version)
 if sys.version_info < (3,10):
@@ -41,19 +41,24 @@ if sys.version_info < (3,10):
 PY
 
 if [ ! -d .venv ]; then
-  python -m venv .venv
+  python3 -m venv .venv
 fi
 . .venv/bin/activate
-python -m pip install --upgrade pip setuptools wheel
-python -m pip install -e . pytest
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install -e . pytest
 
 log "Baseline doctor"
-python -m obsad.cli doctor || true
+python3 -m obsad.cli doctor || true
 
 log "Campaign validation"
-python -m obsad.cli campaign-validate "$CAMPAIGN"
-pytest -q tests/test_campaign.py
-PYTHONPATH=src python -m unittest discover -s tests -v
+python3 -m obsad.cli campaign-validate "$CAMPAIGN"
+# Fixtures expect unresolved model placeholders. Keep configured models intact
+# in the parent environment for the later execution-time compilation.
+baseline_test() {
+  env -u OBSAD_OPENAI_MODEL -u OBSAD_XAI_MODEL -u OBSAD_COMFY_CHECKPOINT -u OBSAD_WAN_MODEL "$@"
+}
+baseline_test python3 -m pytest -q tests/test_campaign.py
+baseline_test env PYTHONPATH=src python3 -m unittest discover -s tests -v
 git diff --check
 
 log "Deterministic anchor compilation"
@@ -65,15 +70,15 @@ for provider in "${providers[@]}"; do
   for task in "${tasks[@]}"; do
     a="$EVIDENCE_DIR/compiled/${provider}-${task}-a.json"
     b="$EVIDENCE_DIR/compiled/${provider}-${task}-b.json"
-    python -m obsad.cli campaign-compile "$CAMPAIGN" --provider "$provider" --task-id "$task" --out "$a" >/dev/null
-    python -m obsad.cli campaign-compile "$CAMPAIGN" --provider "$provider" --task-id "$task" --out "$b" >/dev/null
+    python3 -m obsad.cli campaign-compile "$CAMPAIGN" --provider "$provider" --task-id "$task" --out "$a" >/dev/null
+    python3 -m obsad.cli campaign-compile "$CAMPAIGN" --provider "$provider" --task-id "$task" --out "$b" >/dev/null
     diff -u "$a" "$b" >/dev/null || die "Non-deterministic compile: $provider $task"
     sha256sum "$a"
   done
 done
 
 log "Credential/runtime capability probe (presence only)"
-python - <<'PY'
+python3 - <<'PY'
 import os, json
 keys = ["OPENAI_API_KEY", "XAI_API_KEY", "COMFY_URL"]
 print(json.dumps({k: bool(os.getenv(k)) for k in keys}, indent=2))
@@ -83,7 +88,7 @@ if [ -n "${COMFY_URL:-}" ]; then
   log "Remote ComfyUI probe"
   # Avoid putting the URL on the process command line or emitting HTTP errors.
   # The Python process reads it from its environment and reports no exception text.
-  python - "$EVIDENCE_DIR/comfy-system-stats.json" <<'PY' || {
+  python3 - "$EVIDENCE_DIR/comfy-system-stats.json" <<'PY' || {
 import json, os, sys
 import requests
 try:
