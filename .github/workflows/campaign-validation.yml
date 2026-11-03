@@ -8,6 +8,8 @@ on:
       - 'src/obsad/campaign.py'
       - 'src/obsad/cli.py'
       - 'tests/test_campaign.py'
+      - 'tests/test_doctor_redaction.py'
+      - 'scripts/bootstrap-calcium-execution.sh'
       - '.github/workflows/campaign-validation.yml'
   push:
     branches: [main]
@@ -17,6 +19,8 @@ on:
       - 'src/obsad/campaign.py'
       - 'src/obsad/cli.py'
       - 'tests/test_campaign.py'
+      - 'tests/test_doctor_redaction.py'
+      - 'scripts/bootstrap-calcium-execution.sh'
       - '.github/workflows/campaign-validation.yml'
 
 permissions:
@@ -37,4 +41,6 @@ jobs:
       - name: Validate governed campaign
         run: python -m obsad.cli campaign-validate campaigns/calcium-nourish-the-signal
       - name: Run campaign regression tests
-        run: pytest -q tests/test_campaign.py
+        run: pytest -q tests/test_campaign.py tests/test_doctor_redaction.py
+      - name: Check bootstrap shell syntax
+        run: bash -n scripts/bootstrap-calcium-execution.sh
