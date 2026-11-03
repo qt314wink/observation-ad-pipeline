@@ -137,7 +137,8 @@ def healthcheck(url: str) -> tuple[bool, str]:
     try:
         r = requests.get(url.rstrip("/") + "/system_stats", timeout=15)
         return r.ok, f"HTTP {r.status_code}"
-    except Exception as exc: return False, repr(exc)
+    # Exception messages can include the requested URL and embedded secrets.
+    except Exception as exc: return False, f"request failed ({type(exc).__name__})"
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.version_option("0.2.1")
@@ -180,7 +181,7 @@ def doctor(url: str) -> None:
     }
     remote_ok, remote_msg = healthcheck(url)
     for key, value in checks.items(): click.echo(f"{'PASS' if value else 'FAIL'}  {key}")
-    click.echo(f"{'PASS' if remote_ok else 'WARN'}  comfyui {url} ({remote_msg})")
+    click.echo(f"{'PASS' if remote_ok else 'WARN'}  comfyui ({remote_msg})")
     if not all(checks.values()): raise click.ClickException("Local environment has failed checks")
 
 @main.command("validate")

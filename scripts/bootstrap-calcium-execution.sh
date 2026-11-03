@@ -48,7 +48,7 @@ python -m pip install --upgrade pip setuptools wheel
 python -m pip install -e . pytest
 
 log "Baseline doctor"
-python -m obsad.cli doctor --url "${COMFY_URL:-http://127.0.0.1:8188}" || true
+python -m obsad.cli doctor || true
 
 log "Campaign validation"
 python -m obsad.cli campaign-validate "$CAMPAIGN"
@@ -81,7 +81,21 @@ PY
 
 if [ -n "${COMFY_URL:-}" ]; then
   log "Remote ComfyUI probe"
-  curl -fsS --max-time 20 "${COMFY_URL%/}/system_stats" | jq . > "$EVIDENCE_DIR/comfy-system-stats.json" || {
+  # Avoid putting the URL on the process command line or emitting HTTP errors.
+  # The Python process reads it from its environment and reports no exception text.
+  python - "$EVIDENCE_DIR/comfy-system-stats.json" <<'PY' || {
+import json, os, sys
+import requests
+try:
+    response = requests.get(os.environ['COMFY_URL'].rstrip('/') + '/system_stats', timeout=20)
+    response.raise_for_status()
+    data = response.json()
+    with open(sys.argv[1], 'w', encoding='utf-8') as output:
+        json.dump(data, output, indent=2)
+        output.write('\n')
+except Exception:
+    sys.exit(1)
+PY
     echo "ComfyUI endpoint not reachable; generation remains blocked." >&2
   }
 fi
